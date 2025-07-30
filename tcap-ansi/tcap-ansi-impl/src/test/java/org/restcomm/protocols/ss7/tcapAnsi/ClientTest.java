@@ -62,6 +62,16 @@ public class ClientTest implements TCListener {
 	private TCAPProvider tcapProvider;
 	private Dialog clientDialog;
 
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
+
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
+
 	ClientTest() throws NamingException {
 
 		InitialContext ctx = new InitialContext();
@@ -74,16 +84,6 @@ public class ClientTest implements TCListener {
 
 		this.tcapProvider.addTCListener(this);
 	}
-
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-		}
-	};
 
 	public void sendInvoke() throws TCAPException, TCAPSendException {
 		SccpAddress localAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
@@ -130,7 +130,7 @@ public class ClientTest implements TCListener {
 	public void onTCConversation(TCConversationIndication ind) {
 		// send end
 		TCResponseRequest end = this.tcapProvider.getDialogPrimitiveFactory().createResponse(ind.getDialog());
-//        end.setTermination(TerminationType.Basic);
+		// end.setTermination(TerminationType.Basic);
 
 		ind.getDialog().send(end, dummyCallback);
 	}
@@ -161,7 +161,6 @@ public class ClientTest implements TCListener {
 	}
 
 	public static void main(String[] args) {
-
 		try {
 			ClientTest c = new ClientTest();
 			c.sendInvoke();

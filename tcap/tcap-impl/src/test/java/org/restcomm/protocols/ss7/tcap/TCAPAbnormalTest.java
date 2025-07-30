@@ -28,6 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEvent;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventFactory;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventUtils;
 import org.restcomm.protocols.ss7.sccp.message.MessageFactory;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -39,9 +42,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.listeners.Client;
 import org.restcomm.protocols.ss7.tcap.listeners.Server;
 import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
-import org.restcomm.protocols.ss7.tcap.listeners.events.TestEvent;
-import org.restcomm.protocols.ss7.tcap.listeners.events.TestEventFactory;
-import org.restcomm.protocols.ss7.tcap.utils.EventTestUtils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -130,7 +130,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 		// 2. TC-ABORT + PAbortCauseType.NoCommonDialogPortion
 		client.awaitReceived(EventType.PAbort);
 		{
-			TestEvent event = client.getNextEvent(EventType.PAbort);
+			TestEvent<EventType> event = client.getNextEvent(EventType.PAbort);
 			TCPAbortIndication ind = (TCPAbortIndication) event.getEvent();
 
 			assertEquals(PAbortCauseType.NoCommonDialoguePortion, ind.getPAbortCause());
@@ -138,14 +138,14 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addReceived(EventType.PAbort);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 		// 2. TC-ABORT + PAbortCauseType.IncorrectTxPortion
 		client.awaitReceived(EventType.PAbort);
 		{
-			TestEvent event = client.getNextEvent(EventType.PAbort);
+			TestEvent<EventType> event = client.getNextEvent(EventType.PAbort);
 			TCPAbortIndication ind = (TCPAbortIndication) event.getEvent();
 
 			assertEquals(PAbortCauseType.IncorrectTxPortion, ind.getPAbortCause());
@@ -177,14 +177,14 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addReceived(EventType.PAbort);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -210,7 +210,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		server.awaitSent(EventType.Continue);
 		client.awaitReceived(EventType.Continue);
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		// 3. TC-ABORT + PAbortCauseType.UnrecognizedMessageType
 		MessageFactory messageFactory2 = sccpProvider2.getMessageFactory();
@@ -219,12 +219,12 @@ public class TCAPAbnormalTest extends SccpHarness {
 		sccpProvider2.send(message, dummyCallback);
 
 		client.awaitReceived(EventType.DialogTimeout);
-		EventTestUtils.assertPassed(DIALOG_TIMEOUT);
+		TestEventUtils.assertPassed(DIALOG_TIMEOUT);
 
 		client.awaitReceived(EventType.PAbort);
 		server.awaitReceived(EventType.PAbort);
 		{
-			TestEvent event = server.getNextEvent(EventType.PAbort);
+			TestEvent<EventType> event = server.getNextEvent(EventType.PAbort);
 			TCPAbortIndication ind = (TCPAbortIndication) event.getEvent();
 
 			assertEquals(PAbortCauseType.UnrecognizedMessageType, ind.getPAbortCause());
@@ -233,21 +233,21 @@ public class TCAPAbnormalTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.Continue);
 		clientExpected.addReceived(EventType.DialogTimeout);
 		clientExpected.addReceived(EventType.PAbort);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addSent(EventType.Continue);
 		serverExpected.addReceived(EventType.PAbort);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -288,7 +288,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 		// 5. TC-ABORT + PAbortCauseType.UnrecognizedTxID
 		server.awaitReceived(EventType.PAbort);
 		{
-			TestEvent event = server.getNextEvent(EventType.PAbort);
+			TestEvent<EventType> event = server.getNextEvent(EventType.PAbort);
 			TCPAbortIndication ind = (TCPAbortIndication) event.getEvent();
 
 			assertEquals(PAbortCauseType.UnrecognizedTxID, ind.getPAbortCause());
@@ -297,20 +297,20 @@ public class TCAPAbnormalTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.Continue);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addSent(EventType.Continue);
 		serverExpected.addSent(EventType.Continue);
 		serverExpected.addReceived(EventType.PAbort);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -353,14 +353,14 @@ public class TCAPAbnormalTest extends SccpHarness {
 		// 5. TC-ABORT + PAbortCauseType.AbnormalDialogue
 		client.awaitReceived(EventType.PAbort);
 		{
-			TestEvent event = client.getNextEvent(EventType.PAbort);
+			TestEvent<EventType> event = client.getNextEvent(EventType.PAbort);
 			TCPAbortIndication ind = (TCPAbortIndication) event.getEvent();
 
 			assertEquals(PAbortCauseType.AbnormalDialogue, ind.getPAbortCause());
 		}
 		server.awaitReceived(EventType.PAbort);
 		{
-			TestEvent event = server.getNextEvent(EventType.PAbort);
+			TestEvent<EventType> event = server.getNextEvent(EventType.PAbort);
 			TCPAbortIndication ind = (TCPAbortIndication) event.getEvent();
 
 			assertEquals(PAbortCauseType.AbnormalDialogue, ind.getPAbortCause());
@@ -370,22 +370,22 @@ public class TCAPAbnormalTest extends SccpHarness {
 		server.awaitReceived(EventType.DialogRelease);
 
 		// Client expected events
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.Continue);
 		clientExpected.addReceived(EventType.PAbort);
 		clientExpected.addReceived(EventType.DialogRelease);
 
 		// Server expected events
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addSent(EventType.Continue);
 		serverExpected.addSent(EventType.Continue);
 		serverExpected.addReceived(EventType.PAbort);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -417,18 +417,18 @@ public class TCAPAbnormalTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.UAbort);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addSent(EventType.UAbort);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -444,25 +444,25 @@ public class TCAPAbnormalTest extends SccpHarness {
 		// 1. TC-BEGIN
 		client.startClientDialog();
 		client.sendBeginUnreachableAddress(false, dummyCallback);
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		client.awaitSent(EventType.Begin);
 
 		// 2. DialogTimeout
 		client.awaitReceived(EventType.DialogTimeout);
-		EventTestUtils.assertPassed(DIALOG_TIMEOUT);
+		TestEventUtils.assertPassed(DIALOG_TIMEOUT);
 
 		client.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.DialogTimeout);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -487,15 +487,15 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.Notice);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -519,28 +519,28 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.sendBeginUnreachableAddress(false, dummyCallback);
 		client.awaitSent(EventType.Begin);
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		// 2. InvokeTimeout
 		client.awaitReceived(EventType.InvokeTimeout);
-		EventTestUtils.assertPassed(invokeTimeout);
+		TestEventUtils.assertPassed(invokeTimeout);
 
 		// 3. DialogTimeout
 		client.awaitReceived(EventType.DialogTimeout);
-		EventTestUtils.assertPassed(DIALOG_TIMEOUT);
+		TestEventUtils.assertPassed(DIALOG_TIMEOUT);
 
 		client.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.InvokeTimeout);
 		clientExpected.addReceived(EventType.DialogTimeout);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -560,23 +560,23 @@ public class TCAPAbnormalTest extends SccpHarness {
 		tcapDialog.sendData(null, null, null, DIALOG_TIMEOUT * 2L, null, null, true, false);
 
 		client.sendBeginUnreachableAddress(false, dummyCallback);
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		// 2. DialogTimeout
 		client.awaitReceived(EventType.DialogTimeout);
-		EventTestUtils.assertPassed(DIALOG_TIMEOUT);
+		TestEventUtils.assertPassed(DIALOG_TIMEOUT);
 
 		client.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.DialogTimeout);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -598,7 +598,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.awaitReceived(EventType.PAbort);
 		{
-			TestEvent event = client.getNextEvent(EventType.PAbort);
+			TestEvent<EventType> event = client.getNextEvent(EventType.PAbort);
 			TCPAbortIndication ind = (TCPAbortIndication) event.getEvent();
 
 			assertEquals(PAbortCauseType.UnrecognizedMessageType, ind.getPAbortCause());
@@ -606,14 +606,14 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addReceived(EventType.PAbort);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	private static ByteBuf getMessageWithUnsupportedProtocolVersion() {

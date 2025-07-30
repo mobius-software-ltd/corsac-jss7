@@ -28,6 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEvent;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventFactory;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventUtils;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueIndication;
@@ -37,9 +40,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.listeners.Client;
 import org.restcomm.protocols.ss7.tcap.listeners.Server;
 import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
-import org.restcomm.protocols.ss7.tcap.listeners.events.TestEvent;
-import org.restcomm.protocols.ss7.tcap.listeners.events.TestEventFactory;
-import org.restcomm.protocols.ss7.tcap.utils.EventTestUtils;
 
 /**
  * Test for call flow.
@@ -137,7 +137,7 @@ public class TCAPFunctionalTest extends SccpHarness {
 		server.awaitSent(EventType.Continue);
 		client.awaitReceived(EventType.Continue);
 		{
-			TestEvent event = client.getNextEvent(EventType.Continue);
+			TestEvent<EventType> event = client.getNextEvent(EventType.Continue);
 			TCContinueIndication ind = (TCContinueIndication) event.getEvent();
 
 			assertEquals(2, ind.getComponents().size());
@@ -171,20 +171,20 @@ public class TCAPFunctionalTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.Continue);
 		clientExpected.addSent(EventType.End);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addSent(EventType.Continue);
 		serverExpected.addReceived(EventType.End);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -206,15 +206,15 @@ public class TCAPFunctionalTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Uni);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Uni);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 }

@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.DialogImpl;
@@ -52,7 +53,6 @@ import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.listeners.events.EventHarness;
 import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
@@ -65,7 +65,7 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  * @author yulianoifa
  *
  */
-public abstract class TCAPTestHarness extends EventHarness implements TCListener {
+public abstract class TCAPTestHarness extends TestEventHarness<EventType> implements TCListener {
 	public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
 
 	protected Logger logger = LogManager.getLogger(TCAPTestHarness.class);

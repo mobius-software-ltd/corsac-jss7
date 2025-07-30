@@ -19,28 +19,28 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.dialog.timeout;
 
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventFactory;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventUtils;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.listeners.EventTestHarness;
-import org.restcomm.protocols.ss7.tcapAnsi.listeners.EventType;
-import org.restcomm.protocols.ss7.tcapAnsi.listeners.TestEvent;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.Client;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.Server;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.TCAPAnsiTestHarness;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.events.EventType;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 
@@ -52,8 +52,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
  *
  */
 public class DialogIdleEndTest extends SccpHarness {
-	private static final int _DIALOG_TIMEOUT = 5000;
-	private static final int _WAIT = _DIALOG_TIMEOUT / 2 - 200;
+	private static final long INVOKE_TIMEOUT = 0;
+
+	private static final long CLIENT_DIALOG_TIMEOUT = 2000;
+	private static final long SERVER_DIALOG_TIMEOUT = 1000;
+
 	private TCAPStackImpl tcapStack1;
 	private TCAPStackImpl tcapStack2;
 	private SccpAddress peer1Address;
@@ -77,10 +80,14 @@ public class DialogIdleEndTest extends SccpHarness {
 		tcapStack1.start();
 		tcapStack2.start();
 
-		tcapStack1.setInvokeTimeout(0);
-		tcapStack2.setInvokeTimeout(0);
-		tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT * 2);
-		tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT); // so other side dont timeout :)
+		tcapStack1.setInvokeTimeout(INVOKE_TIMEOUT);
+		tcapStack2.setInvokeTimeout(INVOKE_TIMEOUT);
+
+		tcapStack1.setDialogIdleTimeout(CLIENT_DIALOG_TIMEOUT);
+		tcapStack2.setDialogIdleTimeout(SERVER_DIALOG_TIMEOUT);
+
+		client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
+		server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address);
 	}
 
 	@After
@@ -98,467 +105,503 @@ public class DialogIdleEndTest extends SccpHarness {
 		super.tearDown();
 	}
 
+	/**
+	 * Idle end after Begin from Server
+	 * 
+	 * <pre>
+	 * TC-BEGIN
+	 * DialogTimeout (on server)
+	 * UAbort (from server)
+	 * </pre>
+	 */
 	@Test
 	public void testAfterBeginOnly1() throws TCAPException, TCAPSendException {
-		// server timeout first
-		this.client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
+		// removing old listener
+		TCAPProvider serverProvider = server.stack.getProvider();
+		serverProvider.removeTCListener(server);
 
-		this.server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
+		server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
 			@Override
 			public void onDialogTimeout(Dialog d) {
-
 				super.onDialogTimeout(d);
 
-				// send abort :)
-				try {
-					// UI is required...
-					UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory()
-							.createUserInformationElement();
-					uie = this.tcapProvider.getDialogPrimitiveFactory().createUserInformationElement();
-					ASNBitString bs = new ASNBitString();
-					bs.setBit(0);
-					bs.setBit(3);
-					uie.setChild(bs);
-					uie.setIdentifier(_ACN_);
-					ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory()
-							.createApplicationContext(_ACN_);
-					UserInformationImpl ui = new UserInformationImpl();
-					ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
-					sendAbort(_acn, ui);
-				} catch (TCAPSendException e) {
-
-					e.printStackTrace();
-					fail("Got error! " + e);
-				}
+				server.awaitSent(EventType.UAbort);
+				client.awaitReceived(EventType.UAbort);
 			}
-
 		};
 
-		long stamp = System.currentTimeMillis();
-		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.UAbort, null, 1, stamp + _WAIT + _DIALOG_TIMEOUT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 2, stamp + _WAIT + _DIALOG_TIMEOUT);
-		clientExpectedEvents.add(te);
-
-		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-		te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, 1, stamp + _WAIT + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.UAbort, null, 2, stamp + _WAIT + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + _WAIT + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-
+		// 1. TC-BEGIN
 		client.startClientDialog();
-		EventTestHarness.waitFor(_WAIT);
 		client.sendBegin();
-		EventTestHarness.waitFor(_WAIT * 3);
-		client.compareEvents(clientExpectedEvents);
-		server.compareEvents(serverExpectedEvents);
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
+		TestEventUtils.updateStamp();
+
+		// 2. DialogTimeout (on server)
+		server.awaitReceived(EventType.DialogTimeout); // server timeout first (default)
+		TestEventUtils.assertPassed(SERVER_DIALOG_TIMEOUT);
+
+		// 3. UAbort (from server)
+		UserInformationElement uie = serverProvider.getDialogPrimitiveFactory().createUserInformationElement();
+		uie = serverProvider.getDialogPrimitiveFactory().createUserInformationElement();
+		ASNBitString bs = new ASNBitString();
+		bs.setBit(0);
+		bs.setBit(3);
+		uie.setChild(bs);
+		uie.setIdentifier(TCAPAnsiTestHarness._ACN_);
+		ApplicationContext _acn = serverProvider.getDialogPrimitiveFactory()
+				.createApplicationContext(TCAPAnsiTestHarness._ACN_);
+		UserInformationImpl ui = new UserInformationImpl();
+		ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
+
+		server.sendAbort(_acn, ui);
+
+		// aborts awaiting is implemented in server onDialogTimeout above
+		server.awaitReceived(EventType.DialogRelease);
+		client.awaitReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
+		clientExpected.addSent(EventType.Begin);
+		clientExpected.addReceived(EventType.UAbort);
+		clientExpected.addReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
+		serverExpected.addReceived(EventType.Begin);
+		serverExpected.addReceived(EventType.DialogTimeout);
+		serverExpected.addSent(EventType.UAbort);
+		serverExpected.addReceived(EventType.DialogRelease);
+
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
+	/**
+	 * Idle end after Begin from Client
+	 * 
+	 * <pre>
+	 * TC-BEGIN
+	 * DialogTimeout (on client)
+	 * UAbort (from client)
+	 * </pre>
+	 */
 	@Test
 	public void testAfterBeginOnly2() throws Exception {
 		// client timeout first
-		this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT);
-		this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT * 2);
+		tcapStack1.setDialogIdleTimeout(CLIENT_DIALOG_TIMEOUT);
+		tcapStack2.setDialogIdleTimeout(CLIENT_DIALOG_TIMEOUT * 2);
 
-		this.server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address);
+		// removing old listener
+		TCAPProvider clientProvider = client.stack.getProvider();
+		clientProvider.removeTCListener(client);
 
-		this.client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
-
+		client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 			@Override
 			public void onDialogTimeout(Dialog d) {
-
 				super.onDialogTimeout(d);
 
-				// send abort :)
-				try {
-					// UI is required...
-					UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory()
-							.createUserInformationElement();
-					ASNBitString bs = new ASNBitString();
-					bs.setBit(0);
-					bs.setBit(3);
-					uie.setChild(bs);
-					uie.setIdentifier(_ACN_);
-					ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory()
-							.createApplicationContext(_ACN_);
-					UserInformationImpl ui = new UserInformationImpl();
-					ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
-					sendAbort(_acn, ui);
-				} catch (TCAPSendException e) {
-
-					e.printStackTrace();
-					fail("Got error! " + e);
-				}
+				client.awaitSent(EventType.UAbort);
 			}
-
 		};
 
-		long stamp = System.currentTimeMillis();
-		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, 1, stamp + _WAIT + _DIALOG_TIMEOUT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.UAbort, null, 2, stamp + _WAIT + _DIALOG_TIMEOUT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + _WAIT + _DIALOG_TIMEOUT);
-		clientExpectedEvents.add(te);
-
-		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-		te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		serverExpectedEvents.add(te);
+		// 1. TC-BEGIN
 		client.startClientDialog();
-		EventTestHarness.waitFor(_WAIT);
 		client.sendBegin();
-		EventTestHarness.waitFor(_WAIT * 3);
-		client.compareEvents(clientExpectedEvents);
-		server.compareEvents(serverExpectedEvents);
+
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
+		TestEventUtils.updateStamp();
+
+		// 2. DialogTimeout (on client)
+		client.awaitReceived(EventType.DialogTimeout);
+		TestEventUtils.assertPassed(CLIENT_DIALOG_TIMEOUT);
+
+		// 3. UAbort (from client)
+		UserInformationElement uie = clientProvider.getDialogPrimitiveFactory().createUserInformationElement();
+		ASNBitString bs = new ASNBitString();
+		bs.setBit(0);
+		bs.setBit(3);
+		uie.setChild(bs);
+		uie.setIdentifier(TCAPAnsiTestHarness._ACN_);
+		ApplicationContext _acn = clientProvider.getDialogPrimitiveFactory()
+				.createApplicationContext(TCAPAnsiTestHarness._ACN_);
+		UserInformationImpl ui = new UserInformationImpl();
+		ui.setUserInformationElements(Arrays.asList(uie));
+		client.sendAbort(_acn, ui);
+
+		// aborts awaiting is implemented in server onDialogTimeout above
+		client.awaitReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
+		clientExpected.addSent(EventType.Begin);
+		clientExpected.addReceived(EventType.DialogTimeout);
+		clientExpected.addSent(EventType.UAbort);
+		clientExpected.addReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
+		serverExpected.addReceived(EventType.Begin);
+
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
+	/**
+	 * Idle end after Continue from Server
+	 * 
+	 * <pre>
+	 * TC-BEGIN
+	 * TC-CONTINUE
+	 * DialogTimeout (on server)
+	 * UAbort (from server)
+	 * </pre>
+	 */
 	@Test
 	public void testAfterContinue() throws TCAPException, TCAPSendException {
+		// removing old listener
+		TCAPProvider serverProvider = server.stack.getProvider();
+		serverProvider.removeTCListener(server);
 
-		this.client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-
-		this.server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
+		server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
 			@Override
 			public void onDialogTimeout(Dialog d) {
-
 				super.onDialogTimeout(d);
 
-				// send abort :)
-				try {
-					// UI is required...
-					UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory()
-							.createUserInformationElement();
-					ASNBitString bs = new ASNBitString();
-					bs.setBit(0);
-					bs.setBit(3);
-					uie.setChild(bs);
-					uie.setIdentifier(_ACN_);
-					ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory()
-							.createApplicationContext(_ACN_);
-					UserInformationImpl ui = new UserInformationImpl();
-					ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
-					sendAbort(_acn, ui);
-				} catch (TCAPSendException e) {
-
-					e.printStackTrace();
-					fail("Got error! " + e);
-				}
+				server.awaitSent(EventType.UAbort);
+				client.awaitReceived(EventType.UAbort);
 			}
-
 		};
 
-		long stamp = System.currentTimeMillis();
-		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + _WAIT * 2);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.UAbort, null, 2, stamp + _WAIT * 2 + _DIALOG_TIMEOUT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + _WAIT * 2 + _DIALOG_TIMEOUT);
-		clientExpectedEvents.add(te);
-
-		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-		te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp + _WAIT * 2);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, 2, stamp + _WAIT * 2 + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.UAbort, null, 3, stamp + _WAIT * 2 + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + _WAIT * 2 + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-
+		// 1. TC-BEGIN
 		client.startClientDialog();
-		EventTestHarness.waitFor(_WAIT);
 		client.sendBegin();
-		EventTestHarness.waitFor(_WAIT);
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
+
+		// 2. TC-CONTINUE
 		server.sendContinue(true);
-		EventTestHarness.waitFor(_WAIT * 3);
-		// waitForEnd();
-		client.compareEvents(clientExpectedEvents);
-		server.compareEvents(serverExpectedEvents);
+		server.awaitSent(EventType.Continue);
+		client.awaitReceived(EventType.Continue);
+		TestEventUtils.updateStamp();
+
+		// 3. DialogTimeout (on server)
+		server.awaitReceived(EventType.DialogTimeout);
+		TestEventUtils.assertPassed(SERVER_DIALOG_TIMEOUT);
+
+		// 4. UAbort (from server)
+		UserInformationElement uie = serverProvider.getDialogPrimitiveFactory().createUserInformationElement();
+		ASNBitString bs = new ASNBitString();
+		bs.setBit(0);
+		bs.setBit(3);
+		uie.setChild(bs);
+		uie.setIdentifier(TCAPAnsiTestHarness._ACN_);
+		ApplicationContext _acn = serverProvider.getDialogPrimitiveFactory()
+				.createApplicationContext(TCAPAnsiTestHarness._ACN_);
+		UserInformationImpl ui = new UserInformationImpl();
+		ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
+		server.sendAbort(_acn, ui);
+
+		// aborts awaiting is implemented in server onDialogTimeout above
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
+		clientExpected.addSent(EventType.Begin);
+		clientExpected.addReceived(EventType.Continue);
+		clientExpected.addReceived(EventType.UAbort);
+		clientExpected.addReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
+		serverExpected.addReceived(EventType.Begin);
+		serverExpected.addSent(EventType.Continue);
+		serverExpected.addReceived(EventType.DialogTimeout);
+		serverExpected.addSent(EventType.UAbort);
+		serverExpected.addReceived(EventType.DialogRelease);
+
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
+	/**
+	 * Idle end after several Continue from Server
+	 * 
+	 * <pre>
+	 * TC-BEGIN
+	 * TC-CONTINUE
+	 * TC-CONTINUE
+	 * DialogTimeout (on server)
+	 * UAbort (from server)
+	 * </pre>
+	 */
 	@Test
 	public void testAfterContinue2() throws TCAPException, TCAPSendException {
+		// removing old listener
+		TCAPProvider serverProvider = server.stack.getProvider();
+		serverProvider.removeTCListener(server);
 
-		this.client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-
-		this.server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
+		server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
 			@Override
 			public void onDialogTimeout(Dialog d) {
-
 				super.onDialogTimeout(d);
 
-				// send abort :)
-				try {
-					// UI is required...
-					UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory()
-							.createUserInformationElement();
-					ASNBitString bs = new ASNBitString();
-					bs.setBit(0);
-					bs.setBit(3);
-					uie.setChild(bs);
-					uie.setIdentifier(_ACN_);
-					ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory()
-							.createApplicationContext(_ACN_);
-					UserInformationImpl ui = new UserInformationImpl();
-					ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
-					sendAbort(_acn, ui);
-				} catch (TCAPSendException e) {
-
-					e.printStackTrace();
-					fail("Got error! " + e);
-				}
+				server.awaitSent(EventType.UAbort);
+				client.awaitReceived(EventType.UAbort);
 			}
-
 		};
 
-		long stamp = System.currentTimeMillis();
-		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + _WAIT * 2);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, 2, stamp + _WAIT * 3);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.UAbort, null, 3, stamp + _WAIT * 3 + _DIALOG_TIMEOUT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + _WAIT * 3 + _DIALOG_TIMEOUT);
-		clientExpectedEvents.add(te);
-
-		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-		te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp + _WAIT * 2);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, 2, stamp + _WAIT * 3);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, 3, stamp + _WAIT * 3 + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.UAbort, null, 4, stamp + _WAIT * 3 + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 5, stamp + _WAIT * 3 + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-
+		// 1. TC-BEGIN
 		client.startClientDialog();
-		EventTestHarness.waitFor(_WAIT);
 		client.sendBegin();
-		EventTestHarness.waitFor(_WAIT);
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
+
+		// 2. TC-CONTINUE
 		server.sendContinue(true);
-		EventTestHarness.waitFor(_WAIT);
+		server.awaitSent(EventType.Continue);
+		client.awaitReceived(EventType.Continue);
+
+		// 3. TC-CONTINUE
 		client.sendContinue(true);
-		EventTestHarness.waitFor(_WAIT * 3);
-		// waitForEnd();
-		client.compareEvents(clientExpectedEvents);
-		server.compareEvents(serverExpectedEvents);
+		client.awaitSent(EventType.Continue);
+		server.awaitReceived(EventType.Continue);
+		TestEventUtils.updateStamp();
+
+		// 4. DialogTimeout (on server)
+		server.awaitReceived(EventType.DialogTimeout);
+		TestEventUtils.assertPassed(SERVER_DIALOG_TIMEOUT);
+
+		// 5. UAbort (from server)
+		UserInformationElement uie = serverProvider.getDialogPrimitiveFactory().createUserInformationElement();
+		ASNBitString bs = new ASNBitString();
+		bs.setBit(0);
+		bs.setBit(3);
+		uie.setChild(bs);
+		uie.setIdentifier(TCAPAnsiTestHarness._ACN_);
+		ApplicationContext _acn = serverProvider.getDialogPrimitiveFactory()
+				.createApplicationContext(TCAPAnsiTestHarness._ACN_);
+		UserInformationImpl ui = new UserInformationImpl();
+		ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
+		server.sendAbort(_acn, ui);
+
+		// aborts awaiting is implemented in server onDialogTimeout above
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
+		clientExpected.addSent(EventType.Begin);
+		clientExpected.addReceived(EventType.Continue);
+		clientExpected.addSent(EventType.Continue);
+		clientExpected.addReceived(EventType.UAbort);
+		clientExpected.addReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
+		serverExpected.addReceived(EventType.Begin);
+		serverExpected.addSent(EventType.Continue);
+		serverExpected.addReceived(EventType.Continue);
+		serverExpected.addReceived(EventType.DialogTimeout);
+		serverExpected.addSent(EventType.UAbort);
+		serverExpected.addReceived(EventType.DialogRelease);
+
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
+	/**
+	 * Idle end after End from Client
+	 * 
+	 * <pre>
+	 * TC-BEGIN
+	 * TC-CONTINUE
+	 * TC-CONTINUE
+	 * TC-END
+	 * </pre>
+	 */
 	@Test
 	public void testAfterEnd() throws TCAPException, TCAPSendException {
-
-		this.client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-
-		this.server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
-			@Override
-			public void onDialogTimeout(Dialog d) {
-
-				super.onDialogTimeout(d);
-
-				// send abort :)
-				try {
-					// UI is required...
-					UserInformationElement uie = this.tcapProvider.getDialogPrimitiveFactory()
-							.createUserInformationElement();
-					ASNBitString bs = new ASNBitString();
-					bs.setBit(0);
-					bs.setBit(3);
-					uie.setChild(bs);
-					uie.setIdentifier(_ACN_);
-					ApplicationContext _acn = this.tcapProvider.getDialogPrimitiveFactory()
-							.createApplicationContext(_ACN_);
-					UserInformationImpl ui = new UserInformationImpl();
-					ui.setUserInformationElements(Arrays.asList(new UserInformationElement[] { uie }));
-					sendAbort(_acn, ui);
-				} catch (TCAPSendException e) {
-
-					e.printStackTrace();
-					fail("Got error! " + e);
-				}
-			}
-
-		};
-
-		long stamp = System.currentTimeMillis();
-		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + _WAIT * 2);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, 2, stamp + _WAIT * 3);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.End, null, 3, stamp + _WAIT * 4);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + _WAIT * 4);
-		clientExpectedEvents.add(te);
-
-		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-		te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp + _WAIT * 2);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, 2, stamp + _WAIT * 3);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.End, null, 3, stamp + _WAIT * 4);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + _WAIT * 4);
-		serverExpectedEvents.add(te);
-
+		// 1. TC-BEGIN
 		client.startClientDialog();
-		EventTestHarness.waitFor(_WAIT);
 		client.sendBegin();
-		EventTestHarness.waitFor(_WAIT);
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
+
+		// 2. TC-CONTINUE
 		server.sendContinue(true);
-		EventTestHarness.waitFor(_WAIT);
+		server.awaitSent(EventType.Continue);
+		client.awaitReceived(EventType.Continue);
+
+		// 3. TC-CONTINUE
 		client.sendContinue(true);
-		EventTestHarness.waitFor(_WAIT);
-		client.sendEnd(true);
-		EventTestHarness.waitFor(_WAIT);
-		// waitForEnd();
-		client.compareEvents(clientExpectedEvents);
-		server.compareEvents(serverExpectedEvents);
+		client.awaitSent(EventType.Continue);
+		server.awaitReceived(EventType.Continue);
+
+		// 4. TC-END
+		client.sendEnd(false);
+		client.awaitSent(EventType.End);
+		server.awaitReceived(EventType.End);
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
+		clientExpected.addSent(EventType.Begin);
+		clientExpected.addReceived(EventType.Continue);
+		clientExpected.addSent(EventType.Continue);
+		clientExpected.addSent(EventType.End);
+		clientExpected.addReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
+		serverExpected.addReceived(EventType.Begin);
+		serverExpected.addSent(EventType.Continue);
+		serverExpected.addReceived(EventType.Continue);
+		serverExpected.addReceived(EventType.End);
+		serverExpected.addReceived(EventType.DialogRelease);
+
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
+	/**
+	 * Idle end after several timed out Continue from Server
+	 * 
+	 * <pre>
+	 * TC-BEGIN
+	 * TC-CONTINUE
+	 * DialogTimeout (on server)
+	 * TC-CONTINUE
+	 * DialogTimeout (on server)
+	 * PAbort
+	 * </pre>
+	 */
 	@Test
 	public void testAfterContinue_NoTimeout() throws TCAPException, TCAPSendException {
+		// removing old listener
+		TCAPProvider serverProvider = server.stack.getProvider();
+		serverProvider.removeTCListener(server);
 
-		this.client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-
-		this.server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
-			private boolean sendContinue = false;
+		server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
+			private boolean firstContinueSent = false;
 
 			@Override
-			public void onDialogTimeout(Dialog d) {
+			public void onDialogTimeout(Dialog dialog) {
+				super.onDialogTimeout(dialog);
 
-				super.onDialogTimeout(d);
-				if (!sendContinue) {
-					// send continue
-					try {
-						sendContinue(true);
-					} catch (TCAPException e) {
-						e.printStackTrace();
-						fail("Received exception. Message: " + e.getMessage());
-					} catch (TCAPSendException e) {
-						e.printStackTrace();
-						fail("Received exception. Message: " + e.getMessage());
-					}
-					sendContinue = true;
+				if (!firstContinueSent) {
+					server.awaitSent(EventType.Continue);
+					client.awaitReceived(EventType.Continue);
+
+					firstContinueSent = true;
 				}
-
 			}
-
 		};
 
-		long stamp = System.currentTimeMillis();
-		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + _WAIT * 2);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, 2, stamp + _WAIT * 2 + _DIALOG_TIMEOUT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.PAbort, null, 3, stamp + _WAIT * 2 + _DIALOG_TIMEOUT * 2);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + _WAIT * 2 + _DIALOG_TIMEOUT * 2);
-		clientExpectedEvents.add(te);
-
-		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-		te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp + _WAIT * 2);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, 2, stamp + _WAIT * 2 + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, 3, stamp + _WAIT * 2 + _DIALOG_TIMEOUT);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, 4, stamp + _WAIT * 2 + _DIALOG_TIMEOUT * 2);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.PAbort, null, 5, stamp + _WAIT * 2 + _DIALOG_TIMEOUT * 2);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 6, stamp + _WAIT * 2 + _DIALOG_TIMEOUT * 2);
-		serverExpectedEvents.add(te);
-
+		// 1. TC-BEGIN
 		client.startClientDialog();
-		EventTestHarness.waitFor(_WAIT);
 		client.sendBegin();
-		EventTestHarness.waitFor(_WAIT);
-		server.sendContinue(true);
-		EventTestHarness.waitFor(_WAIT * 7);
-		// client.compareEvents(clientExpectedEvents);
-		server.compareEvents(serverExpectedEvents);
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
 
+		// 2. TC-CONTINUE
+		server.sendContinue(true);
+		server.awaitSent(EventType.Continue);
+		client.awaitReceived(EventType.Continue);
+		TestEventUtils.updateStamp();
+
+		// 3. DialogTimeout (on server)
+		server.awaitReceived(EventType.DialogTimeout);
+		TestEventUtils.assertPassed(SERVER_DIALOG_TIMEOUT);
+
+		// 4. TC-CONTINUE
+		server.sendContinue(true);
+		// continue awaiting is implemented in onDialogTimeout method above
+		TestEventUtils.updateStamp();
+
+		// 5. DialogTimeout (on server)
+		server.awaitReceived(EventType.DialogTimeout);
+		TestEventUtils.assertPassed(SERVER_DIALOG_TIMEOUT);
+
+		// 6. PAbort
+		client.awaitReceived(EventType.PAbort);
+		server.awaitReceived(EventType.PAbort);
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
+		clientExpected.addSent(EventType.Begin);
+		clientExpected.addReceived(EventType.Continue);
+		clientExpected.addReceived(EventType.Continue);
+		clientExpected.addReceived(EventType.PAbort);
+		clientExpected.addReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
+		serverExpected.addReceived(EventType.Begin);
+		serverExpected.addSent(EventType.Continue);
+		serverExpected.addReceived(EventType.DialogTimeout);
+		serverExpected.addSent(EventType.Continue);
+		serverExpected.addReceived(EventType.DialogTimeout);
+		serverExpected.addReceived(EventType.PAbort);
+		serverExpected.addReceived(EventType.DialogRelease);
+
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
+	/**
+	 * Keep alive
+	 * 
+	 * <pre>
+	 * TC-BEGIN
+	 * DialogTimeout (on client)
+	 * DialogTimeout (on server)
+	 * DialogTimeout (on server)
+	 * DialogTimeout (on server)
+	 * </pre>
+	 */
 	@Test
 	public void testKeepAlive() throws TCAPException, TCAPSendException {
+		// removing old listener
+		TCAPProvider serverProvider = server.stack.getProvider();
+		serverProvider.removeTCListener(server);
 
-		this.client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-
-		this.server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
+		server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
 			@Override
 			public void onDialogTimeout(Dialog d) {
-
 				super.onDialogTimeout(d);
-
 				d.keepAlive();
 			}
-
 		};
 
-		long stamp = System.currentTimeMillis();
-		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, 1, stamp + _WAIT + _DIALOG_TIMEOUT * 2); // *2
-																													// cause
-																													// its
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 2, stamp + _WAIT + _DIALOG_TIMEOUT * 2);
-		clientExpectedEvents.add(te);
-
-		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-		te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp + _WAIT);
-		serverExpectedEvents.add(te);
-		for (int index = 1; index < 4; index++) {
-			te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, index,
-					stamp + _WAIT + _DIALOG_TIMEOUT * index);
-			serverExpectedEvents.add(te);
-		}
-
+		// 1. TC-BEGIN
 		client.startClientDialog();
-		EventTestHarness.waitFor(_WAIT);
 		client.sendBegin();
-		EventTestHarness.waitFor(_WAIT * 7);
-		client.compareEvents(clientExpectedEvents);
-		server.compareEvents(serverExpectedEvents);
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
+		TestEventUtils.updateStamp();
 
+		// 2. DialogTimeout (on client)
+		client.awaitReceived(EventType.DialogTimeout);
+		TestEventUtils.assertPassed(CLIENT_DIALOG_TIMEOUT);
+
+		// 3. DialogTimeout (on server)
+		// 4. DialogTimeout (on server)
+		// 5. DialogTimeout (on server)
+		final int serverTimeouts = 3;
+		for (int i = 0; i < serverTimeouts; i++)
+			server.awaitReceived(EventType.DialogTimeout);
+
+		TestEventUtils.assertPassed(SERVER_DIALOG_TIMEOUT * serverTimeouts);
+		client.awaitReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
+		clientExpected.addSent(EventType.Begin);
+		clientExpected.addReceived(EventType.DialogTimeout);
+		clientExpected.addReceived(EventType.DialogRelease);
+
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
+		serverExpected.addReceived(EventType.Begin);
+
+		for (int i = 0; i < serverTimeouts; i++)
+			serverExpected.addReceived(EventType.DialogTimeout);
+
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 }

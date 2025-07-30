@@ -29,7 +29,6 @@ import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.ClientTestASN;
 import org.restcomm.protocols.ss7.tcapAnsi.DialogImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.ComponentPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
@@ -41,6 +40,8 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.messages.ClientTestASN;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.events.EventType;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
@@ -53,7 +54,7 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-public class Client extends EventTestHarness {
+public class Client extends TCAPAnsiTestHarness {
 	private static Logger logger = LogManager.getLogger(Client.class);
 
 	public Client(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress,
@@ -63,7 +64,7 @@ public class Client extends EventTestHarness {
 
 	@Override
 	public void sendBegin() throws TCAPException, TCAPSendException {
-		ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
+		ComponentPrimitiveFactory cpFactory = super.tcapProvider.getComponentPrimitiveFactory();
 
 		// create some INVOKE
 		Invoke invoke = cpFactory.createTCInvokeRequestNotLast(InvokeClass.Class1);
@@ -105,10 +106,6 @@ public class Client extends EventTestHarness {
 			this.dialog.release();
 			this.dialog = null;
 		}
-	}
-
-	public DialogImpl getCurDialog() {
-		return (DialogImpl) this.dialog;
 	}
 
 	public Invoke createNewInvoke() {

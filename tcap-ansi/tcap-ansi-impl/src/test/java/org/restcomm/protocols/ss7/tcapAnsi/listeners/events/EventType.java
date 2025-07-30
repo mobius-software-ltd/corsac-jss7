@@ -1,5 +1,3 @@
-package org.restcomm.protocols.ss7.tcapAnsi;
-
 /*
  * Mobius Software LTD
  * Copyright 2019, Mobius Software LTD and individual contributors
@@ -19,25 +17,15 @@ package org.restcomm.protocols.ss7.tcapAnsi;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
+package org.restcomm.protocols.ss7.tcapAnsi.listeners.events;
+
 /**
-*
-* @author yulian oifa
-*
-*/
+ * @author baranowb
+ * @author yulianoifa
+ *
+ */
+public enum EventType {
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+    Begin, Continue, End, Uni, UAbort, PAbort, Notice, InvokeTimeout, DialogTimeout, DialogRelease, InvokeNotLast, InvokeLast, ReturnResult, ReturnResultLast, ReturnError, Reject
 
-import io.netty.buffer.ByteBuf;
-
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=16,constructed=true,lengthIndefinite=false)
-public class ComponentTestASN extends ASNOctetString {
-	public ComponentTestASN() {
-		super(null,null,null,false);
-	}
-	
-	public ComponentTestASN(ByteBuf value) {
-		super(value,null,null,null,false);
-	}
 }
