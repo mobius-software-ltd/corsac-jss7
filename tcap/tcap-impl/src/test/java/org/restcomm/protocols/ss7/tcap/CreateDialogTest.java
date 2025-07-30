@@ -42,150 +42,129 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
+import org.restcomm.protocols.ss7.tcap.wrappers.TCAPStackImplWrapper;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
-*
-* @author sergey vetyutnev
-* @author yulianoifa
-*
-*/
+ *
+ * @author sergey vetyutnev
+ * @author yulianoifa
+ *
+ */
 public class CreateDialogTest {
+	private SccpHarnessPreview sccpProv = new SccpHarnessPreview();
+	private TCAPStackImplWrapper tcapStack1;
+	private WorkerPool workerPool;
 
-    private SccpHarnessPreview sccpProv = new SccpHarnessPreview();
-    private TCAPStackImplWrapper tcapStack1;
-    private WorkerPool workerPool;
+	@Before
+	public void setUp() throws Exception {
+		workerPool = new WorkerPool();
+		workerPool.start(4);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Before
-    public void setUp() throws Exception {
-        System.out.println("setUp");
+		tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", workerPool);
+		tcapStack1.start();
+	}
 
-	workerPool = new WorkerPool();
-	workerPool.start(4);
-	this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", workerPool);
+	@After
+	public void tearDown() {
+		if (tcapStack1 != null) {
+			tcapStack1.stop();
+			tcapStack1 = null;
+		}
 
-        this.tcapStack1.start();
-    }
+		if (workerPool != null) {
+			workerPool.stop();
+			workerPool = null;
+		}
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#tearDown()
-     */
-    @After
-    public void tearDown() {
-        this.tcapStack1.stop();
-	this.workerPool.stop();
-    }
+	@Test
+	public void createDialogTest() throws Exception {
+		SccpAddress localAddress = new SccpAddressImpl();
+		SccpAddress remoteAddress = new SccpAddressImpl();
 
-    @Test
-    public void createDialogTest() throws Exception {
+		Dialog dlg1 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 0);
+		assertEquals((long) dlg1.getLocalDialogId(), 1L);
 
-        SccpAddress localAddress = new SccpAddressImpl();
-        SccpAddress remoteAddress = new SccpAddressImpl();
+		try {
+			this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 1L, 0);
+			fail("Must be failure because dialogID==1 is busy");
+		} catch (Exception e) {
+		}
 
-        Dialog dlg1 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress,0);
-        assertEquals((long) dlg1.getLocalDialogId(), 1L);
+		Dialog dlg3 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 2L, 0);
+		assertEquals((long) dlg3.getLocalDialogId(), 2L);
 
-        try {
-            this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 1L,0);
-            fail("Must be failure because dialogID==1 is busy");
-        } catch (Exception e) {
-        }
+		Dialog dlg4 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 0);
+		assertEquals((long) dlg4.getLocalDialogId(), 3L);
+	}
 
-        Dialog dlg3 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 2L,0);
-        assertEquals((long) dlg3.getLocalDialogId(), 2L);
-
-        Dialog dlg4 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress,0);
-        assertEquals((long) dlg4.getLocalDialogId(), 3L);
-    }
-
-    private class SccpHarnessPreview implements SccpProvider {
+	private class SccpHarnessPreview implements SccpProvider {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-        public void deregisterSccpListener(int arg0) {
-            // TODO Auto-generated method stub
+		public void deregisterSccpListener(int arg0) {
+		}
 
-        }
+		@Override
+		public int getMaxUserDataLength(SccpAddress arg0, SccpAddress arg1, int networkId) {
+			return 0;
+		}
 
-        @Override
-        public int getMaxUserDataLength(SccpAddress arg0, SccpAddress arg1, int networkId) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
+		@Override
+		public MessageFactory getMessageFactory() {
+			return null;
+		}
 
-        @Override
-        public MessageFactory getMessageFactory() {
-            // TODO Auto-generated method stub
-            return null;
-        }
+		@Override
+		public ParameterFactory getParameterFactory() {
+			return null;
+		}
 
-        @Override
-        public ParameterFactory getParameterFactory() {
-            // TODO Auto-generated method stub
-            return null;
-        }
+		@Override
+		public void registerSccpListener(int arg0, SccpListener listener) {
+		}
 
-        @Override
-        public void registerSccpListener(int arg0, SccpListener listener) {
-        }
+		@Override
+		public void send(SccpDataMessage msg, TaskCallback<Exception> callback) {
+			// we check here that no messages go from TCAP previewMode
+			fail("No message must go from TCAP previewMode");
+		}
 
-        @Override
-        public void send(SccpDataMessage msg, TaskCallback<Exception> callback) {
-            // we check here that no messages go from TCAP previewMode
+		@Override
+		public void registerManagementEventListener(UUID key, SccpManagementEventListener listener) {
+		}
 
-            fail("No message must go from TCAP previewMode");
-        }
+		@Override
+		public void deregisterManagementEventListener(UUID key) {
+		}
 
-        @Override
-        public void registerManagementEventListener(UUID key,SccpManagementEventListener listener) {
-            // TODO Auto-generated method stub
+		@Override
+		public void coordRequest(int ssn) {
+		}
 
-        }
+		@Override
+		public SccpConnection newConnection(int localSsn, ProtocolClass protocolClass)
+				throws MaxConnectionCountReached {
+			return null;
+		}
 
-        @Override
-        public void deregisterManagementEventListener(UUID key) {
-            // TODO Auto-generated method stub
+		@Override
+		public ConcurrentHashMap<Integer, SccpConnection> getConnections() {
+			return null;
+		}
 
-        }
-
-        @Override
-        public void coordRequest(int ssn) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public SccpConnection newConnection(int localSsn, ProtocolClass protocolClass) throws MaxConnectionCountReached {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public ConcurrentHashMap<Integer, SccpConnection> getConnections() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        @Override
-        public void send(SccpNoticeMessage message, TaskCallback<Exception> callback) {
-            // TODO Auto-generated method stub
-        	callback.onSuccess();
-        }
+		@Override
+		public void send(SccpNoticeMessage message, TaskCallback<Exception> callback) {
+			callback.onSuccess();
+		}
 
 		@Override
 		public SccpStack getSccpStack() {
-			// TODO Auto-generated method stub
 			return null;
 		}
-    }
+	}
 
 }

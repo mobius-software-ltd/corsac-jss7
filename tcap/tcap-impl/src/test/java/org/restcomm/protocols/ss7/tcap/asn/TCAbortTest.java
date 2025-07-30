@@ -24,12 +24,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
@@ -40,11 +39,13 @@ import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCAbortMessageImpl;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.restcomm.protocols.ss7.tcap.utils.TCAPTestUtils;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -55,157 +56,147 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
  */
 public class TCAbortTest {
 
-    private byte[] getDataDialogPort() {
-        return new byte[] { 0x67, 0x2E, 0x49, 0x04, 0x7B, (byte) 0xA5, 0x34, 0x13, 0x6B, 0x26, 0x28, 0x24, 0x06, 0x07, 0x00,
-                0x11, (byte) 0x86, 0x05, 0x01, 0x01, 0x01, (byte) 0xA0, 0x19, 0x64, 0x17, (byte) 0x80, 0x01, 0x00, (byte) 0xBE,
-                0x12, 0x28, 0x10, 0x06, 0x07, 0x04, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, (byte) 0xA0, 0x05, (byte) 0xA3, 0x03,
-                0x0A, 0x01, 0x00 };
-    }
-
-    private byte[] getDataAbortCause() {
-        return new byte[] { 103, 9, 73, 4, 123, -91, 52, 19, 74, 1, 126 };
-    }
-
-    private ByteBuf getDestTrId() {
-        return Unpooled.wrappedBuffer(new byte[] { 0x7B, (byte) 0xA5, 0x34, 0x13 });
-    }
-
-    static ASNParser parser=new ASNParser();
-    
-    @BeforeClass
-	public static void setUp()
-	{		
-    	parser.loadClass(TCAbortMessageImpl.class);
-        
-    	parser.clearClassMapping(ASNUserInformationObjectImpl.class);
-    	parser.registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, TCAbortTestASN.class);
-    	
-    	parser.clearClassMapping(ASNDialogPortionObjectImpl.class);
-    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
-    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
-    	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
-    	
-    	parser.clearClassMapping(ASNComponentPortionObjectImpl.class);
-    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeImpl.class);
-    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultImpl.class);
-    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
-    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
-    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class); 
+	private byte[] getDataDialogPort() {
+		return new byte[] { 0x67, 0x2E, 0x49, 0x04, 0x7B, (byte) 0xA5, 0x34, 0x13, 0x6B, 0x26, 0x28, 0x24, 0x06, 0x07,
+				0x00, 0x11, (byte) 0x86, 0x05, 0x01, 0x01, 0x01, (byte) 0xA0, 0x19, 0x64, 0x17, (byte) 0x80, 0x01, 0x00,
+				(byte) 0xBE, 0x12, 0x28, 0x10, 0x06, 0x07, 0x04, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, (byte) 0xA0, 0x05,
+				(byte) 0xA3, 0x03, 0x0A, 0x01, 0x00 };
 	}
-	
-    @Test
-    public void testBasicTCAbortTestEncode() throws ParseException, ASNException {
 
-    	// This Raw data is taken from ussd-abort- from msc2.txt
-        byte[] expected = getDataDialogPort();
+	private byte[] getDataAbortCause() {
+		return new byte[] { 103, 9, 73, 4, 123, -91, 52, 19, 74, 1, 126 };
+	}
 
-        TCAbortMessageImpl tcAbortMessage = new TCAbortMessageImpl();
-        tcAbortMessage.setDestinationTransactionId(getDestTrId());
+	private ByteBuf getDestTrId() {
+		return Unpooled.wrappedBuffer(new byte[] { 0x7B, (byte) 0xA5, 0x34, 0x13 });
+	}
 
-        DialogPortion dp = TcapFactory.createDialogPortion();
-        dp.setUnidirectional(false);
-        DialogAbortAPDU dapdu = TcapFactory.createDialogAPDUAbort();
-        dapdu.setAbortSource(AbortSourceType.User);
+	static ASNParser parser = new ASNParser();
 
-        UserInformationImpl userInformation = new UserInformationImpl();
-        
-        userInformation.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
+	@BeforeClass
+	public static void setUp() {
+		parser.loadClass(TCAbortMessageImpl.class);
 
-        TCAbortTestASN innerASN=new TCAbortTestASN(Unpooled.wrappedBuffer(new byte[] { (byte) 0x0A, 0x01, 0x00 }));
-        
-        userInformation.setChildAsObject(innerASN);
+		parser.clearClassMapping(ASNUserInformationObjectImpl.class);
+		parser.registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, TCAbortTestASN.class);
 
-        dapdu.setUserInformation(userInformation);
+		parser.clearClassMapping(ASNDialogPortionObjectImpl.class);
+		parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
+		parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
+		parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
 
-        dp.setDialogAPDU(dapdu);
+		parser.clearClassMapping(ASNComponentPortionObjectImpl.class);
+		parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeImpl.class);
+		parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultImpl.class);
+		parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
+		parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
+		parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);
+	}
 
-        tcAbortMessage.setDialogPortion(dp);
+	@Test
+	public void testBasicTCAbortTestEncode() throws ParseException, ASNException {
 
-        ByteBuf buffer=parser.encode(tcAbortMessage);
-        byte[] data = buffer.array();
+		// This Raw data is taken from ussd-abort- from msc2.txt
+		byte[] expected = getDataDialogPort();
 
-        System.out.println(dump(data, data.length, false));
+		TCAbortMessageImpl tcAbortMessage = new TCAbortMessageImpl();
+		tcAbortMessage.setDestinationTransactionId(getDestTrId());
 
-        TCAPTestUtils.compareArrays(expected, data);
+		DialogPortion dp = TcapFactory.createDialogPortion();
+		dp.setUnidirectional(false);
+		DialogAbortAPDU dapdu = TcapFactory.createDialogAPDUAbort();
+		dapdu.setAbortSource(AbortSourceType.User);
 
-        expected = getDataAbortCause();
+		UserInformationImpl userInformation = new UserInformationImpl();
 
-        tcAbortMessage = new TCAbortMessageImpl();
-        tcAbortMessage.setDestinationTransactionId(getDestTrId());
-        tcAbortMessage.setPAbortCause(PAbortCauseType.AbnormalDialogue);
+		userInformation.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        buffer=parser.encode(tcAbortMessage);        
-        data = buffer.array();
+		TCAbortTestASN innerASN = new TCAbortTestASN(Unpooled.wrappedBuffer(new byte[] { (byte) 0x0A, 0x01, 0x00 }));
 
-        TCAPTestUtils.compareArrays(expected, data);
-    }
+		userInformation.setChildAsObject(innerASN);
 
-    @Test
-    public void testBasicTCAbortTestDecode() throws ParseException, ASNException {
+		dapdu.setUserInformation(userInformation);
 
-    	// This Raw data is taken from ussd-abort- from msc2.txt
-        byte[] data = getDataDialogPort();
+		dp.setDialogAPDU(dapdu);
 
-        Object output=parser.decode(Unpooled.wrappedBuffer(data)).getResult();
-        assertTrue(output instanceof TCAbortMessageImpl);
+		tcAbortMessage.setDialogPortion(dp);
 
-        TCAbortMessageImpl impl = (TCAbortMessageImpl)output;
-        assertTrue(InvokeTest.byteBufEquals(impl.getDestinationTransactionId(), getDestTrId()));
+		ByteBuf buffer = parser.encode(tcAbortMessage);
+		byte[] data = buffer.array();
 
-        DialogPortion dp = impl.getDialogPortion();
+		TCAPTestUtils.compareArrays(expected, data);
 
-        assertNotNull(dp);
-        assertFalse(dp.isUnidirectional());
+		expected = getDataAbortCause();
 
-        DialogAPDU dialogApdu = dp.getDialogAPDU();
+		tcAbortMessage = new TCAbortMessageImpl();
+		tcAbortMessage.setDestinationTransactionId(getDestTrId());
+		tcAbortMessage.setPAbortCause(PAbortCauseType.AbnormalDialogue);
 
-        assertNotNull(dialogApdu);
+		buffer = parser.encode(tcAbortMessage);
+		data = buffer.array();
 
-        data = getDataAbortCause();
-        output=parser.decode(Unpooled.wrappedBuffer(data)).getResult();
-        assertTrue(output instanceof TCAbortMessageImpl);
+		TCAPTestUtils.compareArrays(expected, data);
+	}
 
-        impl = (TCAbortMessageImpl)output;
-        
-        assertTrue(InvokeTest.byteBufEquals(impl.getDestinationTransactionId(), getDestTrId()));
-        // assertTrue(2074424339 == impl.getDestinationTransactionId());
+	@Test
+	public void testBasicTCAbortTestDecode() throws ParseException, ASNException {
 
-        dp = impl.getDialogPortion();
-        assertNull(dp);
-        assertEquals(PAbortCauseType.AbnormalDialogue, impl.getPAbortCause());
-    }
+		// This Raw data is taken from ussd-abort- from msc2.txt
+		byte[] data = getDataDialogPort();
 
-    public static final String dump(byte[] buff, int size, boolean asBits) {
-        String s = "";
-        for (int i = 0; i < size; i++) {
-            String ss = null;
-            if (!asBits) {
-                ss = Integer.toHexString(buff[i] & 0xff);
-            } else {
-                ss = Integer.toBinaryString(buff[i] & 0xff);
-            }
-            ss = fillInZeroPrefix(ss, asBits);
-            s += " " + ss;
-        }
-        return s;
-    }
+		Object output = parser.decode(Unpooled.wrappedBuffer(data)).getResult();
+		assertTrue(output instanceof TCAbortMessageImpl);
 
-    public static final String fillInZeroPrefix(String ss, boolean asBits) {
-        if (asBits) {
-            if (ss.length() < 8) {
-                for (int j = ss.length(); j < 8; j++) {
-                    ss = "0" + ss;
-                }
-            }
-        } else {
-            // hex
-            if (ss.length() < 2) {
+		TCAbortMessageImpl impl = (TCAbortMessageImpl) output;
+		assertTrue(InvokeTest.byteBufEquals(impl.getDestinationTransactionId(), getDestTrId()));
 
-                ss = "0" + ss;
-            }
-        }
+		DialogPortion dp = impl.getDialogPortion();
 
-        return ss;
-    }
+		assertNotNull(dp);
+		assertFalse(dp.isUnidirectional());
+
+		DialogAPDU dialogApdu = dp.getDialogAPDU();
+
+		assertNotNull(dialogApdu);
+
+		data = getDataAbortCause();
+		output = parser.decode(Unpooled.wrappedBuffer(data)).getResult();
+		assertTrue(output instanceof TCAbortMessageImpl);
+
+		impl = (TCAbortMessageImpl) output;
+
+		assertTrue(InvokeTest.byteBufEquals(impl.getDestinationTransactionId(), getDestTrId()));
+		// assertTrue(2074424339 == impl.getDestinationTransactionId());
+
+		dp = impl.getDialogPortion();
+		assertNull(dp);
+		assertEquals(PAbortCauseType.AbnormalDialogue, impl.getPAbortCause());
+	}
+
+	public static final String dump(byte[] buff, int size, boolean asBits) {
+		String s = "";
+		for (int i = 0; i < size; i++) {
+			String ss = null;
+			if (!asBits)
+				ss = Integer.toHexString(buff[i] & 0xff);
+			else
+				ss = Integer.toBinaryString(buff[i] & 0xff);
+			ss = fillInZeroPrefix(ss, asBits);
+			s += " " + ss;
+		}
+		return s;
+	}
+
+	public static final String fillInZeroPrefix(String ss, boolean asBits) {
+		if (asBits) {
+			if (ss.length() < 8)
+				for (int j = ss.length(); j < 8; j++)
+					ss = "0" + ss;
+		} else // hex
+		if (ss.length() < 2)
+			ss = "0" + ss;
+
+		return ss;
+	}
 
 }

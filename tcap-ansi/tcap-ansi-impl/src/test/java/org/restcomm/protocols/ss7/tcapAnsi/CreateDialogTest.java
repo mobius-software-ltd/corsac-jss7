@@ -42,6 +42,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
+import org.restcomm.protocols.ss7.tcapAnsi.wrappers.TCAPStackImplWrapper;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
@@ -58,15 +59,8 @@ public class CreateDialogTest {
 	private TCAPStackImplWrapper tcapStack1;
 	private WorkerPool workerPool;
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#setUp()
-	 */
 	@Before
 	public void setUp() throws Exception {
-		System.out.println("setUp");
-
 		workerPool = new WorkerPool();
 		workerPool.start(4);
 

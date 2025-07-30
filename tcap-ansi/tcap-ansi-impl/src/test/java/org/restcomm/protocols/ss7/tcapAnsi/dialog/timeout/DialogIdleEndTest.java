@@ -31,16 +31,16 @@ import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcapAnsi.EventTestHarness;
-import org.restcomm.protocols.ss7.tcapAnsi.EventType;
 import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.TestEvent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.EventTestHarness;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.EventType;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.TestEvent;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 
@@ -52,7 +52,6 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
  *
  */
 public class DialogIdleEndTest extends SccpHarness {
-
 	private static final int _DIALOG_TIMEOUT = 5000;
 	private static final int _WAIT = _DIALOG_TIMEOUT / 2 - 200;
 	private TCAPStackImpl tcapStack1;
@@ -62,55 +61,41 @@ public class DialogIdleEndTest extends SccpHarness {
 	private Client client;
 	private Server server;
 
-	public DialogIdleEndTest() {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
 	@Before
-	public void setUp() throws Exception {
-		this.sccpStack1Name = "DialogIdleEndTestSccpStack1";
-		this.sccpStack2Name = "DialogIdleEndTestSccpStack2";
+	public void beforeEach() throws Exception {
+		super.sccpStack1Name = "DialogIdleEndTestSccpStack1";
+		super.sccpStack2Name = "DialogIdleEndTestSccpStack2";
 
-		System.out.println("setUp");
 		super.setUp();
 
-		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
-				8);
-		peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2,
-				8);
+		peer1Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
+		peer2Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
-		this.tcapStack1 = new TCAPStackImpl("DialogIdleEndTest_1", this.sccpProvider1, 8, workerPool);
-		this.tcapStack2 = new TCAPStackImpl("DialogIdleEndTest_2", this.sccpProvider2, 8, workerPool);
+		tcapStack1 = new TCAPStackImpl("DialogIdleEndTest_1", this.sccpProvider1, 8, workerPool);
+		tcapStack2 = new TCAPStackImpl("DialogIdleEndTest_2", this.sccpProvider2, 8, workerPool);
 
-		this.tcapStack1.start();
-		this.tcapStack2.start();
+		tcapStack1.start();
+		tcapStack2.start();
 
-		this.tcapStack1.setInvokeTimeout(0);
-		this.tcapStack2.setInvokeTimeout(0);
-		this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT * 2);
-		this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT); // so other side dont timeout :)
-
+		tcapStack1.setInvokeTimeout(0);
+		tcapStack2.setInvokeTimeout(0);
+		tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT * 2);
+		tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT); // so other side dont timeout :)
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	@Override
 	@After
-	public void tearDown() {
-		System.out.println("tearDown");
-		this.tcapStack1.stop();
-		this.tcapStack2.stop();
-		super.tearDown();
+	public void afterEach() {
+		if (tcapStack1 != null) {
+			tcapStack1.stop();
+			tcapStack1 = null;
+		}
 
+		if (tcapStack2 != null) {
+			tcapStack2.stop();
+			tcapStack2 = null;
+		}
+
+		super.tearDown();
 	}
 
 	@Test

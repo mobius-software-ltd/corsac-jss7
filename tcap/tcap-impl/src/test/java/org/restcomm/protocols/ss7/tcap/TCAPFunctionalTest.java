@@ -23,30 +23,23 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.api.TCListener;
-import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCNoticeIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
-
-import com.mobius.software.common.dal.timers.TaskCallback;
+import org.restcomm.protocols.ss7.tcap.listeners.Client;
+import org.restcomm.protocols.ss7.tcap.listeners.Server;
+import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
+import org.restcomm.protocols.ss7.tcap.listeners.events.TestEvent;
+import org.restcomm.protocols.ss7.tcap.listeners.events.TestEventFactory;
+import org.restcomm.protocols.ss7.tcap.utils.EventTestUtils;
 
 /**
  * Test for call flow.
@@ -56,192 +49,172 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  *
  */
 public class TCAPFunctionalTest extends SccpHarness {
-	public static final long WAIT_TIME = 500;
-	public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
+	private static final long INVOKE_TIMEOUT = 0;
+	private static final long DIALOG_TIMEOUT = Integer.MAX_VALUE;
+
 	private TCAPStackImpl tcapStack1;
 	private TCAPStackImpl tcapStack2;
 	private SccpAddress peer1Address;
 	private SccpAddress peer2Address;
 	private Client client;
 	private Server server;
-	private TCAPListenerWrapper tcapListenerWrapper;
 
-	@Override
 	@Before
-	public void setUp() throws Exception {
-		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
-		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
+	public void beforeEach() throws Exception {
+		super.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
+		super.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
-		System.out.println("setUp");
 		super.setUp();
 
 		peer1Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
 		peer2Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
-		this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, workerPool);
-		this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 8, workerPool);
+		tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", super.sccpProvider1, 8, workerPool);
+		tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", super.sccpProvider2, 8, workerPool);
 
-		this.tcapListenerWrapper = new TCAPListenerWrapper();
-		this.tcapStack1.getProvider().addTCListener(tcapListenerWrapper);
+		tcapStack1.start();
+		tcapStack2.start();
 
-		this.tcapStack1.start();
-		this.tcapStack2.start();
+		tcapStack1.setDoNotSendProtocolVersion(false);
+		tcapStack2.setDoNotSendProtocolVersion(false);
 
-		this.tcapStack1.setDoNotSendProtocolVersion(false);
-		this.tcapStack2.setDoNotSendProtocolVersion(false);
-		this.tcapStack1.setInvokeTimeout(0);
-		this.tcapStack2.setInvokeTimeout(0);
+		// default invoke timeouts
+		tcapStack1.setInvokeTimeout(INVOKE_TIMEOUT);
+		tcapStack2.setInvokeTimeout(INVOKE_TIMEOUT);
 
-		// create test classes
-		this.client = new Client(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-		this.server = new Server(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address);
+		// default dialog timeouts
+		tcapStack1.setDialogIdleTimeout(DIALOG_TIMEOUT);
+		tcapStack2.setDialogIdleTimeout(DIALOG_TIMEOUT);
+
+		client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
+		server = new Server(tcapStack2, super.parameterFactory, peer2Address, peer1Address);
 	}
 
-	@Override
 	@After
-	public void tearDown() {
-		this.tcapStack1.stop();
-		this.tcapStack2.stop();
-		super.tearDown();
+	public void afterEach() {
+		if (tcapStack1 != null) {
+			tcapStack1.stop();
+			tcapStack1 = null;
+		}
 
+		if (tcapStack2 != null) {
+			tcapStack2.stop();
+			tcapStack2 = null;
+		}
+
+		super.tearDown();
 	}
 
+	/**
+	 * Simple TC with dialog
+	 * 
+	 * <pre>
+	 * TC-BEGIN
+	 * TC-CONTINUE
+	 * TC-END
+	 * </pre>
+	 */
 	@Test
 	public void simpleTCWithDialogTest() throws Exception {
-
-		long stamp = System.currentTimeMillis();
-		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
-		clientExpectedEvents.add(te);
-		// te = TestEvent.createReceivedEvent(EventType.DialogRelease, null,
-		// 3,stamp+WAIT_TIME*2+_WAIT_REMOVE);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
-		clientExpectedEvents.add(te);
-
-		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-		te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
-		serverExpectedEvents.add(te);
-		// te = TestEvent.createReceivedEvent(EventType.DialogRelease, null,
-		// 3,stamp+WAIT_TIME*2+_WAIT_REMOVE);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
-		serverExpectedEvents.add(te);
-
-		// this.saveTrafficInFile();
-
+		// 1. TC-BEGIN
 		client.startClientDialog();
-		assertNotNull(client.dialog.getLocalAddress());
-		assertNull(client.dialog.getRemoteDialogId());
+		Dialog clientDialog = client.getCurrentDialog();
+		assertNotNull(clientDialog.getLocalAddress());
+		assertNull(clientDialog.getRemoteDialogId());
 
 		client.sendBegin();
-		EventTestHarness.waitFor(WAIT_TIME);
 
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
+
+		// 2. TC-CONTINUE
 		server.sendContinue();
-		assertNotNull(server.dialog.getLocalAddress());
-		assertNotNull(server.dialog.getRemoteDialogId());
+		Dialog serverDialog = server.getCurrentDialog();
 
-		EventTestHarness.waitFor(WAIT_TIME);
-		client.sendEnd(TerminationType.Basic);
-		assertNotNull(client.dialog.getLocalAddress());
-		assertNotNull(client.dialog.getRemoteDialogId());
+		assertNotNull(serverDialog.getLocalAddress());
+		assertNotNull(serverDialog.getRemoteDialogId());
 
-		EventTestHarness.waitFor(WAIT_TIME);
-		// waitForEnd();
+		server.awaitSent(EventType.Continue);
+		client.awaitReceived(EventType.Continue);
+		{
+			TestEvent event = client.getNextEvent(EventType.Continue);
+			TCContinueIndication ind = (TCContinueIndication) event.getEvent();
 
-		client.compareEvents(clientExpectedEvents);
-		server.compareEvents(serverExpectedEvents);
-
-	}
-
-	@Test
-	public void uniMsgTest() throws Exception {
-
-		long stamp = System.currentTimeMillis();
-		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-		TestEvent te = TestEvent.createSentEvent(EventType.Uni, null, 0, stamp);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 1, stamp);
-		clientExpectedEvents.add(te);
-
-		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-		te = TestEvent.createReceivedEvent(EventType.Uni, null, 0, stamp);
-		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 1, stamp);
-		serverExpectedEvents.add(te);
-
-		client.startUniDialog();
-		client.sendUni();
-		EventTestHarness.waitFor(WAIT_TIME);
-
-		client.compareEvents(clientExpectedEvents);
-		server.compareEvents(serverExpectedEvents);
-
-	}
-
-	private class TCAPListenerWrapper implements TCListener {
-		@Override
-		public void onTCUni(TCUniIndication ind) {
-		}
-
-		@Override
-		public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
-		}
-
-		@Override
-		public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
-			assertEquals(ind.getComponents().size(), 2);
+			assertEquals(2, ind.getComponents().size());
 			ReturnResultLast rrl = (ReturnResultLast) ind.getComponents().get(0);
 			Invoke inv = (Invoke) ind.getComponents().get(1);
 
 			// operationCode is not sent via ReturnResultLast because it does not contain a
 			// Parameter
 			// so operationCode is taken from a sent Invoke
-			assertEquals((long) rrl.getInvokeId(), 0);
-			assertEquals((long) rrl.getOperationCode().getLocalOperationCode(), 12);
+			assertEquals(0, (long) rrl.getInvokeId());
+			assertEquals(12, (long) rrl.getOperationCode().getLocalOperationCode());
 
 			// second Invoke has its own operationCode and it has linkedId to the second
 			// sent Invoke
-			assertEquals((long) inv.getInvokeId(), 0);
-			assertEquals((long) inv.getOperationCode().getLocalOperationCode(), 14);
-			assertEquals((long) inv.getLinkedId(), 1);
+			assertEquals(0, (long) inv.getInvokeId());
+			assertEquals(14, (long) inv.getOperationCode().getLocalOperationCode());
+			assertEquals(1, (long) inv.getLinkedId());
 
 			// we should see operationCode of the second sent Invoke
-			assertEquals((long) inv.getLinkedOperationCode().getLocalOperationCode(), 13);
+			assertEquals(13, (long) inv.getLinkedOperationCode().getLocalOperationCode());
 		}
 
-		@Override
-		public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
-		}
+		// 3. TC-END
+		client.sendEnd(TerminationType.Basic);
+		assertNotNull(clientDialog.getLocalAddress());
+		assertNotNull(clientDialog.getRemoteDialogId());
 
-		@Override
-		public void onTCUserAbort(TCUserAbortIndication ind) {
-		}
+		client.awaitSent(EventType.End);
+		server.awaitReceived(EventType.End);
 
-		@Override
-		public void onTCPAbort(TCPAbortIndication ind) {
-		}
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
-		@Override
-		public void onTCNotice(TCNoticeIndication ind) {
-		}
+		TestEventFactory clientExpected = TestEventFactory.create();
+		clientExpected.addSent(EventType.Begin);
+		clientExpected.addReceived(EventType.Continue);
+		clientExpected.addSent(EventType.End);
+		clientExpected.addReceived(EventType.DialogRelease);
 
-		@Override
-		public void onDialogReleased(Dialog dialog) {
-		}
+		TestEventFactory serverExpected = TestEventFactory.create();
+		serverExpected.addReceived(EventType.Begin);
+		serverExpected.addSent(EventType.Continue);
+		serverExpected.addReceived(EventType.End);
+		serverExpected.addReceived(EventType.DialogRelease);
 
-		@Override
-		public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
-		}
+		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+	}
 
-		@Override
-		public void onDialogTimeout(Dialog dialog) {
-		}
+	/**
+	 * UNI message test
+	 * 
+	 * <pre>
+	 * UNI
+	 * </pre>
+	 */
+	@Test
+	public void uniMsgTest() throws Exception {
+		// 1. UNI
+		client.startUniDialog();
+		client.sendUni();
+
+		client.awaitSent(EventType.Uni);
+		server.awaitReceived(EventType.Uni);
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
+
+		TestEventFactory clientExpected = TestEventFactory.create();
+		clientExpected.addSent(EventType.Uni);
+		clientExpected.addReceived(EventType.DialogRelease);
+
+		TestEventFactory serverExpected = TestEventFactory.create();
+		serverExpected.addReceived(EventType.Uni);
+		serverExpected.addReceived(EventType.DialogRelease);
+
+		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 }

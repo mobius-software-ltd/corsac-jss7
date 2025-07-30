@@ -27,12 +27,8 @@ import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
-import org.junit.AfterClass;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Before;
 import org.junit.Test;
+import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -48,60 +44,44 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class ExternalSignalInfoTest {
-    Logger logger = LogManager.getLogger(ExternalSignalInfoTest.class);
+	Logger logger = LogManager.getLogger(ExternalSignalInfoTest.class);
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+	@Test
+	public void testDecode() throws Exception {
+		ASNParser parser = new ASNParser();
+		parser.loadClass(ExternalSignalInfoImpl.class);
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+		byte[] data = new byte[] { 48, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
+		byte[] data_ = new byte[] { 10, 20, 30, 40 };
 
-    @Before
-    public void setUp() {
-    }
+		ASNDecodeResult result = parser.decode(Unpooled.wrappedBuffer(data));
+		assertFalse(result.getHadErrors());
+		assertTrue(result.getResult() instanceof ExternalSignalInfoImpl);
+		ExternalSignalInfoImpl extSignalInfo = (ExternalSignalInfoImpl) result.getResult();
 
-    @After
-    public void tearDown() {
-    }
+		ProtocolId protocolId = extSignalInfo.getProtocolId();
+		ByteBuf signalInfo = extSignalInfo.getSignalInfo().getValue();
 
-    @Test
-    public void testDecode() throws Exception {
-        ASNParser parser=new ASNParser();
-        parser.loadClass(ExternalSignalInfoImpl.class);
-        
-    	byte[] data = new byte[] { 48, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
-        byte[] data_ = new byte[] { 10, 20, 30, 40 };
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(data_), signalInfo));
+		assertNotNull(protocolId);
+		assertTrue(protocolId == ProtocolId.gsm_0806);
+	}
 
-        ASNDecodeResult result = parser.decode(Unpooled.wrappedBuffer(data));
-        assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof ExternalSignalInfoImpl);
-        ExternalSignalInfoImpl extSignalInfo = (ExternalSignalInfoImpl)result.getResult();
-        
-        ProtocolId protocolId = extSignalInfo.getProtocolId();
-        ByteBuf signalInfo = extSignalInfo.getSignalInfo().getValue();
+	@Test
+	public void testEncode() throws Exception {
+		ASNParser parser = new ASNParser();
+		parser.loadClass(ExternalSignalInfoImpl.class);
 
-        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(data_), signalInfo));
-        assertNotNull(protocolId);
-        assertTrue(protocolId == ProtocolId.gsm_0806);
-    }
+		byte[] data = new byte[] { 48, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
+		byte[] data_ = new byte[] { 10, 20, 30, 40 };
 
-    @Test
-    public void testEncode() throws Exception {
-    	ASNParser parser=new ASNParser();
-        parser.loadClass(ExternalSignalInfoImpl.class);
-        
-        byte[] data = new byte[] { 48, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
-        byte[] data_ = new byte[] { 10, 20, 30, 40 };
+		SignalInfoImpl signalInfo = new SignalInfoImpl(Unpooled.wrappedBuffer(data_));
+		ProtocolId protocolId = ProtocolId.gsm_0806;
+		ExternalSignalInfoImpl extSignalInfo = new ExternalSignalInfoImpl(signalInfo, protocolId, null);
 
-        SignalInfoImpl signalInfo = new SignalInfoImpl(Unpooled.wrappedBuffer(data_));
-        ProtocolId protocolId = ProtocolId.gsm_0806;
-        ExternalSignalInfoImpl extSignalInfo = new ExternalSignalInfoImpl(signalInfo, protocolId, null);
-
-        ByteBuf buffer=parser.encode(extSignalInfo);
-        byte[] encodedData = new byte[buffer.readableBytes()];
-        buffer.readBytes(encodedData);
-        assertTrue(Arrays.equals(data, encodedData));
-    }
+		ByteBuf buffer = parser.encode(extSignalInfo);
+		byte[] encodedData = new byte[buffer.readableBytes()];
+		buffer.readBytes(encodedData);
+		assertTrue(Arrays.equals(data, encodedData));
+	}
 }

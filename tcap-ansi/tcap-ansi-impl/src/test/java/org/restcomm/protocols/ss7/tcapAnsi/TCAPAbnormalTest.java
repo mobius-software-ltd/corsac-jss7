@@ -41,8 +41,11 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationElementImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationImpl;
-
-import com.mobius.software.common.dal.timers.TaskCallback;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.Client;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.EventTestHarness;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.EventType;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.Server;
+import org.restcomm.protocols.ss7.tcapAnsi.listeners.TestEvent;
 
 import io.netty.buffer.Unpooled;
 
@@ -54,7 +57,6 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class TCAPAbnormalTest extends SccpHarness {
-
 	public static final long WAIT_TIME = 500;
 	public static final long INVOKE_WAIT_TIME = 500;
 	private static final int _DIALOG_TIMEOUT = 5000;
@@ -66,32 +68,11 @@ public class TCAPAbnormalTest extends SccpHarness {
 	private Client client;
 	private Server server;
 
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {			
-		}
-		
-		@Override
-		public void onError(Exception exception) {			
-		}
-	};
-	
-	public TCAPAbnormalTest() {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
 	@Before
-	public void setUp() throws Exception {
+	public void afterEach() throws Exception {
 		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
-		System.out.println("setUp");
 		super.setUp();
 
 		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
@@ -109,24 +90,17 @@ public class TCAPAbnormalTest extends SccpHarness {
 		this.tcapStack2.setInvokeTimeout(0);
 		this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT + 200);
 		this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT);
-		// create test classes
+
 		this.client = new Client(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address);
 		this.server = new Server(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address);
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	@Override
 	@After
-	public void tearDown() {
+	public void beforeEach() {
 		this.tcapStack1.stop();
 		this.tcapStack2.stop();
-		super.tearDown();
 
+		super.tearDown();
 	}
 
 	/**

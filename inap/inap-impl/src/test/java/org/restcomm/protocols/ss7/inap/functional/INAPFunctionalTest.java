@@ -96,6 +96,11 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.A
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCIBillingChargingCharacteristicsCS1;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
+import org.restcomm.protocols.ss7.inap.functional.listeners.Client;
+import org.restcomm.protocols.ss7.inap.functional.listeners.EventType;
+import org.restcomm.protocols.ss7.inap.functional.listeners.Server;
+import org.restcomm.protocols.ss7.inap.functional.listeners.TestEvent;
+import org.restcomm.protocols.ss7.inap.functional.wrappers.INAPStackImplWrapper;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.INAPDialogCircuitSwitchedCallImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.ChargingInformationImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
@@ -117,7 +122,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
-import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBufUtil;
@@ -129,10 +133,8 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class INAPFunctionalTest extends SccpHarness {
-	private static final int _WAIT_TIMEOUT = 500;
 	private static final int _TCAP_DIALOG_RELEASE_TIMEOUT = 0;
 
-	private WorkerPool workerPool;
 	private INAPStackImpl stack1;
 	private INAPStackImpl stack2;
 	private SccpAddress peer1Address;
@@ -148,28 +150,14 @@ public class INAPFunctionalTest extends SccpHarness {
 		return 146;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
 	@Before
-	public void setUp() throws Exception {
-		// this.setupLog4j();
-		System.out.println("setUpTest");
-
+	public void beforeEach() throws Exception {
 		this.sccpStack1Name = "INAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "INAPFunctionalTestSccpStack2";
 
 		super.setUp();
 
-		// this.setupLog4j();
-		workerPool = new WorkerPool();
-		workerPool.start(4);
-
 		// create some fake addresses.
-
 		peer1Address = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 146);
 		peer2Address = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 146);
 
@@ -178,38 +166,35 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		this.stack1.start();
 		this.stack2.start();
-
-		// create test classes
-		// this.client = new Client(this.stack1, this, peer1Address, peer2Address);
-		// this.server = new Server(this.stack2, this, peer2Address, peer1Address);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-
-	@Override
 	@After
-	public void tearDown() {
-		System.out.println("tearDownTest");
-		this.stack1.stop();
-		this.stack2.stop();
+	public void afterEach() {
+		if (stack1 != null) {
+			this.stack1.stop();
+			this.stack1 = null;
+		}
 
-		this.workerPool.stop();
+		if (stack2 != null) {
+			this.stack2.stop();
+			this.stack2 = null;
+		}
+
 		super.tearDown();
 	}
 
 	/**
 	 * InitialDP + Error message SystemFailure ACN=CAP-v1-gsmSSF-to-gsmSCF
 	 *
-	 * TC-BEGIN + InitialDPRequest TC-END + Error message SystemFailure
+	 * <pre>
+	 * TC-BEGIN + InitialDPRequest 
+	 * TC-END + Error message SystemFailure
+	 * </pre>
 	 */
 	@Test
 	public void testInitialDp_Error() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onErrorComponent(INAPDialog inapDialog, Integer invokeId, INAPErrorMessage capErrorMessage) {
@@ -221,7 +206,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onInitialDPRequest(InitialDPRequest ind) {
@@ -229,7 +214,7 @@ public class INAPFunctionalTest extends SccpHarness {
 
 				assertTrue(Client.checkTestInitialDp(ind));
 
-				this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
+				super.handleSent(EventType.ErrorComponent, null);
 				INAPErrorMessage capErrorMessage = this.inapErrorMessageFactory
 						.createINAPErrorMessageSystemFailure(UnavailableNetworkResource.endUserFailure);
 				try {
@@ -287,10 +272,12 @@ public class INAPFunctionalTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 
 		client.sendInitialDp(INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B);
-		waitForEnd();
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
+
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	/**
@@ -314,8 +301,7 @@ public class INAPFunctionalTest extends SccpHarness {
 	 */
 	@Test
 	public void testCircuitCall1() throws Exception {
-
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			private int dialogStep;
 
 			@Override
@@ -381,25 +367,23 @@ public class INAPFunctionalTest extends SccpHarness {
 
 			@Override
 			public void onContinueRequest(ContinueRequest ind) {
-				super.onContinueRequest(ind);
 				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+				super.onContinueRequest(ind);
 			}
 
 			@Override
 			public void onSendChargingInformationRequest(SendChargingInformationRequest ind) {
 				super.onSendChargingInformationRequest(ind);
 
-				assertNotNull(ind.getSCIBillingChargingCharacteristics());
-				assertNotNull(((SCIBillingChargingCharacteristicsCS1) ind.getSCIBillingChargingCharacteristics())
-						.getChargingInformation());
-				assertTrue(((SCIBillingChargingCharacteristicsCS1) ind.getSCIBillingChargingCharacteristics())
-						.getChargingInformation().getOrderStartOfCharging());
-				assertFalse(((SCIBillingChargingCharacteristicsCS1) ind.getSCIBillingChargingCharacteristics())
-						.getChargingInformation().getCreateDefaultBillingRecord());
-				assertNull(((SCIBillingChargingCharacteristicsCS1) ind.getSCIBillingChargingCharacteristics())
-						.getChargingInformation().getChargeMessage());
-				assertEquals(((SCIBillingChargingCharacteristicsCS1) ind.getSCIBillingChargingCharacteristics())
-						.getChargingInformation().getPulseBurst(), new Integer(1));
+				SCIBillingChargingCharacteristicsCS1 characteristics = (SCIBillingChargingCharacteristicsCS1) ind
+						.getSCIBillingChargingCharacteristics();
+
+				assertNotNull(characteristics);
+				assertNotNull(characteristics.getChargingInformation());
+				assertTrue(characteristics.getChargingInformation().getOrderStartOfCharging());
+				assertFalse(characteristics.getChargingInformation().getCreateDefaultBillingRecord());
+				assertNull(characteristics.getChargingInformation().getChargeMessage());
+				assertEquals(characteristics.getChargingInformation().getPulseBurst(), new Integer(1));
 				assertEquals(ind.getPartyToCharge(), LegType.leg2);
 				assertNull(ind.getExtensions());
 
@@ -424,8 +408,7 @@ public class INAPFunctionalTest extends SccpHarness {
 								.createEventSpecificInformationBCSM(oAnswerSpecificInfo, false);
 						dlg.addEventReportBCSMRequest(EventTypeBCSM.oAnswer, null, eventSpecificInformationBCSM,
 								new LegIDImpl(LegType.leg2, null), miscCallInfo, null);
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.EventReportBCSMRequest, null, sequence++));
+						super.handleSent(EventType.EventReportBCSMRequest, null);
 						dlg.send(dummyCallback);
 
 						try {
@@ -435,8 +418,7 @@ public class INAPFunctionalTest extends SccpHarness {
 						}
 
 						dlg.addApplyChargingRequest(null, null, new LegIDImpl(LegType.leg1, null), null);
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.ApplyChargingReportRequest, null, sequence++));
+						super.handleSent(EventType.ApplyChargingReportRequest, null);
 						dlg.send(dummyCallback);
 
 						dialogStep = 0;
@@ -445,8 +427,7 @@ public class INAPFunctionalTest extends SccpHarness {
 
 					case 2: // after ActivityTestRequest
 						dlg.addActivityTestRequest();
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.ActivityTestRequest, null, sequence++));
+						super.handleSent(EventType.ActivityTestRequest, null);
 						dlg.send(dummyCallback);
 
 						dialogStep = 0;
@@ -458,7 +439,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			private int dialogStep = 0;
 			private boolean firstEventReportBCSMRequest = true;
 
@@ -512,8 +493,8 @@ public class INAPFunctionalTest extends SccpHarness {
 
 			@Override
 			public void onApplyChargingReportRequest(ApplyChargingReportRequest ind) {
-				super.onApplyChargingReportRequest(ind);
 				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+				super.onApplyChargingReportRequest(ind);
 			}
 
 			@Override
@@ -528,8 +509,7 @@ public class INAPFunctionalTest extends SccpHarness {
 
 						RequestReportBCSMEventRequest rrc = this.getRequestReportBCSMEventRequest();
 						dlg.addRequestReportBCSMEventRequest(rrc.getBCSMEventList(), null, rrc.getExtensions());
-						this.observerdEvents.add(
-								TestEvent.createSentEvent(EventType.RequestReportBCSMEventRequest, null, sequence++));
+						super.handleSent(EventType.RequestReportBCSMEventRequest, null);
 						dlg.send(dummyCallback);
 
 						try {
@@ -541,8 +521,7 @@ public class INAPFunctionalTest extends SccpHarness {
 						byte[] freeFormatData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
 						dlg.addFurnishChargingInformationRequest(Unpooled.wrappedBuffer(freeFormatData));
 						dlg.send(dummyCallback);
-						this.observerdEvents.add(TestEvent.createSentEvent(EventType.FurnishChargingInformationRequest,
-								null, sequence++));
+						super.handleSent(EventType.FurnishChargingInformationRequest, null);
 
 						try {
 							Thread.sleep(100);
@@ -555,8 +534,7 @@ public class INAPFunctionalTest extends SccpHarness {
 								.getAchBillingChargingCharacteristicsCS1(null, null);
 						dlg.addApplyChargingRequest(aChBillingChargingCharacteristics, false,
 								new LegIDImpl(LegType.leg1, null), null);
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.ApplyChargingRequest, null, sequence++));
+						super.handleSent(EventType.ApplyChargingRequest, null);
 
 						List<CalledPartyNumberIsup> calledPartyNumber = new ArrayList<CalledPartyNumberIsup>();
 						CalledPartyNumber cpn = this.isupParameterFactory.createCalledPartyNumber();
@@ -570,7 +548,7 @@ public class INAPFunctionalTest extends SccpHarness {
 								.createDestinationRoutingAddress(calledPartyNumber);
 						dlg.addConnectRequest(destinationRoutingAddress, null, null, null, null, null, null, null, null,
 								null, null, null, null, null, null, null, null);
-						this.observerdEvents.add(TestEvent.createSentEvent(EventType.ConnectRequest, null, sequence++));
+						super.handleSent(EventType.ConnectRequest, null);
 						dlg.send(dummyCallback);
 
 						try {
@@ -580,8 +558,7 @@ public class INAPFunctionalTest extends SccpHarness {
 						}
 
 						dlg.addContinueRequest(LegType.leg1);
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.ContinueRequest, null, sequence++));
+						super.handleSent(EventType.ContinueRequest, null);
 						dlg.send(dummyCallback);
 
 						try {
@@ -594,8 +571,7 @@ public class INAPFunctionalTest extends SccpHarness {
 								.getSCIBillingChargingCharacteristicsCS1(
 										new ChargingInformationImpl(true, null, 1, false));
 						dlg.addSendChargingInformationRequest(sciBillingChargingCharacteristics, LegType.leg2, null);
-						this.observerdEvents.add(
-								TestEvent.createSentEvent(EventType.SendChargingInformationRequest, null, sequence++));
+						super.handleSent(EventType.SendChargingInformationRequest, null);
 						dlg.send(dummyCallback);
 
 						dialogStep = 0;
@@ -627,7 +603,7 @@ public class INAPFunctionalTest extends SccpHarness {
 				} catch (INAPException e) {
 					this.error("Error while trying to send ActivityTestRequest", e);
 				}
-				this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivityTestRequest, null, sequence++));
+				super.handleSent(EventType.ActivityTestRequest, null);
 			}
 		};
 
@@ -773,8 +749,6 @@ public class INAPFunctionalTest extends SccpHarness {
 				(stamp + _SLEEP_BEFORE_ODISCONNECT + _TCAP_DIALOG_RELEASE_TIMEOUT));
 		serverExpectedEvents.add(te);
 
-//        this.saveTrafficInFile();
-
 		// setting dialog timeout little interval to invoke onDialogTimeout on SCF side
 		server.inapStack.getTCAPStack().setInvokeTimeout(_DIALOG_TIMEOUT - 200);
 		server.inapStack.getTCAPStack().setDialogIdleTimeout(_DIALOG_TIMEOUT);
@@ -788,31 +762,31 @@ public class INAPFunctionalTest extends SccpHarness {
 		// sending an event of call finishing
 		client.sendEventReportBCSMRequest_1();
 
-		waitForEnd();
-		// Thread.currentThread().sleep(1000000);
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	/**
-	 * <code>
-	Circuit switch call play announcement and disconnect ACN = Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
-	
-	TC-BEGIN + InitialDPRequest
-	  TC-CONTINUE + RequestReportBCSMEventRequest
-	  TC-CONTINUE + ConnectToResourceRequest
-	  TC-CONTINUE + PlayAnnouncementRequest
-	TC-CONTINUE + SpecializedResourceReportRequest
-	  TC-CONTINUE + DisconnectForwardConnectionRequest
-	  TC-END + ReleaseCallRequest
-	</code>
+	 * Circuit switch call play announcement and disconnect ACN =
+	 * Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
+	 * 
+	 * <pre>
+	 * TC-BEGIN + InitialDPRequest 
+	 * TC-CONTINUE + RequestReportBCSMEventRequest
+	 * TC-CONTINUE + ConnectToResourceRequest 
+	 * TC-CONTINUE + PlayAnnouncementRequest
+	 * TC-CONTINUE + SpecializedResourceReportRequest 
+	 * TC-CONTINUE + DisconnectForwardConnectionRequest 
+	 * TC-END + ReleaseCallRequest
+	 * </pre>
 	 */
 	@Test
 	public void testPlayAnnouncment() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			private int dialogStep;
 
 			@Override
@@ -894,8 +868,7 @@ public class INAPFunctionalTest extends SccpHarness {
 					switch (dialogStep) {
 					case 1: // after PlayAnnouncementRequest
 						dlg.addSpecializedResourceReportRequest(playAnnounsmentInvokeId);
-						this.observerdEvents.add(TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest,
-								null, sequence++));
+						super.handleSent(EventType.SpecializedResourceReportRequest, null);
 						dlg.send(dummyCallback);
 
 						dialogStep = 0;
@@ -908,7 +881,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			private int dialogStep = 0;
 
 			@Override
@@ -940,8 +913,7 @@ public class INAPFunctionalTest extends SccpHarness {
 					case 1: // after InitialDp
 						RequestReportBCSMEventRequest rrc = this.getRequestReportBCSMEventRequest();
 						dlg.addRequestReportBCSMEventRequest(rrc.getBCSMEventList(), null, rrc.getExtensions());
-						this.observerdEvents.add(
-								TestEvent.createSentEvent(EventType.RequestReportBCSMEventRequest, null, sequence++));
+						super.handleSent(EventType.RequestReportBCSMEventRequest, null);
 						dlg.send(dummyCallback);
 
 						try {
@@ -958,8 +930,7 @@ public class INAPFunctionalTest extends SccpHarness {
 						CalledPartyNumberIsup resourceAddress_IPRoutingAddress = this.inapParameterFactory
 								.createCalledPartyNumber(calledPartyNumber);
 						dlg.addConnectToResourceRequest(resourceAddress_IPRoutingAddress, null, null);
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.ConnectToResourceRequest, null, sequence++));
+						super.handleSent(EventType.ConnectToResourceRequest, null);
 						dlg.send(dummyCallback);
 
 						try {
@@ -972,8 +943,7 @@ public class INAPFunctionalTest extends SccpHarness {
 						InformationToSend informationToSend = this.inapParameterFactory.createInformationToSend(tone);
 
 						dlg.addPlayAnnouncementRequest(informationToSend, true, true, null);
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.PlayAnnouncementRequest, null, sequence++));
+						super.handleSent(EventType.PlayAnnouncementRequest, null);
 						dlg.send(dummyCallback);
 
 						dialogStep = 0;
@@ -982,8 +952,7 @@ public class INAPFunctionalTest extends SccpHarness {
 
 					case 2: // after SpecializedResourceReportRequest
 						dlg.addDisconnectForwardConnectionRequest(LegType.leg1);
-						this.observerdEvents.add(TestEvent.createSentEvent(EventType.DisconnectForwardConnectionRequest,
-								null, sequence++));
+						super.handleSent(EventType.DisconnectForwardConnectionRequest, null);
 						dlg.send(dummyCallback);
 
 						try {
@@ -999,8 +968,7 @@ public class INAPFunctionalTest extends SccpHarness {
 						causeIndicators.setLocation(CauseIndicators._LOCATION_INTERNATIONAL_NETWORK);
 						CauseIsup cause = this.inapParameterFactory.createCause(causeIndicators);
 						dlg.addReleaseCallRequest(cause);
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.ReleaseCallRequest, null, sequence++));
+						super.handleSent(EventType.ReleaseCallRequest, null);
 						dlg.close(false, dummyCallback);
 
 						dialogStep = 0;
@@ -1099,30 +1067,31 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		client.sendInitialDp(INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B);
 
-		waitForEnd();
-		Thread.sleep(1000);
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
 	}
 
 	/**
-	 * <code>
-	Assist SSF dialog (V4) ACN = capssf-scfAssistHandoffAC V4
-	
-	TC-BEGIN + AssistRequestInstructionsRequest
-	  TC-CONTINUE + ResetTimerRequest
-	  TC-CONTINUE + PromptAndCollectUserInformationRequest
-	TC-CONTINUE + SpecializedResourceReportRequest
-	TC-CONTINUE + PromptAndCollectUserInformationResponse
-	  TC-CONTINUE + CancelRequest
-	  TC-END + CancelRequest
-	</code>
+	 *
+	 * Assist SSF dialog (V4) ACN = capssf-scfAssistHandoffAC V4
+	 * 
+	 * <pre>
+	 * TC-BEGIN + AssistRequestInstructionsRequest 
+	 * TC-CONTINUE + ResetTimerRequest
+	 * TC-CONTINUE + PromptAndCollectUserInformationRequest
+	 * TC-CONTINUE + SpecializedResourceReportRequest 
+	 * TC-CONTINUE + PromptAndCollectUserInformationResponse
+	 * TC-CONTINUE + CancelRequest 
+	 * TC-END + CancelRequest
+	 * </pre>
 	 */
 	@Test
 	public void testAssistSsf() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			private int dialogStep;
 			private int promptAndCollectUserInformationInvokeId;
 
@@ -1184,8 +1153,7 @@ public class INAPFunctionalTest extends SccpHarness {
 					switch (dialogStep) {
 					case 1: // after PromptAndCollectUserInformationRequest
 						dlg.addSpecializedResourceReportRequest(promptAndCollectUserInformationInvokeId, false, true);
-						this.observerdEvents.add(TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest,
-								null, sequence++));
+						super.handleSent(EventType.SpecializedResourceReportRequest, null);
 						dlg.send(dummyCallback);
 
 						try {
@@ -1204,8 +1172,8 @@ public class INAPFunctionalTest extends SccpHarness {
 						DigitsIsup digitsResponse = this.inapParameterFactory.createDigits_GenericNumber(genericNumber);
 						dlg.addPromptAndCollectUserInformationResponse(promptAndCollectUserInformationInvokeId,
 								digitsResponse);
-						this.observerdEvents.add(TestEvent
-								.createSentEvent(EventType.PromptAndCollectUserInformationResponse, null, sequence++));
+
+						super.handleSent(EventType.PromptAndCollectUserInformationResponse, null);
 						dlg.send(dummyCallback);
 
 						dialogStep = 0;
@@ -1218,7 +1186,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			private int dialogStep = 0;
 
 			@Override
@@ -1290,8 +1258,7 @@ public class INAPFunctionalTest extends SccpHarness {
 					switch (dialogStep) {
 					case 1: // after AssistRequestInstructionsRequest
 						dlg.addResetTimerRequest(TimerID.tssf, 1001, null);
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.ResetTimerRequest, null, sequence++));
+						super.handleSent(EventType.ResetTimerRequest, null);
 						dlg.send(dummyCallback);
 						try {
 							Thread.sleep(100);
@@ -1303,8 +1270,8 @@ public class INAPFunctionalTest extends SccpHarness {
 								null, null, null, null, null, null, null, null);
 						CollectedInfo collectedInfo = this.inapParameterFactory.createCollectedInfo(collectedDigits);
 						dlg.addPromptAndCollectUserInformationRequest(collectedInfo, true, null, null);
-						this.observerdEvents.add(TestEvent
-								.createSentEvent(EventType.PromptAndCollectUserInformationRequest, null, sequence++));
+
+						super.handleSent(EventType.PromptAndCollectUserInformationRequest, null);
 						dlg.send(dummyCallback);
 
 						dialogStep = 0;
@@ -1313,7 +1280,7 @@ public class INAPFunctionalTest extends SccpHarness {
 
 					case 2: // after SpecializedResourceReportRequest
 						dlg.addCancelRequest();
-						this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
+						super.handleSent(EventType.CancelRequest, null);
 						dlg.send(dummyCallback);
 
 						try {
@@ -1323,7 +1290,7 @@ public class INAPFunctionalTest extends SccpHarness {
 						}
 
 						dlg.addCancelRequest(new Integer(10));
-						this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
+						super.handleSent(EventType.CancelRequest, null);
 						dlg.close(false, dummyCallback);
 
 						dialogStep = 0;
@@ -1422,7 +1389,8 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		client.sendAssistRequestInstructionsRequest();
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 		Thread.sleep(500);
 
 		client.compareEvents(clientExpectedEvents);
@@ -1430,15 +1398,17 @@ public class INAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * <code> ScfSsf test ACN = Core_INAP_CS1_SSP_to_SCP_AC
+	 * ScfSsf test ACN = Core_INAP_CS1_SSP_to_SCP_AC
 	 * 
-	 * TC-BEGIN + establishTemporaryConnection + callInformationRequest +
-	 * collectInformationRequest TC-END + callInformationReport <code>
+	 * <pre>
+	 * TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInformationRequest 
+	 * TC-END + callInformationReport
+	 * </pre>
 	 */
 	@Test
 	public void testScfSsf() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onCallInformationReportRequest(CallInformationReportRequest ind) {
 				super.onCallInformationReportRequest(ind);
@@ -1463,7 +1433,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			private int dialogStep = 0;
 
 			@Override
@@ -1524,8 +1494,7 @@ public class INAPFunctionalTest extends SccpHarness {
 						RequestedInformation ri = this.inapParameterFactory.createRequestedInformation_CallStopTime(dt);
 						requestedInformationList.add(ri);
 						dlg.addCallInformationReportRequest(requestedInformationList, null, null);
-						this.observerdEvents.add(
-								TestEvent.createSentEvent(EventType.CallInformationReportRequest, null, sequence++));
+						super.handleSent(EventType.CallInformationReportRequest, null);
 						dlg.close(false, dummyCallback);
 
 						dialogStep = 0;
@@ -1591,7 +1560,8 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		client.sendEstablishTemporaryConnectionRequest_CallInformationRequest();
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -1599,17 +1569,18 @@ public class INAPFunctionalTest extends SccpHarness {
 
 	/**
 	 * Abnormal test ACN = CAP-v2-assist-gsmSSF-to-gsmSCF
-	 *
-	 * TC-BEGIN + ActivityTestRequest TC-CONTINUE <no ActivityTestResponse>
-	 * resetInvokeTimer() before InvokeTimeout InvokeTimeout TC-CONTINUE +
-	 * CancelRequest + cancelInvocation() -> CancelRequest will not go to Server
-	 * TC-CONTINUE + ResetTimerRequest reject ResetTimerRequest DialogUserAbort:
-	 * AbortReason=missing_reference
+	 * 
+	 * <pre>
+	 * TC-BEGIN + ActivityTestRequest 
+	 * TC-CONTINUE <no ActivityTestResponse> resetInvokeTimer() before InvokeTimeout InvokeTimeout
+	 * TC-CONTINUE + CancelRequest + cancelInvocation() -> CancelRequest will not go to Server
+	 * TC-CONTINUE + ResetTimerRequest reject ResetTimerRequest DialogUserAbort: AbortReason=missing_reference
+	 * </pre>
 	 */
 	@Test
 	public void testAbnormal() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			private int dialogStep;
 			private long resetTimerRequestInvokeId;
 
@@ -1621,12 +1592,12 @@ public class INAPFunctionalTest extends SccpHarness {
 
 				try {
 					int invId = dlg.addCancelRequest();
-					this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
+					super.handleSent(EventType.CancelRequest, null);
 					dlg.cancelInvocation(invId);
 					dlg.send(dummyCallback);
 
 					resetTimerRequestInvokeId = dlg.addResetTimerRequest(TimerID.tssf, 2222, null);
-					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ResetTimerRequest, null, sequence++));
+					super.handleSent(EventType.ResetTimerRequest, null);
 					dlg.send(dummyCallback);
 				} catch (INAPException e) {
 					this.error("Error while checking CancelRequest or ResetTimerRequest", e);
@@ -1663,7 +1634,7 @@ public class INAPFunctionalTest extends SccpHarness {
 
 				switch (dialogStep) {
 				case 1: // after RejectComponent
-					this.observerdEvents.add(TestEvent.createSentEvent(EventType.DialogUserAbort, null, sequence++));
+					super.handleSent(EventType.DialogUserAbort, null);
 					dlg.abort(INAPUserAbortReason.missing_reference, dummyCallback);
 
 					dialogStep = 0;
@@ -1673,7 +1644,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			private int dialogStep = 0;
 
 			@Override
@@ -1728,8 +1699,7 @@ public class INAPFunctionalTest extends SccpHarness {
 					problem.setInvokeProblemType(InvokeProblemType.MistypedParameter);
 					try {
 						dlg.sendRejectComponent(resetTimerRequestInvokeId, problem);
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.RejectComponent, null, sequence++));
+						super.handleSent(EventType.RejectComponent, null);
 					} catch (INAPException e) {
 						this.error("Error while sending reject", e);
 					}
@@ -1820,8 +1790,8 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		client.sendActivityTestRequest(_ACTIVITY_TEST_INVOKE_TIMEOUT);
 
-		Thread.sleep(_ACTIVITY_TEST_INVOKE_TIMEOUT);
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -1830,13 +1800,15 @@ public class INAPFunctionalTest extends SccpHarness {
 	/**
 	 * DialogTimeout test ACN=CAP-v3-gsmSSF-to-gsmSCF
 	 *
-	 * TC-BEGIN + InitialDPRequest TC-CONTINUE empty (no answer - DialogTimeout at
-	 * both sides)
+	 * <pre>
+	 * TC-BEGIN + InitialDPRequest 
+	 * TC-CONTINUE empty (no answer - DialogTimeout at both sides)
+	 * </pre>
 	 */
 	@Test
 	public void testDialogTimeout() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onDialogTimeout(INAPDialog inapDialog) {
@@ -1849,7 +1821,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			private int dialogStep;
 
@@ -1941,7 +1913,8 @@ public class INAPFunctionalTest extends SccpHarness {
 		// waiting here for DialogTimeOut -> ActivityTest
 		Thread.sleep(_SLEEP_BEFORE_ODISCONNECT);
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 		Thread.sleep(500);
 		// Thread.currentThread().sleep(1000000);
 
@@ -1953,13 +1926,15 @@ public class INAPFunctionalTest extends SccpHarness {
 	/**
 	 * ACNNotSuported test ACN=CAP-v3-gsmSSF-to-gsmSCF
 	 *
+	 * <pre>
 	 * TC-BEGIN + InitialDPRequest (Server service is down -> ACN not supported)
 	 * TC-ABORT + ACNNotSuported
+	 * </pre>
 	 */
 	@Test
 	public void testACNNotSuported() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onDialogUserAbort(INAPDialog inapDialog, INAPGeneralAbortReason generalReason,
@@ -1977,7 +1952,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onDialogDelimiter(INAPDialog inapDialog) {
@@ -2012,7 +1987,7 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		client.sendInitialDp(INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B);
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -2022,13 +1997,15 @@ public class INAPFunctionalTest extends SccpHarness {
 	/**
 	 * Bad data sending at TC-BEGIN test - no ACN
 	 *
-	 *
-	 * TC-BEGIN + no ACN TC-ABORT + BadReceivedData
+	 * <pre>
+	 * TC-BEGIN + no ACN 
+	 * TC-ABORT + BadReceivedData
+	 * </pre>
 	 */
 	@Test
 	public void testBadDataSendingNoAcn() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onDialogUserAbort(INAPDialog inapDialog, INAPGeneralAbortReason generalReason,
@@ -2046,7 +2023,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onDialogDelimiter(INAPDialog inapDialog) {
@@ -2076,7 +2053,7 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		client.sendBadDataNoAcn();
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -2086,13 +2063,15 @@ public class INAPFunctionalTest extends SccpHarness {
 	/**
 	 * TC-CONTINUE from Server after dialogRelease at Client
 	 *
-	 *
-	 * TC-BEGIN + InitialDP relaseDialog TC-CONTINUE ProviderAbort
+	 * <pre>
+	 * TC-BEGIN + InitialDP relaseDialog
+	 * TC-CONTINUE ProviderAbort
+	 * </pre>
 	 */
 	@Test
 	public void testProviderAbort() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onDialogDelimiter(INAPDialog inapDialog) {
@@ -2105,7 +2084,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onDialogUserAbort(INAPDialog inapDialog, INAPGeneralAbortReason generalReason,
@@ -2161,7 +2140,8 @@ public class INAPFunctionalTest extends SccpHarness {
 		Thread.sleep(_DIALOG_RELEASE_DELAY);
 		server.sendAccept();
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -2169,13 +2149,15 @@ public class INAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 *
-	 * TC-BEGIN + broken referensedNumber TC-ABORT
+	 * <pre>
+	 * TC-BEGIN + broken referensedNumber
+	 * TC-ABORT
+	 * </pre>
 	 */
 	@Test
 	public void testMessageUserDataLength() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onDialogDelimiter(INAPDialog inapDialog) {
@@ -2205,7 +2187,7 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		client.testMessageUserDataLength();
 
-		// waitForEnd();
+		// client.awaitReceived(EventType.DialogRelease);server.awaitReceived(EventType.DialogRelease);
 		//
 		// client.compareEvents(clientExpectedEvents);
 		// server.compareEvents(serverExpectedEvents);
@@ -2213,16 +2195,23 @@ public class INAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * Some not real test for testing: - sendDelayed() / closeDelayed() -
-	 * getTCAPMessageType() - saving origReferense, destReference, extContainer in
-	 * MAPDialog TC-BEGIN + referensedNumber + initialDPRequest + initialDPRequest
+	 * Some not real test for testing:
+	 * <p>
+	 * - sendDelayed() / closeDelayed()
+	 * <p>
+	 * - getTCAPMessageType()
+	 * <p>
+	 * - saving origReferense, destReference, extContainer in MAPDialog
+	 * 
+	 * <pre>
+	 * TC-BEGIN + referensedNumber + initialDPRequest + initialDPRequest
 	 * TC-CONTINUE + sendDelayed(ContinueRequest) + sendDelayed(ContinueRequest)
 	 * TC-END + closeDelayed(CancelRequest) + sendDelayed(CancelRequest)
+	 * </pre>
 	 */
 	@Test
 	public void testDelayedSendClose() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
-
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			int dialogStep = 0;
 
 			@Override
@@ -2246,7 +2235,7 @@ public class INAPFunctionalTest extends SccpHarness {
 					else
 						d.sendDelayed(dummyCallback);
 					dialogStep++;
-					this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
+					super.handleSent(EventType.CancelRequest, null);
 				} catch (INAPException e) {
 					this.error("Error while adding CancelRequest/sending", e);
 					fail("Error while adding CancelRequest/sending");
@@ -2254,7 +2243,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			};
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			int dialogStep = 0;
 
 			@Override
@@ -2276,8 +2265,7 @@ public class INAPFunctionalTest extends SccpHarness {
 					try {
 						d.addContinueRequest(LegType.leg1);
 						d.sendDelayed(dummyCallback);
-						this.observerdEvents
-								.add(TestEvent.createSentEvent(EventType.ContinueRequest, null, sequence++));
+						super.handleSent(EventType.ContinueRequest, null);
 					} catch (INAPException e) {
 						this.error("Error while adding ContinueRequest/sending", e);
 						fail("Error while adding ContinueRequest/sending");
@@ -2358,19 +2346,29 @@ public class INAPFunctionalTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 
 		client.sendInitialDp2();
-		waitForEnd();
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
+
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
 	}
 
 	/**
-	 * Some not real test for testing: - closeDelayed(true) - getTCAPMessageType()
-	 * TC-BEGIN + initialDPRequest + initialDPRequest TC-END + Prearranged +
-	 * [ContinueRequest + ContinueRequest]
+	 * Some not real test for testing:
+	 * <p>
+	 * - closeDelayed(true)
+	 * <p>
+	 * - getTCAPMessageType()
+	 * 
+	 * <pre>
+	 * TC-BEGIN + initialDPRequest + initialDPRequest
+	 * TC-END + Prearranged + [ContinueRequest + ContinueRequest]
+	 * </pre>
 	 */
 	@Test
 	public void testDelayedClosePrearranged() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onDialogAccept(INAPDialog inapDialog) {
 				super.onDialogAccept(inapDialog);
@@ -2379,7 +2377,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			int dialogStep = 0;
 
 			@Override
@@ -2405,7 +2403,7 @@ public class INAPFunctionalTest extends SccpHarness {
 						d.sendDelayed(dummyCallback);
 					else
 						d.closeDelayed(true, dummyCallback);
-					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ContinueRequest, null, sequence++));
+					super.handleSent(EventType.ContinueRequest, null);
 				} catch (INAPException e) {
 					this.error("Error while adding ContinueRequest/sending", e);
 					fail("Error while adding ContinueRequest/sending");
@@ -2463,14 +2461,17 @@ public class INAPFunctionalTest extends SccpHarness {
 		client.sendInitialDp3();
 		client.clientCscDialog.close(true, dummyCallback);
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
 	}
 
 	/**
-	 * Testing for some special error cases:<br>
-	 * - linkedId to an operation that does not support linked operations<br>
+	 * Testing for some special error cases:
+	 * <p>
+	 * - linkedId to an operation that does not support linked operations
+	 * <p>
 	 * - linkedId to a missed operation
 	 *
 	 * <pre>
@@ -2486,7 +2487,8 @@ public class INAPFunctionalTest extends SccpHarness {
 	 */
 	@Test
 	public void testBadInvokeLinkedId() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			int dialogStep = 0;
 
 			@Override
@@ -2526,7 +2528,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			int invokeId1;
 			int invokeId2;
 			int outInvokeId1;
@@ -2586,13 +2588,10 @@ public class INAPFunctionalTest extends SccpHarness {
 							null, true, false);
 
 					dlg.addSpecializedResourceReportRequest(invokeId2);
-					this.observerdEvents.add(
-							TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest, null, sequence++));
-					this.observerdEvents.add(
-							TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest, null, sequence++));
-					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ContinueRequest, null, sequence++));
-					this.observerdEvents.add(
-							TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest, null, sequence++));
+					super.handleSent(EventType.SpecializedResourceReportRequest, null);
+					super.handleSent(EventType.SpecializedResourceReportRequest, null);
+					super.handleSent(EventType.ContinueRequest, null);
+					super.handleSent(EventType.SpecializedResourceReportRequest, null);
 
 					dlg.send(dummyCallback);
 				} catch (INAPException e) {
@@ -2677,7 +2676,8 @@ public class INAPFunctionalTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 
 		client.sendInitialDp_playAnnouncement();
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
 	}
@@ -2685,13 +2685,14 @@ public class INAPFunctionalTest extends SccpHarness {
 	/**
 	 * ReturnResultLast & ReturnError for operation classes 1, 2, 3, 4
 	 *
+	 * <pre>
 	 * TC-BEGIN + initialDPRequest (class2, invokeId==1) + initialDPRequest (class2,
 	 * invokeId==2) + promptAndCollectUserInformationRequest (class1, invokeId==3) +
 	 * promptAndCollectUserInformationRequest (class1, invokeId==4) + +
 	 * activityTestRequest (class3, invokeId==5) + activityTestRequest (class3,
 	 * invokeId==6) + releaseCallRequest (class4, invokeId==7) + releaseCallRequest
 	 * (class4, invokeId==7)
-	 *
+	 * 
 	 * TC-CONTINUE + ReturnResultLast (initialDP, invokeId==1 ->
 	 * ReturnResultUnexpected) + SystemFailureError (initialDP, invokeId==2 -> OK) +
 	 * promptAndCollectUserInformationResponse (invokeId==3 -> OK) +
@@ -2699,13 +2700,15 @@ public class INAPFunctionalTest extends SccpHarness {
 	 * activityTestResponse (invokeId==5 -> OK) + SystemFailureError (activityTest,
 	 * invokeId==6 -> ReturnErrorUnexpected) + ReturnResultLast (releaseCall,
 	 * invokeId==7 -> ReturnResultUnexpected) + SystemFailureError
-	 * (releaseCallRequest, invokeId==8 -> ReturnErrorUnexpected) TC-END + Reject
-	 * (ReturnResultUnexpected) + Reject (ReturnErrorUnexpected) + Reject
+	 * (releaseCallRequest, invokeId==8 -> ReturnErrorUnexpected)
+	 * 
+	 * TC-END + Reject (ReturnResultUnexpected) + Reject (ReturnErrorUnexpected) + Reject
 	 * (ReturnResultUnexpected) + Reject (ReturnErrorUnexpected)
+	 * </pre>
 	 */
 	@Test
 	public void testUnexpectedResultError() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			int rejectStep = 0;
 
 			@Override
@@ -2751,7 +2754,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			int dialogStep = 0;
 			int rejectStep = 0;
 			int invokeId1;
@@ -2874,7 +2877,7 @@ public class INAPFunctionalTest extends SccpHarness {
 					INAPErrorMessage mem = this.inapErrorMessageFactory
 							.createINAPErrorMessageSystemFailure(UnavailableNetworkResource.endUserFailure);
 					dlg.sendErrorComponent(invokeId2, mem);
-					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
+					super.handleSent(EventType.ErrorComponent, null);
 
 					GenericNumber genericNumber = this.isupParameterFactory.createGenericNumber();
 					genericNumber.setAddress("444422220000");
@@ -2885,18 +2888,17 @@ public class INAPFunctionalTest extends SccpHarness {
 					genericNumber.setScreeningIndicator(GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
 					DigitsIsup digitsResponse = this.inapParameterFactory.createDigits_GenericNumber(genericNumber);
 					dlg.addPromptAndCollectUserInformationResponse(invokeId3, digitsResponse);
-					this.observerdEvents.add(TestEvent
-							.createSentEvent(EventType.PromptAndCollectUserInformationResponse, null, sequence++));
 
+					super.handleSent(EventType.PromptAndCollectUserInformationResponse, null);
 					mem = this.inapErrorMessageFactory
 							.createINAPErrorMessageSystemFailure(UnavailableNetworkResource.resourceStatusFailure);
 					dlg.sendErrorComponent(invokeId4, mem);
-					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
+					super.handleSent(EventType.ErrorComponent, null);
 
 					mem = this.inapErrorMessageFactory
 							.createINAPErrorMessageSystemFailure(UnavailableNetworkResource.resourceStatusFailure);
 					dlg.sendErrorComponent(invokeId6, mem);
-					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
+					super.handleSent(EventType.ErrorComponent, null);
 
 					dlg.sendDataComponent(invokeId7, null, null, null, INAPOperationCode.releaseCall, null, false,
 							true);
@@ -2904,7 +2906,7 @@ public class INAPFunctionalTest extends SccpHarness {
 					mem = this.inapErrorMessageFactory
 							.createINAPErrorMessageSystemFailure(UnavailableNetworkResource.resourceStatusFailure);
 					dlg.sendErrorComponent(invokeId8, mem);
-					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
+					super.handleSent(EventType.ErrorComponent, null);
 
 					dlg.send(dummyCallback);
 				} catch (INAPException e) {
@@ -3040,19 +3042,22 @@ public class INAPFunctionalTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 
 		client.sendInvokesForUnexpectedResultError();
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
 	}
 
 	/**
-	 *
-	 * TC-Message + bad UnrecognizedMessageType TC-ABORT UnrecognizedMessageType
+	 * <pre>
+	 * TC-Message + bad UnrecognizedMessageType 
+	 * TC-ABORT UnrecognizedMessageType
+	 * </pre>
 	 */
 	@Test
 	public void testUnrecognizedMessageType() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onDialogProviderAbort(INAPDialog capDialog, PAbortCauseType abortCause) {
@@ -3062,7 +3067,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 		};
 
 		long stamp = System.currentTimeMillis();
@@ -3088,7 +3093,7 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		this.sccpProvider1.send(message, dummyCallback);
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -3096,11 +3101,14 @@ public class INAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * TC-BEGIN + (bad sccp address + setReturnMessageOnError) TC-NOTICE
+	 * <pre>
+	 * TC-BEGIN + (bad sccp address + setReturnMessageOnError)
+	 * TC-NOTICE
+	 * </pre>
 	 */
 	@Test
 	public void testTcNotice() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onDialogNotice(INAPDialog inapDialog, INAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
 				super.onDialogNotice(inapDialog, noticeProblemDiagnostic);
@@ -3109,7 +3117,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 		};
 
 		long stamp = System.currentTimeMillis();
@@ -3129,7 +3137,8 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		client.actionB();
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
 	}
@@ -3141,12 +3150,16 @@ public class INAPFunctionalTest extends SccpHarness {
 	/**
 	 * ACN = Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 	 *
-	 * TC-BEGIN + InitiateDPRequest TC-CONTINUE + ContinueWithArgumentRequest TC-END
+	 * <pre>
+	 * TC-BEGIN + InitiateDPRequest
+	 * TC-CONTINUE + ContinueWithArgumentRequest 
+	 * TC-END
+	 * </pre>
 	 */
 	@Test
 	public void testContinueWithArgument() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			private int dialogStep;
 
 			@Override
@@ -3175,7 +3188,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			private int dialogStep = 0;
 
 			@Override
@@ -3198,8 +3211,7 @@ public class INAPFunctionalTest extends SccpHarness {
 					switch (dialogStep) {
 					case 1: // after InitialDp
 						dlg.addContinueWithArgumentRequest(null, null);
-						this.observerdEvents.add(
-								TestEvent.createSentEvent(EventType.ContinueWithArgumentRequest, null, sequence++));
+						super.handleSent(EventType.ContinueWithArgumentRequest, null);
 						dlg.send(dummyCallback);
 
 						dialogStep = 0;
@@ -3256,7 +3268,8 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		client.sendInitialDp(INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B);
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -3265,12 +3278,16 @@ public class INAPFunctionalTest extends SccpHarness {
 	/**
 	 * ACN = Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 	 *
-	 * TC-BEGIN + InitiateDPRequest TC-CONTINUE + callGap TC-END
+	 * <pre>
+	 * TC-BEGIN + InitiateDPRequest
+	 * TC-CONTINUE + callGap
+	 * TC-END
+	 * </pre>
 	 */
 	@Test
 	public void testCallGap() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			private int dialogStep;
 
 			@Override
@@ -3307,7 +3324,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			private int dialogStep = 0;
 
 			@Override
@@ -3339,7 +3356,7 @@ public class INAPFunctionalTest extends SccpHarness {
 						GapIndicatorsImpl gapIndicators = new GapIndicatorsImpl(60, -1);
 
 						dlg.addCallGapRequest(gapCriteria, gapIndicators, null, null, null);
-						this.observerdEvents.add(TestEvent.createSentEvent(EventType.CallGapRequest, null, sequence++));
+						super.handleSent(EventType.CallGapRequest, null);
 						dlg.send(dummyCallback);
 
 //                            GenericNumber genericNumber = inapProvider.getISUPParameterFactory().createGenericNumber();
@@ -3362,7 +3379,7 @@ public class INAPFunctionalTest extends SccpHarness {
 //                            GapTreatment gapTreatment = new GapTreatmentImpl(informationToSend);
 //
 //                            dlg.addCallGapRequest(gapCriteria, gapIndicators, ControlType.sCPOverloaded, gapTreatment, null);
-//                            this.observerdEvents.add(TestEvent.createSentEvent(EventType.CallGapRequest, null, sequence++));
+//                            super.handleSent(EventType.CallGapRequest, null);
 //                            dlg.send(dummyCallback);
 
 						dialogStep = 0;
@@ -3422,30 +3439,11 @@ public class INAPFunctionalTest extends SccpHarness {
 
 		client.sendInitialDp(INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B);
 
-		waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
 
 	}
-
-	private void waitForEnd() {
-		try {
-			// while (true) {
-			// if (client.isFinished() && server.isFinished())
-			// break;
-			//
-			// Thread.currentThread().sleep(100);
-			//
-			// if (new Date().getTime() - startTime.getTime() > _WAIT_TIMEOUT)
-			// break;
-
-			Thread.sleep(_WAIT_TIMEOUT);
-			// Thread.currentThread().sleep(1000000);
-			// }
-		} catch (InterruptedException e) {
-			fail("Interrupted on wait!");
-		}
-	}
-
 }

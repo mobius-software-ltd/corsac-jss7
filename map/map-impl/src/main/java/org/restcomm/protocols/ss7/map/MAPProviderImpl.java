@@ -1536,7 +1536,6 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 		// Now let us decode the Components
 		if (comps != null)
 			processComponents(mapDialogImpl, comps, tcBeginIndication.getOriginalBuffer());
-
 		this.deliverDialogDelimiter(mapDialogImpl);
 
 		finishComponentProcessingState(mapDialogImpl, callback);

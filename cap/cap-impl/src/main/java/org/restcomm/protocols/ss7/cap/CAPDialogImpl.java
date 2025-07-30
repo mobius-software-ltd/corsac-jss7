@@ -57,562 +57,555 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	private static final long serialVersionUID = 1L;
 
 	protected Dialog tcapDialog = null;
-    protected CAPProviderImpl capProviderImpl = null;
-    protected CAPServiceBase capService = null;
+	protected CAPProviderImpl capProviderImpl = null;
+	protected CAPServiceBase capService = null;
 
-    // Application Context of this Dialog
-    protected CAPApplicationContext appCntx;
+	// Application Context of this Dialog
+	protected CAPApplicationContext appCntx;
 
-    protected CAPGprsReferenceNumber gprsReferenceNumber = null;
-    protected CAPGprsReferenceNumber receivedGprsReferenceNumber;
+	protected CAPGprsReferenceNumber gprsReferenceNumber = null;
+	protected CAPGprsReferenceNumber receivedGprsReferenceNumber;
 
-    protected CAPDialogState state = CAPDialogState.IDLE;
+	protected CAPDialogState state = CAPDialogState.IDLE;
 
-    // protected boolean normalDialogShutDown = false;
+	// protected boolean normalDialogShutDown = false;
 
-    // private Set<Long> incomingInvokeList = new HashSet<Long>();
+	// private Set<Long> incomingInvokeList = new HashSet<Long>();
 
-    boolean returnMessageOnError = false;
-    protected MessageType tcapMessageType;
-    protected DelayedAreaState delayedAreaState;
-    private CAPStackConfigurationManagement capStackConfigurationManagement;
+	boolean returnMessageOnError = false;
+	protected MessageType tcapMessageType;
+	protected DelayedAreaState delayedAreaState;
+	private CAPStackConfigurationManagement capStackConfigurationManagement;
 
-    protected CAPDialogImpl(CAPApplicationContext appCntx, Dialog tcapDialog, CAPProviderImpl capProviderImpl,
-            CAPServiceBase capService) {
-        this.appCntx = appCntx;
-        this.tcapDialog = tcapDialog;
-        this.capProviderImpl = capProviderImpl;
-        this.capService = capService;
-        this.capStackConfigurationManagement = new CAPStackConfigurationManagement();
-        setUserObject(getUserObject());
-    }
+	protected CAPDialogImpl(CAPApplicationContext appCntx, Dialog tcapDialog, CAPProviderImpl capProviderImpl,
+			CAPServiceBase capService) {
+		this.appCntx = appCntx;
+		this.tcapDialog = tcapDialog;
+		this.capProviderImpl = capProviderImpl;
+		this.capService = capService;
+		this.capStackConfigurationManagement = new CAPStackConfigurationManagement();
+		setUserObject(getUserObject());
+	}
 
-    @Override
+	@Override
 	public SccpAddress getLocalAddress() {
-        return this.tcapDialog.getLocalAddress();
-    }
+		return this.tcapDialog.getLocalAddress();
+	}
 
-    @Override
+	@Override
 	public void setLocalAddress(SccpAddress localAddress) {
-        this.tcapDialog.setLocalAddress(localAddress);
-    }
+		this.tcapDialog.setLocalAddress(localAddress);
+	}
 
-    @Override
+	@Override
 	public SccpAddress getRemoteAddress() {
-        return this.tcapDialog.getRemoteAddress();
-    }
+		return this.tcapDialog.getRemoteAddress();
+	}
 
-    @Override
+	@Override
 	public void setRemoteAddress(SccpAddress remoteAddress) {
-        this.tcapDialog.setRemoteAddress(remoteAddress);
-    }
+		this.tcapDialog.setRemoteAddress(remoteAddress);
+	}
 
-    @Override
-    public void setReturnMessageOnError(boolean val) {
-        returnMessageOnError = val;
-        setUserObject(getUserObject());
-    }
+	@Override
+	public void setReturnMessageOnError(boolean val) {
+		returnMessageOnError = val;
+		setUserObject(getUserObject());
+	}
 
-    @Override
-    public boolean getReturnMessageOnError() {
-        return returnMessageOnError;
-    }
+	@Override
+	public boolean getReturnMessageOnError() {
+		return returnMessageOnError;
+	}
 
-    @Override
+	@Override
 	public MessageType getTCAPMessageType() {
-        return tcapMessageType;
-    }
+		return tcapMessageType;
+	}
 
-    @Override
+	@Override
 	public int getNetworkId() {
-        return this.tcapDialog.getNetworkId();
-    }
+		return this.tcapDialog.getNetworkId();
+	}
 
-    @Override
+	@Override
 	public void setNetworkId(int networkId) {
-        this.tcapDialog.setNetworkId(networkId);
-    }
+		this.tcapDialog.setNetworkId(networkId);
+	}
 
-    @Override
-    public void keepAlive() {
-        this.tcapDialog.keepAlive();
-    }
+	@Override
+	public void keepAlive() {
+		this.tcapDialog.keepAlive();
+	}
 
-    @Override
+	@Override
 	public Long getLocalDialogId() {
-        return tcapDialog.getLocalDialogId();
-    }
+		return tcapDialog.getLocalDialogId();
+	}
 
-    @Override
+	@Override
 	public Long getRemoteDialogId() {
-        return tcapDialog.getRemoteDialogId();
-    }
+		return tcapDialog.getRemoteDialogId();
+	}
 
-    @Override
+	@Override
 	public CAPServiceBase getService() {
-        return this.capService;
-    }
+		return this.capService;
+	}
 
-    public Dialog getTcapDialog() {
-        return tcapDialog;
-    }
+	public Dialog getTcapDialog() {
+		return tcapDialog;
+	}
 
-    @Override
+	@Override
 	public void release() {
-        // this.setNormalDialogShutDown();
-        this.setState(CAPDialogState.EXPUNGED);
+		// this.setNormalDialogShutDown();
+		this.setState(CAPDialogState.EXPUNGED);
 
-        if (this.tcapDialog != null)
-            this.tcapDialog.release();
-    }
+		if (this.tcapDialog != null)
+			this.tcapDialog.release();
+	}
 
-    /**
-     * Setting that the CAP Dialog is normally shutting down - to prevent performing onDialogReleased()
-     */
-    // protected void setNormalDialogShutDown() {
-    // this.normalDialogShutDown = true;
-    // }
-    //
-    // protected Boolean getNormalDialogShutDown() {
-    // return this.normalDialogShutDown;
-    // }
+	/**
+	 * Setting that the CAP Dialog is normally shutting down - to prevent performing
+	 * onDialogReleased()
+	 */
+	// protected void setNormalDialogShutDown() {
+	// this.normalDialogShutDown = true;
+	// }
+	//
+	// protected Boolean getNormalDialogShutDown() {
+	// return this.normalDialogShutDown;
+	// }
 
-    /**
-     * Adding the new incoming invokeId into incomingInvokeList list
-     *
-     * @param invokeId
-     * @return false: failure - this invokeId already present in the list
-     */
-    // public boolean addIncomingInvokeId(Long invokeId) {
-    // if (this.incomingInvokeList.contains(invokeId))
-    // return false;
-    // else {
-    // this.incomingInvokeList.add(invokeId);
-    // return true;
-    // }
-    // }
-    //
-    // public void removeIncomingInvokeId(Long invokeId) {
-    // this.incomingInvokeList.remove(invokeId);
-    // }
-    //
-    // public Boolean checkIncomingInvokeIdExists(Long invokeId) {
-    // return this.incomingInvokeList.contains(invokeId);
-    // }
+	/**
+	 * Adding the new incoming invokeId into incomingInvokeList list
+	 *
+	 * @param invokeId
+	 * @return false: failure - this invokeId already present in the list
+	 */
+	// public boolean addIncomingInvokeId(Long invokeId) {
+	// if (this.incomingInvokeList.contains(invokeId))
+	// return false;
+	// else {
+	// this.incomingInvokeList.add(invokeId);
+	// return true;
+	// }
+	// }
+	//
+	// public void removeIncomingInvokeId(Long invokeId) {
+	// this.incomingInvokeList.remove(invokeId);
+	// }
+	//
+	// public Boolean checkIncomingInvokeIdExists(Long invokeId) {
+	// return this.incomingInvokeList.contains(invokeId);
+	// }
 
-    @Override
+	@Override
 	public CAPDialogState getState() {
-        return state;
-    }
+		return state;
+	}
 
-    protected void setState(CAPDialogState newState) {
-        if (this.state == CAPDialogState.EXPUNGED)
+	protected void setState(CAPDialogState newState) {
+		if (this.state == CAPDialogState.EXPUNGED)
 			return;
 
-        this.state = newState;
-        setUserObject(getUserObject());
-    }
+		this.state = newState;
+		setUserObject(getUserObject());
+	}
 
-    @Override
+	@Override
 	public void setGprsReferenceNumber(CAPGprsReferenceNumber gprsReferenceNumber) {
-        this.gprsReferenceNumber = gprsReferenceNumber;
-    }
+		this.gprsReferenceNumber = gprsReferenceNumber;
+	}
 
-    @Override
+	@Override
 	public CAPGprsReferenceNumber getGprsReferenceNumber() {
-        return this.gprsReferenceNumber;
-    }
+		return this.gprsReferenceNumber;
+	}
 
-    @Override
+	@Override
 	public CAPGprsReferenceNumber getReceivedGprsReferenceNumber() {
-        return receivedGprsReferenceNumber;
-    }
+		return receivedGprsReferenceNumber;
+	}
 
-    @Override
+	@Override
 	public void send(TaskCallback<Exception> callback) throws CAPException {
 
-        switch (this.tcapDialog.getState()) {
-	        case Idle:
-	        	ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
-	                    .createApplicationContextName(this.appCntx.getOID());
-	
-	            this.setState(CAPDialogState.INITIAL_SENT);
-	
-	            this.capProviderImpl.fireTCBegin(this.getTcapDialog(), acn, this.gprsReferenceNumber,
-	                    this.getReturnMessageOnError(), callback);
-	            this.gprsReferenceNumber = null;
-	            break;
-	
-	        case Active:
-	            // Its Active send TC-CONTINUE
-	
-	            this.capProviderImpl.fireTCContinue(this.getTcapDialog(), null, null, this.getReturnMessageOnError(), callback);
-	            break;
-	
-	        case InitialReceived:
-	            // Its first Reply to TC-Begin
-	
-	            ApplicationContextName acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
-	                    .createApplicationContextName(this.appCntx.getOID());
-	
-	            
-	            CAPDialogState oldState=this.getState();
-	            this.setState(CAPDialogState.ACTIVE);
-	            try
-	            {	            
-	            	this.capProviderImpl.fireTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber,
-	                    this.getReturnMessageOnError(), callback);
-	            	this.gprsReferenceNumber = null;
-			    }
-		        catch(Exception ex)
-		    	{
-		        	this.state = oldState; 
-		            setUserObject(getUserObject());
-		    	}   
-	            break;
-	
-	        case InitialSent: // we have sent TC-BEGIN already, need to wait
-	            throw new CAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!");
-	        case Expunged: // dialog has been terminated on TC level, cant send
-	            throw new CAPException("Dialog has been terminated, can not send primitives!");
-	    }
-    }
+		switch (this.tcapDialog.getState()) {
+		case Idle:
+			ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+					.createApplicationContextName(this.appCntx.getOID());
 
-    @Override
+			this.setState(CAPDialogState.INITIAL_SENT);
+
+			this.capProviderImpl.fireTCBegin(this.getTcapDialog(), acn, this.gprsReferenceNumber,
+					this.getReturnMessageOnError(), callback);
+			this.gprsReferenceNumber = null;
+			break;
+
+		case Active:
+			// Its Active send TC-CONTINUE
+
+			this.capProviderImpl.fireTCContinue(this.getTcapDialog(), null, null, this.getReturnMessageOnError(),
+					callback);
+			break;
+
+		case InitialReceived:
+			// Its first Reply to TC-Begin
+
+			ApplicationContextName acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+					.createApplicationContextName(this.appCntx.getOID());
+
+			CAPDialogState oldState = this.getState();
+			this.setState(CAPDialogState.ACTIVE);
+			try {
+				this.capProviderImpl.fireTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber,
+						this.getReturnMessageOnError(), callback);
+				this.gprsReferenceNumber = null;
+			} catch (Exception ex) {
+				this.state = oldState;
+				setUserObject(getUserObject());
+			}
+			break;
+
+		case InitialSent: // we have sent TC-BEGIN already, need to wait
+			throw new CAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!");
+		case Expunged: // dialog has been terminated on TC level, cant send
+			throw new CAPException("Dialog has been terminated, can not send primitives!");
+		}
+	}
+
+	@Override
 	public void sendDelayed(TaskCallback<Exception> callback) throws CAPException {
 
-        if (this.delayedAreaState == null)
+		if (this.delayedAreaState == null)
 			this.send(callback);
 		else
 			switch (this.delayedAreaState) {
-                case No:
-                    this.delayedAreaState = CAPDialogImpl.DelayedAreaState.Continue;
-                    break;
-				default:
-					break;
-            }
-    }
+			case No:
+				this.delayedAreaState = CAPDialogImpl.DelayedAreaState.Continue;
+				break;
+			default:
+				break;
+			}
+	}
 
-    @Override
+	@Override
 	public void close(boolean prearrangedEnd, TaskCallback<Exception> callback) throws CAPException {
 
-        switch (this.tcapDialog.getState()) {
-	        case InitialReceived:
-	            ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
-	                    .createApplicationContextName(this.appCntx.getOID());
-	
-	            CAPDialogState oldState=getState();
-	            this.setState(CAPDialogState.EXPUNGED);
-	            if (prearrangedEnd) {
-	                // we do not send any data in a prearrangedEnd case
-	                if (this.tcapDialog != null)
-	                    this.tcapDialog.release();
-	            } else
-					try
-	            	{
-		                this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn, this.gprsReferenceNumber,
-		                        this.getReturnMessageOnError(), callback);
-		                this.gprsReferenceNumber = null;		            	
-				    }
-			        catch(Exception ex)
-			    	{
-			        	this.state = oldState; 
-			            setUserObject(getUserObject());
-			    	}
-	
-	            break;
-	
-	        case Active:
-	        	oldState=getState();
-	        	this.setState(CAPDialogState.EXPUNGED);
-	            if (prearrangedEnd) {
-	                // we do not send any data in a prearrangedEnd case
-	                if (this.tcapDialog != null)
-	                    this.tcapDialog.release();
-	            } else
-					try
-	            	{
-	                	this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, null, null,
-	                        this.getReturnMessageOnError(), callback);
-	            	}
-			        catch(Exception ex)
-			    	{
-			        	this.state = oldState; 
-			            setUserObject(getUserObject());
-			    	}
-	
-	            break;
-	
-	        case Idle:
-	            throw new CAPException("Awaiting TC-BEGIN to be sent, can not send another dialog initiating primitive!");
-	        case InitialSent: // we have sent TC-BEGIN already, need to wait
-	            if (prearrangedEnd) {
-	                // we do not send any data in a prearrangedEnd case
-	                if (this.tcapDialog != null)
-	                    this.tcapDialog.release();
-	                this.setState(CAPDialogState.EXPUNGED);
-	                return;
-	            } else
-					throw new CAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!");
-	        case Expunged: // dialog has been terminated on TC level, cant send
-	            throw new CAPException("Dialog has been terminated, can not send primitives!");
-	    }
-    }
+		switch (this.tcapDialog.getState()) {
+		case InitialReceived:
+			ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+					.createApplicationContextName(this.appCntx.getOID());
 
-    @Override
+			CAPDialogState oldState = getState();
+			this.setState(CAPDialogState.EXPUNGED);
+			if (prearrangedEnd) {
+				// we do not send any data in a prearrangedEnd case
+				if (this.tcapDialog != null)
+					this.tcapDialog.release();
+			} else
+				try {
+					this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn, this.gprsReferenceNumber,
+							this.getReturnMessageOnError(), callback);
+					this.gprsReferenceNumber = null;
+				} catch (Exception ex) {
+					this.state = oldState;
+					setUserObject(getUserObject());
+				}
+
+			break;
+
+		case Active:
+			oldState = getState();
+			this.setState(CAPDialogState.EXPUNGED);
+			if (prearrangedEnd) {
+				// we do not send any data in a prearrangedEnd case
+				if (this.tcapDialog != null)
+					this.tcapDialog.release();
+			} else
+				try {
+					this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, null, null,
+							this.getReturnMessageOnError(), callback);
+				} catch (Exception ex) {
+					this.state = oldState;
+					setUserObject(getUserObject());
+				}
+
+			break;
+
+		case Idle:
+			throw new CAPException("Awaiting TC-BEGIN to be sent, can not send another dialog initiating primitive!");
+		case InitialSent: // we have sent TC-BEGIN already, need to wait
+			if (prearrangedEnd) {
+				// we do not send any data in a prearrangedEnd case
+				if (this.tcapDialog != null)
+					this.tcapDialog.release();
+				this.setState(CAPDialogState.EXPUNGED);
+				return;
+			} else
+				throw new CAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!");
+		case Expunged: // dialog has been terminated on TC level, cant send
+			throw new CAPException("Dialog has been terminated, can not send primitives!");
+		}
+	}
+
+	@Override
 	public void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback) throws CAPException {
 
-        if (this.delayedAreaState == null)
+		if (this.delayedAreaState == null)
 			this.close(prearrangedEnd, callback);
 		else if (prearrangedEnd)
 			switch (this.delayedAreaState) {
-		        case No:
-		        case Continue:
-		        case End:
-		            this.delayedAreaState = CAPDialogImpl.DelayedAreaState.PrearrangedEnd;
-		            break;
-				default:
-					break;
-		    }
+			case No:
+			case Continue:
+			case End:
+				this.delayedAreaState = CAPDialogImpl.DelayedAreaState.PrearrangedEnd;
+				break;
+			default:
+				break;
+			}
 		else
 			switch (this.delayedAreaState) {
-		        case No:
-		        case Continue:
-		            this.delayedAreaState = CAPDialogImpl.DelayedAreaState.End;
-		            break;
-				default:
-					break;
-		    }
-    }
+			case No:
+			case Continue:
+				this.delayedAreaState = CAPDialogImpl.DelayedAreaState.End;
+				break;
+			default:
+				break;
+			}
+	}
 
-    @Override
-    public void abort(CAPUserAbortReason abortReason, TaskCallback<Exception> callback) throws CAPException {
+	@Override
+	public void abort(CAPUserAbortReason abortReason, TaskCallback<Exception> callback) throws CAPException {
 
-        // Dialog is not started or has expunged - we need not send
-        // TC-U-ABORT,
-        // only Dialog removing
-        if (this.getState() == CAPDialogState.EXPUNGED || this.getState() == CAPDialogState.IDLE) {
-            this.setState(CAPDialogState.EXPUNGED);
-            return;
-        }
+		// Dialog is not started or has expunged - we need not send
+		// TC-U-ABORT,
+		// only Dialog removing
+		if (this.getState() == CAPDialogState.EXPUNGED || this.getState() == CAPDialogState.IDLE) {
+			this.setState(CAPDialogState.EXPUNGED);
+			return;
+		}
 
-        CAPDialogState oldState=getState();
-        this.setState(CAPDialogState.EXPUNGED);
-        try
-        {
-        	// this.setNormalDialogShutDown();
-        	this.capProviderImpl.fireTCAbort(this.getTcapDialog(), CAPGeneralAbortReason.UserSpecific, abortReason,
-                this.getReturnMessageOnError(), callback);
-        }
-        catch(Exception ex)
-    	{
-        	this.state = oldState; 
-            setUserObject(getUserObject());
-    	} 	        
-    }
+		CAPDialogState oldState = getState();
+		this.setState(CAPDialogState.EXPUNGED);
+		try {
+			// this.setNormalDialogShutDown();
+			this.capProviderImpl.fireTCAbort(this.getTcapDialog(), CAPGeneralAbortReason.UserSpecific, abortReason,
+					this.getReturnMessageOnError(), callback);
+		} catch (Exception ex) {
+			this.state = oldState;
+			setUserObject(getUserObject());
+		}
+	}
 
-    @Override
-    public void processInvokeWithoutAnswer(Integer invokeId) {
-        this.tcapDialog.processInvokeWithoutAnswer(invokeId);
-    }
+	@Override
+	public void processInvokeWithoutAnswer(Integer invokeId) {
+		this.tcapDialog.processInvokeWithoutAnswer(invokeId);
+	}
 
-    @Override
-    public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,CAPMessage param,Boolean isRequest,Boolean isLastResponse) throws CAPException {
-        try {
-        	if(param!=null)
-                capProviderImpl.getCAPStack().newMessageSent(param.getMessageType().name(), getNetworkId());               
+	@Override
+	public Integer sendDataComponent(Integer invokeId, Integer linkedId, InvokeClass invokeClass, Long customTimeout,
+			Integer operationCode, CAPMessage param, Boolean isRequest, Boolean isLastResponse) throws CAPException {
+		try {
+			if (param != null)
+				capProviderImpl.getCAPStack().newMessageSent(param.getMessageType().name(), getNetworkId());
 
-        	if(operationCode!=null && (param!=null || isRequest))
-        		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
-        	else
-        		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, null, param, isRequest, isLastResponse);
-        } catch (TCAPSendException | TCAPException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-    }
+			if (operationCode != null && (param != null || isRequest))
+				return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout,
+						TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
+			else
+				return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, null, param, isRequest,
+						isLastResponse);
+		} catch (TCAPSendException | TCAPException e) {
+			throw new CAPException(e.getMessage(), e);
+		}
+	}
 
-    @Override
-    public void sendErrorComponent(Integer invokeId, CAPErrorMessage mem) throws CAPException {
-    	try {
-    		if(mem!=null)
-                capProviderImpl.getCAPStack().newErrorSent(CAPErrorCode.translate(mem.getErrorCode()), getNetworkId());               
+	@Override
+	public void sendErrorComponent(Integer invokeId, CAPErrorMessage mem) throws CAPException {
+		try {
+			if (mem != null)
+				capProviderImpl.getCAPStack().newErrorSent(CAPErrorCode.translate(mem.getErrorCode()), getNetworkId());
 
-        	if(mem instanceof CAPErrorMessageParameterless)
-        		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);
-        	else
-        		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), mem);
+			if (mem instanceof CAPErrorMessageParameterless)
+				this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);
+			else
+				this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), mem);
 
-        } catch (TCAPSendException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-    }
+		} catch (TCAPSendException e) {
+			throw new CAPException(e.getMessage(), e);
+		}
+	}
 
-    @Override
+	@Override
 	public void sendRejectComponent(Integer invokeId, Problem problem) throws CAPException {
-        try {
-            this.tcapDialog.sendReject(invokeId, problem);
+		try {
+			this.tcapDialog.sendReject(invokeId, problem);
 
-        } catch (TCAPSendException e) {
-            throw new CAPException(e.getMessage(), e);
-        }
-    }
+		} catch (TCAPSendException e) {
+			throw new CAPException(e.getMessage(), e);
+		}
+	}
 
-    @Override
-    public void resetInvokeTimer(Integer invokeId) throws CAPException {
+	@Override
+	public void resetInvokeTimer(Integer invokeId) throws CAPException {
 
-        try {
-            this.getTcapDialog().resetTimer(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException("TCAPException occure: " + e.getMessage(), e);
-        }
-    }
+		try {
+			this.getTcapDialog().resetTimer(invokeId);
+		} catch (TCAPException e) {
+			throw new CAPException("TCAPException occure: " + e.getMessage(), e);
+		}
+	}
 
-    @Override
-    public boolean cancelInvocation(Integer invokeId) throws CAPException {
-        try {
-            return this.getTcapDialog().cancelInvocation(invokeId);
-        } catch (TCAPException e) {
-            throw new CAPException("TCAPException occure: " + e.getMessage(), e);
-        }
-    }
+	@Override
+	public boolean cancelInvocation(Integer invokeId) throws CAPException {
+		try {
+			return this.getTcapDialog().cancelInvocation(invokeId);
+		} catch (TCAPException e) {
+			throw new CAPException("TCAPException occure: " + e.getMessage(), e);
+		}
+	}
 
-    @Override
+	@Override
 	public Externalizable getUserObject() {
-    	Externalizable tcapObject = this.tcapDialog.getUserObject();
-    	if(tcapObject == null)
-    		return null;
-    	else if(!(tcapObject instanceof CAPUserObject))
-    		return tcapObject;
-    	
-        return ((CAPUserObject)this.tcapDialog.getUserObject()).getRealObject();
-    }
+		Externalizable tcapObject = this.tcapDialog.getUserObject();
+		if (tcapObject == null)
+			return null;
+		else if (!(tcapObject instanceof CAPUserObject))
+			return tcapObject;
 
-    @Override
+		return ((CAPUserObject) this.tcapDialog.getUserObject()).getRealObject();
+	}
+
+	@Override
 	public void setUserObject(Externalizable userObject) {
-        this.tcapDialog.setUserObject(new CAPUserObject(state, returnMessageOnError, appCntx, userObject));
-    }
+		this.tcapDialog.setUserObject(new CAPUserObject(state, returnMessageOnError, appCntx, userObject));
+	}
 
-    @Override
-    public CAPApplicationContext getApplicationContext() {
-        return appCntx;
-    }
+	@Override
+	public CAPApplicationContext getApplicationContext() {
+		return appCntx;
+	}
 
-    @Override
-    public int getMaxUserDataLength() {
-        return this.getTcapDialog().getMaxUserDataLength();
-    }
+	@Override
+	public int getMaxUserDataLength() {
+		return this.getTcapDialog().getMaxUserDataLength();
+	}
 
-    @Override
-    public int getMessageUserDataLengthOnSend() throws CAPException {
+	@Override
+	public int getMessageUserDataLengthOnSend() throws CAPException {
 
-        try {
-            switch (this.tcapDialog.getState()) {
-                case Idle:
-                    ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
-                            .createApplicationContextName(this.appCntx.getOID());
+		try {
+			switch (this.tcapDialog.getState()) {
+			case Idle:
+				ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+						.createApplicationContextName(this.appCntx.getOID());
 
-                    TCBeginRequest tb = this.capProviderImpl.encodeTCBegin(this.getTcapDialog(), acn, this.gprsReferenceNumber);
-                    return tcapDialog.getDataLength(tb);
+				TCBeginRequest tb = this.capProviderImpl.encodeTCBegin(this.getTcapDialog(), acn,
+						this.gprsReferenceNumber);
+				return tcapDialog.getDataLength(tb);
 
-                case Active:
-                    // Its Active send TC-CONTINUE
+			case Active:
+				// Its Active send TC-CONTINUE
 
-                    TCContinueRequest tc = this.capProviderImpl.encodeTCContinue(this.getTcapDialog(), null, null);
-                    return tcapDialog.getDataLength(tc);
+				TCContinueRequest tc = this.capProviderImpl.encodeTCContinue(this.getTcapDialog(), null, null);
+				return tcapDialog.getDataLength(tc);
 
-                case InitialReceived:
-                    // Its first Reply to TC-Begin
+			case InitialReceived:
+				// Its first Reply to TC-Begin
 
-                    ApplicationContextName acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
-                            .createApplicationContextName(this.appCntx.getOID());
+				ApplicationContextName acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+						.createApplicationContextName(this.appCntx.getOID());
 
-                    tc = this.capProviderImpl.encodeTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber);
-                    return tcapDialog.getDataLength(tc);
-				default:
-					break;
-            }
-        } catch (TCAPSendException e) {
-            throw new CAPException("TCAPSendException when getMessageUserDataLengthOnSend", e);
-        }
+				tc = this.capProviderImpl.encodeTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber);
+				return tcapDialog.getDataLength(tc);
+			default:
+				break;
+			}
+		} catch (TCAPSendException e) {
+			throw new CAPException("TCAPSendException when getMessageUserDataLengthOnSend", e);
+		}
 
-        throw new CAPException("Bad TCAP Dialog state: " + this.tcapDialog.getState());
-    }
+		throw new CAPException("Bad TCAP Dialog state: " + this.tcapDialog.getState());
+	}
 
-    @Override
-    public int getMessageUserDataLengthOnClose(boolean prearrangedEnd) throws CAPException {
-        if (prearrangedEnd)
-            // we do not send any data in prearrangedEnd dialog termination
-            return 0;
+	@Override
+	public int getMessageUserDataLengthOnClose(boolean prearrangedEnd) throws CAPException {
+		if (prearrangedEnd)
+			// we do not send any data in prearrangedEnd dialog termination
+			return 0;
 
-        try {
-            switch (this.tcapDialog.getState()) {
-                case InitialReceived:
-                    ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
-                            .createApplicationContextName(this.appCntx.getOID());
+		try {
+			switch (this.tcapDialog.getState()) {
+			case InitialReceived:
+				ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
+						.createApplicationContextName(this.appCntx.getOID());
 
-                    TCEndRequest te = this.capProviderImpl.encodeTCEnd(this.getTcapDialog(), prearrangedEnd, acn,
-                            this.gprsReferenceNumber);
-                    return tcapDialog.getDataLength(te);
+				TCEndRequest te = this.capProviderImpl.encodeTCEnd(this.getTcapDialog(), prearrangedEnd, acn,
+						this.gprsReferenceNumber);
+				return tcapDialog.getDataLength(te);
 
-                case Active:
-                    te = this.capProviderImpl.encodeTCEnd(this.getTcapDialog(), prearrangedEnd, null, null);
-                    return tcapDialog.getDataLength(te);
-				default:
-					break;
-            }
-        } catch (TCAPSendException e) {
-            throw new CAPException("TCAPSendException when getMessageUserDataLengthOnSend", e);
-        }
+			case Active:
+				te = this.capProviderImpl.encodeTCEnd(this.getTcapDialog(), prearrangedEnd, null, null);
+				return tcapDialog.getDataLength(te);
+			default:
+				break;
+			}
+		} catch (TCAPSendException e) {
+			throw new CAPException("TCAPSendException when getMessageUserDataLengthOnSend", e);
+		}
 
-        throw new CAPException("Bad TCAP Dialog state: " + this.tcapDialog.getState());
-    }
+		throw new CAPException("Bad TCAP Dialog state: " + this.tcapDialog.getState());
+	}
 
-    @Override
-    public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("CAPDialog: LocalDialogId=").append(this.getLocalDialogId()).append(" RemoteDialogId=")
-                .append(this.getRemoteDialogId()).append(" CAPDialogState=").append(this.getState())
-                .append(" CAPApplicationContext=").append(this.appCntx).append(" TCAPDialogState=")
-                .append(this.tcapDialog.getState());
-        return sb.toString();
-    }
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("CAPDialog: LocalDialogId=").append(this.getLocalDialogId()).append(" RemoteDialogId=")
+				.append(this.getRemoteDialogId()).append(" CAPDialogState=").append(this.getState())
+				.append(" CAPApplicationContext=").append(this.appCntx).append(" TCAPDialogState=")
+				.append(this.tcapDialog.getState());
+		return sb.toString();
+	}
 
-    protected enum DelayedAreaState {
-        No, Continue, End, PrearrangedEnd;
-    }
+	protected enum DelayedAreaState {
+		No, Continue, End, PrearrangedEnd;
+	}
 
-    @Override
+	@Override
 	public long getIdleTaskTimeout() {
-        return tcapDialog.getIdleTaskTimeout();
-    }
+		return tcapDialog.getIdleTaskTimeout();
+	}
 
-    @Override
+	@Override
 	public void setIdleTaskTimeout(long idleTaskTimeoutMs) {
-        tcapDialog.setIdleTaskTimeout(idleTaskTimeoutMs);
-    }
+		tcapDialog.setIdleTaskTimeout(idleTaskTimeoutMs);
+	}
 
-    @Override
-    public int getTimerCircuitSwitchedCallControlShort() {
-        return capStackConfigurationManagement.getTimerCircuitSwitchedCallControlShort();
-    }
+	@Override
+	public int getTimerCircuitSwitchedCallControlShort() {
+		return capStackConfigurationManagement.getTimerCircuitSwitchedCallControlShort();
+	}
 
-    @Override
-    public int getTimerCircuitSwitchedCallControlMedium() {
-        return capStackConfigurationManagement.getTimerCircuitSwitchedCallControlMedium();
-    }
+	@Override
+	public int getTimerCircuitSwitchedCallControlMedium() {
+		return capStackConfigurationManagement.getTimerCircuitSwitchedCallControlMedium();
+	}
 
-    @Override
-    public int getTimerCircuitSwitchedCallControlLong() {
-        return capStackConfigurationManagement.getTimerCircuitSwitchedCallControlLong();
-    }
+	@Override
+	public int getTimerCircuitSwitchedCallControlLong() {
+		return capStackConfigurationManagement.getTimerCircuitSwitchedCallControlLong();
+	}
 
-    @Override
-    public int getTimerSmsShort() {
-        return capStackConfigurationManagement.getTimerSmsShort();
-    }
+	@Override
+	public int getTimerSmsShort() {
+		return capStackConfigurationManagement.getTimerSmsShort();
+	}
 
-    @Override
-    public int getTimerGprsShort() {
-        return capStackConfigurationManagement.getTimerGprsShort();
-    }
+	@Override
+	public int getTimerGprsShort() {
+		return capStackConfigurationManagement.getTimerGprsShort();
+	}
 }

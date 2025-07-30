@@ -55,7 +55,7 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-public abstract class EventTestHarness /* extends TestCase */ implements ISUPListener {
+public abstract class EventTestHarness implements ISUPListener {
 	private WorkerPool workerPool;
 	protected ISUPStack stack;
 	protected ISUPProvider provider;
@@ -91,23 +91,35 @@ public abstract class EventTestHarness /* extends TestCase */ implements ISUPLis
 		userPart = new TimerTestMtp3UserPart(workerPool);
 		userPart.start();
 
-		this.stack = new ISUPStackImpl(localSpc, ni, workerPool.getPeriodicQueue());
-		this.provider = this.stack.getIsupProvider();
-		this.provider.addListener(listenerUUID, this);
-		this.stack.setMtp3UserPart(this.userPart);
+		stack = new ISUPStackImpl(localSpc, ni, workerPool.getPeriodicQueue());
+		provider = this.stack.getIsupProvider();
+		provider.addListener(listenerUUID, this);
+		stack.setMtp3UserPart(this.userPart);
+
 		CircuitManagerImpl cm = new CircuitManagerImpl();
 		cm.addCircuit(1, dpc);
-		this.stack.setCircuitManager(cm);
-		this.stack.start();
+		stack.setCircuitManager(cm);
+		stack.start();
+
 		localEventsReceived = new ArrayList<EventTestHarness.EventReceived>();
 		remoteEventsReceived = new ArrayList<EventTestHarness.EventReceived>();
 	}
 
 	public void tearDown() throws Exception {
-		// this is done in tests
-		// this.stack.stop();
+		if (stack != null) {
+			stack.stop();
+			stack = null;
+		}
 
-		this.workerPool.stop();
+		if (userPart != null) {
+			userPart.stop();
+			userPart = null;
+		}
+
+		if (workerPool != null) {
+			workerPool.stop();
+			workerPool = null;
+		}
 	}
 
 	protected void compareEvents(List<EventReceived> expectedLocalEvents,
@@ -148,13 +160,11 @@ public abstract class EventTestHarness /* extends TestCase */ implements ISUPLis
 	@Override
 	public void onEvent(ISUPEvent event) {
 		this.localEventsReceived.add(new MessageEventReceived(System.currentTimeMillis(), event));
-
 	}
 
 	@Override
 	public void onTimeout(ISUPTimeoutEvent event) {
 		this.localEventsReceived.add(new TimeoutEventReceived(System.currentTimeMillis(), event));
-
 	}
 
 	// method implemented by test, to answer stack.
@@ -222,7 +232,7 @@ public abstract class EventTestHarness /* extends TestCase */ implements ISUPLis
 			if (getClass() != obj.getClass())
 				return false;
 			EventReceived other = (EventReceived) obj;
-			
+
 			int threshold = 200;
 			if (tstamp != other.tstamp)
 				// we have some tolerance
@@ -283,13 +293,13 @@ public abstract class EventTestHarness /* extends TestCase */ implements ISUPLis
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
-			
+
 			if (!super.equals(obj))
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
 			TimeoutEventReceived other = (TimeoutEventReceived) obj;
-			
+
 			if (event == null) {
 				if (other.event != null)
 					return false;

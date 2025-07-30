@@ -59,6 +59,7 @@ import com.mobius.software.common.dal.timers.TaskCallback;
 public class ClientTest implements TCListener {
 	// encoded Application Context Name
 	public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
+
 	private TCAPProvider tcapProvider;
 	private Dialog clientDialog;
 
@@ -140,33 +141,24 @@ public class ClientTest implements TCListener {
 
 	@Override
 	public void onTCPAbort(TCPAbortIndication ind) {
-		// TODO Auto-generated method stub
+		// not going to happen
 	}
 
 	@Override
 	public void onTCUserAbort(TCUserAbortIndication ind) {
-		// TODO Auto-generated method stub
+		// not going to happen
 	}
 
 	@Override
 	public void onTCNotice(TCNoticeIndication ind) {
-		// TODO Auto-generated method stub
-
+		// not going to happen
 	}
 
 	public static void main(String[] args) {
-
 		try {
 			ClientTest c = new ClientTest();
 			c.sendInvoke();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TCAPException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TCAPSendException e) {
-			// TODO Auto-generated catch block
+		} catch (NamingException | TCAPException | TCAPSendException e) {
 			e.printStackTrace();
 		}
 	}

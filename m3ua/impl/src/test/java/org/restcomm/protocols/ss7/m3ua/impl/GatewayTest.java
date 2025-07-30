@@ -77,11 +77,14 @@ public class GatewayTest {
 	private static final String CLIENT_HOST = "127.0.0.1";
 	private static final int CLIENT_PORT = 2366;
 
+	private static final int CONNECT_DELLAY = 5 * 1000;
+
+	private static final ParameterFactoryImpl paramFactory = new ParameterFactoryImpl();
+
 	private WorkerPool workerPool;
 
 	private Management sctpManagement = null;
 	private M3UAManagementImpl m3uaMgmt = null;
-	private ParameterFactoryImpl factory = new ParameterFactoryImpl();
 
 	private AsImpl remAs;
 	private AspImpl remAsp;
@@ -106,11 +109,11 @@ public class GatewayTest {
 
 		this.sctpManagement = new SctpManagementImpl("GatewayTest", 4, 4, 4);
 		this.sctpManagement.start();
-		// setting connection delay to 5 secs
-		this.sctpManagement.setConnectDelay(1000 * 5);
+		this.sctpManagement.setConnectDelay(CONNECT_DELLAY);
 		this.sctpManagement.removeAllResourses();
 
 		UUIDGenerator uuidGenerator = new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
+
 		this.m3uaMgmt = new M3UAManagementImpl("GatewayTest", null, uuidGenerator, workerPool);
 		this.m3uaMgmt.setTransportManagement(this.sctpManagement);
 		this.m3uaMgmt.addMtp3UserPartListener(mtp3UserPartListener);
@@ -135,7 +138,7 @@ public class GatewayTest {
 		logger.debug("Starting client");
 		client.start();
 
-		Thread.sleep(10000); // 10000
+		Thread.sleep(10000);
 
 		// Both AS and ASP should be ACTIVE now
 		AspState.getState(remAsp.getPeerFSM().getState().getName());
@@ -176,9 +179,7 @@ public class GatewayTest {
 		assertEquals(mtp3UserPartListener.getReceivedData().size(), 2);
 	}
 
-	/**
-	 * @return true if sctp is supported by this OS and false in not
-	 */
+	// retunrs true if sctp is supported by this OS and false in not
 	public static boolean checkSctpEnabled() {
 		try {
 			SctpChannel socketChannel = SctpChannel.open();
@@ -201,8 +202,8 @@ public class GatewayTest {
 
 			// 2. Create AS
 			// m3ua as create rc <rc> <ras-name>
-			RoutingContext rc = factory.createRoutingContext(new long[] { 100l });
-			TrafficModeType trafficModeType = factory.createTrafficModeType(TrafficModeType.Loadshare);
+			RoutingContext rc = paramFactory.createRoutingContext(new long[] { 100l });
+			TrafficModeType trafficModeType = paramFactory.createTrafficModeType(TrafficModeType.Loadshare);
 			localAs = (AsImpl) m3uaMgmt.createAs("client-testas", Functionality.AS, ExchangeType.SE, IPSPType.CLIENT,
 					rc, trafficModeType, 1, null);
 
@@ -215,7 +216,6 @@ public class GatewayTest {
 			localAsp = m3uaMgmt.assignAspToAs("client-testas", "client-testasp");
 
 			// 5. Define Route
-			// Define Route
 			m3uaMgmt.addRoute(1408, -1, -1, "client-testas");
 
 			// 6. Start ASP
@@ -288,8 +288,8 @@ public class GatewayTest {
 			// 4. Create RAS
 			// m3ua ras create rc <rc> rk dpc <dpc> opc <opc-list> si <si-list>
 			// traffic-mode {broadcast|loadshare|override} <ras-name>
-			RoutingContext rc = factory.createRoutingContext(new long[] { 100l });
-			TrafficModeType trafficModeType = factory.createTrafficModeType(TrafficModeType.Loadshare);
+			RoutingContext rc = paramFactory.createRoutingContext(new long[] { 100l });
+			TrafficModeType trafficModeType = paramFactory.createTrafficModeType(TrafficModeType.Loadshare);
 			remAs = (AsImpl) m3uaMgmt.createAs("server-testas", Functionality.SGW, ExchangeType.SE, IPSPType.CLIENT, rc,
 					trafficModeType, 1, null);
 
@@ -359,24 +359,24 @@ public class GatewayTest {
 		}
 
 		@Override
-		public void onMtp3PauseMessage(Mtp3PausePrimitive arg0) {
+		public void onMtp3PauseMessage(Mtp3PausePrimitive pauseMessage) {
 		}
 
 		@Override
-		public void onMtp3ResumeMessage(Mtp3ResumePrimitive arg0) {
+		public void onMtp3ResumeMessage(Mtp3ResumePrimitive resumeMessage) {
 		}
 
 		@Override
-		public void onMtp3StatusMessage(Mtp3StatusPrimitive arg0) {
+		public void onMtp3StatusMessage(Mtp3StatusPrimitive statusMessage) {
 		}
 
 		@Override
-		public void onMtp3TransferMessage(Mtp3TransferPrimitive value) {
-			receivedData.offer(value);
+		public void onMtp3TransferMessage(Mtp3TransferPrimitive transferMessage) {
+			receivedData.offer(transferMessage);
 		}
 
 		@Override
-		public void onMtp3EndCongestionMessage(Mtp3EndCongestionPrimitive msg) {
+		public void onMtp3EndCongestionMessage(Mtp3EndCongestionPrimitive endCongestionMessage) {
 		}
 	}
 }
