@@ -84,6 +84,6 @@ public class NetworkAppearanceImpl extends ParameterImpl implements NetworkAppea
 
     @Override
     public String toString() {
-        return String.format("NetworkAppearance value=%d", value);
+        return String.format("NetworkAppearance value=%d", na);
     }
 }
