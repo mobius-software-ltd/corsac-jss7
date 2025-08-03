@@ -36,15 +36,17 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
  * @author yulianoifa
  *
  */
-public class Server extends EventTestHarness {
+public class Server extends MAPTestHarness {
 
 	private static Logger logger = LogManager.getLogger(Server.class);
 
 	public MAPStack mapStack;
 	public MAPProvider mapProvider;
 
-	protected MAPParameterFactory mapParameterFactory;
-	protected MAPErrorMessageFactory mapErrorMessageFactory;
+	public MAPParameterFactory mapParameterFactory;
+	public MAPErrorMessageFactory mapErrorMessageFactory;
+
+	private UUID listenerID = UUID.randomUUID();
 
 	public Server(MAPStack mapStack, SccpAddress thisAddress, SccpAddress remoteAddress) {
 		super(logger);
@@ -55,7 +57,7 @@ public class Server extends EventTestHarness {
 		this.mapParameterFactory = this.mapProvider.getMAPParameterFactory();
 		this.mapErrorMessageFactory = this.mapProvider.getMAPErrorMessageFactory();
 
-		this.mapProvider.addMAPDialogListener(UUID.randomUUID(), this);
+		this.mapProvider.addMAPDialogListener(listenerID, this);
 		this.mapProvider.getMAPServiceSupplementary().addMAPServiceListener(this);
 		this.mapProvider.getMAPServiceSms().addMAPServiceListener(this);
 		this.mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
@@ -71,6 +73,26 @@ public class Server extends EventTestHarness {
 		this.mapProvider.getMAPServiceCallHandling().acivate();
 		this.mapProvider.getMAPServiceOam().acivate();
 		this.mapProvider.getMAPServicePdpContextActivation().acivate();
+	}
+
+	public void stop() {
+		mapProvider.removeMAPDialogListener(listenerID);
+
+		mapProvider.getMAPServiceSupplementary().deactivate();
+		mapProvider.getMAPServiceSms().deactivate();
+		mapProvider.getMAPServiceMobility().deactivate();
+		mapProvider.getMAPServiceLsm().deactivate();
+		mapProvider.getMAPServiceCallHandling().deactivate();
+		mapProvider.getMAPServiceOam().deactivate();
+		mapProvider.getMAPServicePdpContextActivation().deactivate();
+
+		mapProvider.getMAPServiceSupplementary().removeMAPServiceListener(this);
+		mapProvider.getMAPServiceSms().removeMAPServiceListener(this);
+		mapProvider.getMAPServiceMobility().removeMAPServiceListener(this);
+		mapProvider.getMAPServiceLsm().removeMAPServiceListener(this);
+		mapProvider.getMAPServiceCallHandling().removeMAPServiceListener(this);
+		mapProvider.getMAPServiceOam().removeMAPServiceListener(this);
+		mapProvider.getMAPServicePdpContextActivation().removeMAPServiceListener(this);
 	}
 
 	public void debug(String message) {

@@ -46,17 +46,18 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  *
  * @author yulian.oifa
  */
-public class Server extends EventTestHarness {
+public class Server extends INAPTestHarness {
 
 	private static Logger logger = LogManager.getLogger(Server.class);
 
 	public INAPStack inapStack;
 	public INAPProvider inapProvider;
 
-	protected INAPParameterFactory inapParameterFactory;
-	protected INAPErrorMessageFactory inapErrorMessageFactory;
-	protected ISUPParameterFactory isupParameterFactory;
+	public INAPParameterFactory inapParameterFactory;
+	public INAPErrorMessageFactory inapErrorMessageFactory;
+	public ISUPParameterFactory isupParameterFactory;
 
+	public UUID listenerID = UUID.randomUUID();
 	protected INAPDialog serverCscDialog;
 
 	// private boolean _S_recievedDialogRequest;
@@ -78,7 +79,7 @@ public class Server extends EventTestHarness {
 
 		this.inapErrorMessageFactory = this.inapProvider.getINAPErrorMessageFactory();
 
-		this.inapProvider.addINAPDialogListener(UUID.randomUUID(), this);
+		this.inapProvider.addINAPDialogListener(listenerID, this);
 		this.inapProvider.getINAPServiceCircuitSwitchedCall().addINAPServiceListener(this);
 
 		this.inapProvider.getINAPServiceCircuitSwitchedCall().acivate();
@@ -132,6 +133,10 @@ public class Server extends EventTestHarness {
 			public void onError(Exception exception) {
 			}
 		});
+	}
+
+	public INAPDialog getCurrentDialog() {
+		return serverCscDialog;
 	}
 
 	public void debug(String message) {

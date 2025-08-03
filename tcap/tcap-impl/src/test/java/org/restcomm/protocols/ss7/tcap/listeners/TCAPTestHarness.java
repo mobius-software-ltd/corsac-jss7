@@ -199,22 +199,6 @@ public abstract class TCAPTestHarness extends TestEventHarness<EventType> implem
 	}
 
 	@Override
-	protected void handleReceived(EventType eventType, Object eventSource) {
-		super.handleReceived(eventType, eventSource);
-
-		if (logger.isDebugEnabled())
-			logger.debug("Received " + eventType);
-	}
-
-	@Override
-	protected void handleSent(EventType eventType, Object eventSource) {
-		super.handleSent(eventType, eventSource);
-
-		if (logger.isDebugEnabled())
-			logger.debug("Sent " + eventType);
-	}
-
-	@Override
 	public void onTCUni(TCUniIndication ind) {
 		this.dialog = ind.getDialog();
 		super.handleReceived(EventType.Uni, ind);

@@ -111,8 +111,8 @@ public class SccpHarness {
 
 	public void tearDown() {
 		if (workerPool != null) {
-			this.workerPool.stop();
-			this.workerPool = null;
+			workerPool.stop();
+			workerPool = null;
 		}
 
 		try {

@@ -151,6 +151,7 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.functional.MAPFunctionalTest;
+import org.restcomm.protocols.ss7.map.functional.listeners.events.EventType;
 import org.restcomm.protocols.ss7.map.primitives.ExternalSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.SignalInfoImpl;
@@ -190,7 +191,7 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-public class Client extends EventTestHarness {
+public class Client extends MAPTestHarness {
 	private static Logger logger = LogManager.getLogger(Client.class);
 
 	protected SccpAddress thisAddress;
@@ -199,7 +200,7 @@ public class Client extends EventTestHarness {
 	private MAPStack mapStack;
 	protected MAPProvider mapProvider;
 
-	protected MAPParameterFactory mapParameterFactory;
+	public MAPParameterFactory mapParameterFactory;
 
 	public MAPDialogSupplementary clientDialog;
 	public MAPDialogSms clientDialogSms;
@@ -208,6 +209,8 @@ public class Client extends EventTestHarness {
 	public MAPDialogCallHandling clientDialogCallHandling;
 	public MAPDialogOam clientDialogOam;
 	public MAPDialogPdpContextActivation clientDialogPdpContextActivation;
+
+	private UUID listenerID = UUID.randomUUID();
 
 	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
 		@Override
@@ -228,7 +231,7 @@ public class Client extends EventTestHarness {
 
 		this.mapParameterFactory = this.mapProvider.getMAPParameterFactory();
 
-		this.mapProvider.addMAPDialogListener(UUID.randomUUID(), this);
+		this.mapProvider.addMAPDialogListener(listenerID, this);
 		this.mapProvider.getMAPServiceSupplementary().addMAPServiceListener(this);
 		this.mapProvider.getMAPServiceSms().addMAPServiceListener(this);
 		this.mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
@@ -2134,4 +2137,23 @@ public class Client extends EventTestHarness {
 		logger.error(message, e);
 	}
 
+	public void stop() {
+		mapProvider.removeMAPDialogListener(listenerID);
+
+		mapProvider.getMAPServiceSupplementary().deactivate();
+		mapProvider.getMAPServiceSms().deactivate();
+		mapProvider.getMAPServiceMobility().deactivate();
+		mapProvider.getMAPServiceLsm().deactivate();
+		mapProvider.getMAPServiceCallHandling().deactivate();
+		mapProvider.getMAPServiceOam().deactivate();
+		mapProvider.getMAPServicePdpContextActivation().deactivate();
+
+		mapProvider.getMAPServiceSupplementary().removeMAPServiceListener(this);
+		mapProvider.getMAPServiceSms().removeMAPServiceListener(this);
+		mapProvider.getMAPServiceMobility().removeMAPServiceListener(this);
+		mapProvider.getMAPServiceLsm().removeMAPServiceListener(this);
+		mapProvider.getMAPServiceCallHandling().removeMAPServiceListener(this);
+		mapProvider.getMAPServiceOam().removeMAPServiceListener(this);
+		mapProvider.getMAPServicePdpContextActivation().removeMAPServiceListener(this);
+	}
 }

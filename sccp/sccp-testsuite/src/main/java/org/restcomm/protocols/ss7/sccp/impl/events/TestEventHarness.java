@@ -13,12 +13,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class TestEventHarness<T> {
 	public static final int DEFAULT_EVENT_TIMEOUT = 10 * 1000;
-	private int eventTimeout = DEFAULT_EVENT_TIMEOUT;
+	protected int eventTimeout = DEFAULT_EVENT_TIMEOUT;
 
-	private AtomicInteger sequence = new AtomicInteger(0);
+	protected AtomicInteger sequence = new AtomicInteger(0);
 
-	private Queue<TestEvent<T>> observerdEvents = new ConcurrentLinkedQueue<>();
-	private Map<T, Queue<TestEvent<T>>> receivedEventsByType = new ConcurrentHashMap<>();
+	protected Queue<TestEvent<T>> observerdEvents = new ConcurrentLinkedQueue<>();
+	protected Map<T, Queue<TestEvent<T>>> receivedEventsByType = new ConcurrentHashMap<>();
 
 	protected Map<T, Semaphore> sentSemaphores = new ConcurrentHashMap<>();
 	protected Map<T, Semaphore> receivedSemaphores = new ConcurrentHashMap<>();
@@ -62,12 +62,12 @@ public abstract class TestEventHarness<T> {
 		semaphore.release();
 	}
 
-	protected void handleReceived(T eventType, Object eventSource) {
+	public void handleReceived(T eventType, Object eventSource) {
 		TestEvent<T> receivedEvent = TestEvent.createReceivedEvent(eventType, eventSource, sequence.getAndIncrement());
 		this.handleEvent(receivedEvent, this.receivedSemaphores);
 	}
 
-	protected void handleSent(T eventType, Object eventSource) {
+	public void handleSent(T eventType, Object eventSource) {
 		TestEvent<T> sentEvent = TestEvent.createSentEvent(eventType, eventSource, sequence.getAndIncrement());
 		this.handleEvent(sentEvent, this.sentSemaphores);
 	}
