@@ -48,7 +48,7 @@ public abstract class TestEventHarness<T> {
 		}
 	}
 
-	private void handleEvent(TestEvent<T> testEvent, Map<T, Semaphore> semaphores) {
+	private synchronized void handleEvent(TestEvent<T> testEvent, Map<T, Semaphore> semaphores) {
 		T eventType = testEvent.getEventType();
 
 		this.observerdEvents.add(testEvent);

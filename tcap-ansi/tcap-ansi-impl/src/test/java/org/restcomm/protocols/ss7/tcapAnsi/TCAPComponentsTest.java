@@ -672,8 +672,6 @@ public class TCAPComponentsTest extends SccpHarness {
 	}
 
 	public class ClientComponent extends TCAPAnsiTestHarness {
-		protected int step = 0;
-
 		public ClientComponent(final TCAPStack stack, final ParameterFactory parameterFactory,
 				final SccpAddress thisAddress, final SccpAddress remoteAddress) {
 			super(stack, parameterFactory, thisAddress, remoteAddress, LogManager.getLogger(ClientComponent.class));
