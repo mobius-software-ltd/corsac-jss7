@@ -1,18 +1,6 @@
 package org.restcomm.protocols.ss7.map.functional.listeners;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Arrays;
 
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
@@ -119,8 +107,10 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNo
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
+import org.restcomm.protocols.ss7.map.functional.listeners.events.EventType;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoResponseImplV3;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventHarness;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
@@ -130,177 +120,160 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
  * @author yulianoifa
  *
  */
-public class EventTestHarness implements MAPDialogListener, MAPServiceSupplementaryListener, MAPServiceSmsListener,
-		MAPServiceMobilityListener, MAPServiceLsmListener, MAPServiceCallHandlingListener, MAPServiceOamListener,
-		MAPServicePdpContextActivationListener {
-	private static final long EVENT_TIMEOUT = 10000;
-
+public abstract class MAPTestHarness extends TestEventHarness<EventType> implements MAPDialogListener,
+		MAPServiceSupplementaryListener, MAPServiceSmsListener, MAPServiceMobilityListener, MAPServiceLsmListener,
+		MAPServiceCallHandlingListener, MAPServiceOamListener, MAPServicePdpContextActivationListener {
 	private Logger logger = null;
 
-	protected Queue<TestEvent> observerdEvents = new ConcurrentLinkedQueue<TestEvent>();
-	protected AtomicInteger sequence = new AtomicInteger(0);
+	private MAPDialog currentDialog;
 
-	protected Map<EventType, Semaphore> sentSemaphores = new ConcurrentHashMap<>();
-	protected Map<EventType, Semaphore> receivedSemaphores = new ConcurrentHashMap<>();
-
-	EventTestHarness(Logger logger) {
+	public MAPTestHarness(Logger logger) {
 		this.logger = logger;
-	}
-
-	private void handleAwait(EventType eventType, Map<EventType, Semaphore> semaphores) {
-		Semaphore semaphore = semaphores.getOrDefault(eventType, new Semaphore(0));
-		semaphores.putIfAbsent(eventType, semaphore);
-
-		try {
-			boolean isAcquired = semaphore.tryAcquire(EVENT_TIMEOUT, TimeUnit.MILLISECONDS);
-			assertTrue("Event for type " + eventType + " is not acquired in " + EVENT_TIMEOUT + " milliseconds",
-					isAcquired);
-		} catch (InterruptedException e) {
-			logger.error("Interrupted exception occured while waiting for event for type " + eventType + ": " + e);
-			return;
-		}
-
-	}
-
-	public void awaitReceived(EventType eventType) {
-		handleAwait(eventType, this.receivedSemaphores);
-	}
-
-	public void awaitSent(EventType eventType) {
-		handleAwait(eventType, this.sentSemaphores);
-	}
-
-	private void handleEvent(TestEvent testEvent, Map<EventType, Semaphore> semaphores) {
-		this.observerdEvents.add(testEvent);
-
-		EventType eventType = testEvent.getEventType();
-		if (semaphores.containsKey(eventType))
-			semaphores.get(eventType).release();
-		else
-			semaphores.put(eventType, new Semaphore(1));
-	}
-
-	protected void handleReceived(EventType eventType, Object eventSource) {
-		TestEvent receivedEvent = TestEvent.createReceivedEvent(eventType, eventSource, sequence.getAndIncrement());
-		this.handleEvent(receivedEvent, this.receivedSemaphores);
-	}
-
-	protected void handleSent(EventType eventType, Object eventSource) {
-		TestEvent sentEvent = TestEvent.createSentEvent(eventType, eventSource, sequence.getAndIncrement());
-		this.handleEvent(sentEvent, this.sentSemaphores);
 	}
 
 	@Override
 	public void onDialogDelimiter(MAPDialog mapDialog) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onDialogDelimiter");
-		this.handleReceived(EventType.DialogDelimiter, mapDialog);
+		super.handleReceived(EventType.DialogDelimiter, mapDialog);
 	}
 
 	@Override
 	public void onDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
 			MAPExtensionContainer extensionContainer) {
+		currentDialog = mapDialog;
+
+		// assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+
 		this.logger.debug("onDialogRequest");
-		this.handleReceived(EventType.DialogRequest, mapDialog);
+		super.handleReceived(EventType.DialogRequest, mapDialog);
 	}
 
 	@Override
 	public void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onDialogAccept");
-		this.handleReceived(EventType.DialogAccept, mapDialog);
+		// assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+
+		super.handleReceived(EventType.DialogAccept, mapDialog);
 	}
 
 	@Override
 	public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
 			ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onDialogReject");
-		this.handleReceived(EventType.DialogReject, mapDialog);
+		super.handleReceived(EventType.DialogReject,
+				Arrays.asList(mapDialog, refuseReason, alternativeApplicationContext, extensionContainer));
 	}
 
 	@Override
 	public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason,
 			MAPExtensionContainer extensionContainer) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onDialogUserAbort");
-		this.handleReceived(EventType.DialogUserAbort, mapDialog);
+		super.handleReceived(EventType.DialogUserAbort, Arrays.asList(mapDialog, userReason, extensionContainer));
 	}
 
 	@Override
 	public void onDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
 			MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onDialogProviderAbort");
-		this.handleReceived(EventType.DialogProviderAbort, mapDialog);
+		super.handleReceived(EventType.DialogProviderAbort,
+				Arrays.asList(mapDialog, abortProviderReason, abortSource, extensionContainer));
 	}
 
 	@Override
 	public void onDialogClose(MAPDialog mapDialog) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onDialogClose");
-		this.handleReceived(EventType.DialogClose, mapDialog);
+		super.handleReceived(EventType.DialogClose, mapDialog);
 	}
 
 	@Override
 	public void onDialogNotice(MAPDialog mapDialog, MAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onDialogNotice");
-		this.handleReceived(EventType.DialogNotice, mapDialog);
+		super.handleReceived(EventType.DialogNotice, mapDialog);
 	}
 
 	@Override
 	public void onDialogRelease(MAPDialog mapDialog) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onDialogRelease");
-		this.handleReceived(EventType.DialogRelease, mapDialog);
+		super.handleReceived(EventType.DialogRelease, mapDialog);
 	}
 
 	@Override
 	public void onDialogTimeout(MAPDialog mapDialog) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onDialogTimeout");
-		this.handleReceived(EventType.DialogTimeout, mapDialog);
+		super.handleReceived(EventType.DialogTimeout, mapDialog);
 	}
 
 	@Override
 	public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onErrorComponent");
-		this.handleReceived(EventType.ErrorComponent, mapDialog);
+		super.handleReceived(EventType.ErrorComponent, mapDialog);
 	}
 
 	@Override
 	public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onRejectComponent");
 		this.logger.debug("Reject component received with problem " + problem.toString());
-		this.handleReceived(EventType.RejectComponent, mapDialog);
+		super.handleReceived(EventType.RejectComponent, mapDialog);
 	}
 
 	@Override
 	public void onInvokeTimeout(MAPDialog mapDialog, Integer invokeId) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onInvokeTimeout");
-		this.handleReceived(EventType.InvokeTimeout, mapDialog);
+		super.handleReceived(EventType.InvokeTimeout, mapDialog);
 	}
 
 	@Override
 	public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
 		this.logger.debug("onProcessUnstructuredSSRequest");
-		this.handleReceived(EventType.ProcessUnstructuredSSRequestIndication, procUnstrReqInd);
+		super.handleReceived(EventType.ProcessUnstructuredSSRequestIndication, procUnstrReqInd);
 	}
 
 	@Override
 	public void onProcessUnstructuredSSResponse(ProcessUnstructuredSSResponse procUnstrResInd) {
 		this.logger.debug("onProcessUnstructuredSSResponse");
-		this.handleReceived(EventType.ProcessUnstructuredSSResponseIndication, procUnstrResInd);
+		super.handleReceived(EventType.ProcessUnstructuredSSResponseIndication, procUnstrResInd);
 	}
 
 	@Override
 	public void onUnstructuredSSRequest(UnstructuredSSRequest unstrReqInd) {
 		this.logger.debug("onUnstructuredSSRequest");
-		this.handleReceived(EventType.UnstructuredSSRequestIndication, unstrReqInd);
+		super.handleReceived(EventType.UnstructuredSSRequestIndication, unstrReqInd);
 	}
 
 	@Override
 	public void onUnstructuredSSResponse(UnstructuredSSResponse unstrResInd) {
 		this.logger.debug("onUnstructuredSSResponse");
-		this.handleReceived(EventType.UnstructuredSSResponseIndication, unstrResInd);
+		super.handleReceived(EventType.UnstructuredSSResponseIndication, unstrResInd);
 	}
 
 	@Override
 	public void onUnstructuredSSNotifyRequest(UnstructuredSSNotifyRequest unstrNotifyInd) {
 		this.logger.debug("onUnstructuredSSNotifyRequest");
-		this.handleReceived(EventType.UnstructuredSSNotifyRequestIndication, unstrNotifyInd);
+		super.handleReceived(EventType.UnstructuredSSNotifyRequestIndication, unstrNotifyInd);
 	}
 
 	@Override
@@ -311,79 +284,79 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
 	@Override
 	public void onForwardShortMessageRequest(ForwardShortMessageRequest forwSmInd) {
 		this.logger.debug("onForwardShortMessageRequest");
-		this.handleReceived(EventType.ForwardShortMessageIndication, forwSmInd);
+		super.handleReceived(EventType.ForwardShortMessageIndication, forwSmInd);
 	}
 
 	@Override
 	public void onForwardShortMessageResponse(ForwardShortMessageResponse forwSmRespInd) {
 		this.logger.debug("onForwardShortMessageResponse");
-		this.handleReceived(EventType.ForwardShortMessageRespIndication, forwSmRespInd);
+		super.handleReceived(EventType.ForwardShortMessageRespIndication, forwSmRespInd);
 	}
 
 	@Override
 	public void onMoForwardShortMessageRequest(MoForwardShortMessageRequest moForwSmInd) {
 		this.logger.debug("onMoForwardShortMessageRequest");
-		this.handleReceived(EventType.MoForwardShortMessageIndication, moForwSmInd);
+		super.handleReceived(EventType.MoForwardShortMessageIndication, moForwSmInd);
 	}
 
 	@Override
 	public void onMoForwardShortMessageResponse(MoForwardShortMessageResponse moForwSmRespInd) {
 		this.logger.debug("onMoForwardShortMessageResponse");
-		this.handleReceived(EventType.MoForwardShortMessageRespIndication, moForwSmRespInd);
+		super.handleReceived(EventType.MoForwardShortMessageRespIndication, moForwSmRespInd);
 	}
 
 	@Override
 	public void onMtForwardShortMessageRequest(MtForwardShortMessageRequest mtForwSmInd) {
 		this.logger.debug("onMtForwardShortMessageRequest");
-		this.handleReceived(EventType.MtForwardShortMessageIndication, mtForwSmInd);
+		super.handleReceived(EventType.MtForwardShortMessageIndication, mtForwSmInd);
 	}
 
 	@Override
 	public void onMtForwardShortMessageResponse(MtForwardShortMessageResponse mtForwSmRespInd) {
 		this.logger.debug("onMtForwardShortMessageResponse");
-		this.handleReceived(EventType.MtForwardShortMessageRespIndication, mtForwSmRespInd);
+		super.handleReceived(EventType.MtForwardShortMessageRespIndication, mtForwSmRespInd);
 	}
 
 	@Override
 	public void onSendRoutingInfoForSMRequest(SendRoutingInfoForSMRequest sendRoutingInfoForSMInd) {
 		this.logger.debug("onSendRoutingInfoForSMRequest");
-		this.handleReceived(EventType.SendRoutingInfoForSMIndication, sendRoutingInfoForSMInd);
+		super.handleReceived(EventType.SendRoutingInfoForSMIndication, sendRoutingInfoForSMInd);
 	}
 
 	@Override
 	public void onSendRoutingInfoForSMResponse(SendRoutingInfoForSMResponse sendRoutingInfoForSMRespInd) {
 		this.logger.debug("onSendRoutingInfoForSMResponse");
-		this.handleReceived(EventType.SendRoutingInfoForSMRespIndication, sendRoutingInfoForSMRespInd);
+		super.handleReceived(EventType.SendRoutingInfoForSMRespIndication, sendRoutingInfoForSMRespInd);
 	}
 
 	@Override
 	public void onReportSMDeliveryStatusRequest(ReportSMDeliveryStatusRequest reportSMDeliveryStatusInd) {
 		this.logger.debug("onReportSMDeliveryStatusRequest");
-		this.handleReceived(EventType.ReportSMDeliveryStatusIndication, reportSMDeliveryStatusInd);
+		super.handleReceived(EventType.ReportSMDeliveryStatusIndication, reportSMDeliveryStatusInd);
 	}
 
 	@Override
 	public void onReportSMDeliveryStatusResponse(ReportSMDeliveryStatusResponse reportSMDeliveryStatusRespInd) {
 		this.logger.debug("onReportSMDeliveryStatusResponse");
-		this.handleReceived(EventType.ReportSMDeliveryStatusRespIndication, reportSMDeliveryStatusRespInd);
+		super.handleReceived(EventType.ReportSMDeliveryStatusRespIndication, reportSMDeliveryStatusRespInd);
 	}
 
 	@Override
 	public void onInformServiceCentreRequest(InformServiceCentreRequest informServiceCentreInd) {
 		this.logger.debug("onInformServiceCentreRequest");
-		this.handleReceived(EventType.InformServiceCentreIndication, informServiceCentreInd);
+		super.handleReceived(EventType.InformServiceCentreIndication, informServiceCentreInd);
 	}
 
 	@Override
 	public void onAlertServiceCentreRequest(AlertServiceCentreRequest alertServiceCentreInd) {
 		this.logger.debug("onAlertServiceCentreRequest");
-		this.handleReceived(EventType.AlertServiceCentreIndication, alertServiceCentreInd);
+		super.handleReceived(EventType.AlertServiceCentreIndication, alertServiceCentreInd);
 	}
 
 	@Override
 	public void onAlertServiceCentreResponse(AlertServiceCentreResponse alertServiceCentreInd) {
 		this.logger.debug("onAlertServiceCentreResponse");
-		this.handleReceived(EventType.AlertServiceCentreRespIndication, alertServiceCentreInd);
+		super.handleReceived(EventType.AlertServiceCentreRespIndication, alertServiceCentreInd);
 	}
 
 	@Override
@@ -393,31 +366,33 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
 	@Override
 	public void onDialogRequestEricsson(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
 			AddressString eriImsi, AddressString eriVlrNo) {
+		currentDialog = mapDialog;
+
 		this.logger.debug("onDialogRequestEricsson");
-		this.handleReceived(EventType.DialogEricssonRequest, mapDialog);
+		super.handleReceived(EventType.DialogEricssonRequest, mapDialog);
 	}
 
 	@Override
 	public void onUpdateLocationRequest(UpdateLocationRequest ind) {
 		this.logger.debug("onUpdateLocationRequest");
-		this.handleReceived(EventType.UpdateLocation, ind);
+		super.handleReceived(EventType.UpdateLocation, ind);
 	}
 
 	@Override
 	public void onUpdateLocationResponse(UpdateLocationResponse ind) {
 		this.logger.debug("onUpdateLocationResponse");
-		this.handleReceived(EventType.UpdateLocationResp, ind);
+		super.handleReceived(EventType.UpdateLocationResp, ind);
 	}
 
 	@Override
 	public void onSendAuthenticationInfoRequest(SendAuthenticationInfoRequest ind) {
 		if (ind instanceof SendAuthenticationInfoRequestImplV3) {
 			this.logger.debug("onSendAuthenticationInfoRequest_V3");
-			this.handleReceived(EventType.SendAuthenticationInfo_V3, ind);
+			super.handleReceived(EventType.SendAuthenticationInfo_V3, ind);
 
 		} else {
 			this.logger.debug("onSendAuthenticationInfoRequest_V2");
-			this.handleReceived(EventType.SendAuthenticationInfo_V2, ind);
+			super.handleReceived(EventType.SendAuthenticationInfo_V2, ind);
 		}
 	}
 
@@ -425,430 +400,392 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
 	public void onSendAuthenticationInfoResponse(SendAuthenticationInfoResponse ind) {
 		if (ind instanceof SendAuthenticationInfoResponseImplV3) {
 			this.logger.debug("onSendAuthenticationInfoResp_V3");
-			this.handleReceived(EventType.SendAuthenticationInfoResp_V3, ind);
+			super.handleReceived(EventType.SendAuthenticationInfoResp_V3, ind);
 		} else {
 			this.logger.debug("onSendAuthenticationInfoResp_V2");
-			this.handleReceived(EventType.SendAuthenticationInfoResp_V2, ind);
+			super.handleReceived(EventType.SendAuthenticationInfoResp_V2, ind);
 		}
 	}
 
 	@Override
 	public void onAuthenticationFailureReportRequest(AuthenticationFailureReportRequest request) {
 		this.logger.debug("onAuthenticationFailureReportRequest");
-		this.handleReceived(EventType.AuthenticationFailureReport, request);
+		super.handleReceived(EventType.AuthenticationFailureReport, request);
 	}
 
 	@Override
 	public void onAuthenticationFailureReportResponse(AuthenticationFailureReportResponse response) {
 		this.logger.debug("onAuthenticationFailureReportResponse");
-		this.handleReceived(EventType.AuthenticationFailureReport_Resp, response);
+		super.handleReceived(EventType.AuthenticationFailureReport_Resp, response);
 	}
 
 	@Override
 	public void onAnyTimeInterrogationRequest(AnyTimeInterrogationRequest request) {
 		this.logger.debug("onAnyTimeInterrogationRequest");
-		this.handleReceived(EventType.AnyTimeInterrogation, request);
+		super.handleReceived(EventType.AnyTimeInterrogation, request);
 	}
 
 	@Override
 	public void onAnyTimeInterrogationResponse(AnyTimeInterrogationResponse response) {
 		this.logger.debug("onAnyTimeInterrogationResponse");
-		this.handleReceived(EventType.AnyTimeInterrogationResp, response);
+		super.handleReceived(EventType.AnyTimeInterrogationResp, response);
 	}
 
 	@Override
 	public void onAnyTimeSubscriptionInterrogationRequest(AnyTimeSubscriptionInterrogationRequest request) {
 		this.logger.debug("onAnyTimeSubscriptionInterrogationRequest");
-		this.handleReceived(EventType.AnyTimeSubscriptionInterrogation, request);
+		super.handleReceived(EventType.AnyTimeSubscriptionInterrogation, request);
 	}
 
 	@Override
 	public void onAnyTimeSubscriptionInterrogationResponse(AnyTimeSubscriptionInterrogationResponse response) {
 		this.logger.debug("onAnyTimeSubscriptionInterrogationResponse");
-		this.handleReceived(EventType.AnyTimeSubscriptionInterrogationRes, response);
+		super.handleReceived(EventType.AnyTimeSubscriptionInterrogationRes, response);
 	}
 
 	@Override
 	public void onProvideSubscriberInfoRequest(ProvideSubscriberInfoRequest request) {
 		this.logger.debug("onProvideSubscriberInfoRequest");
-		this.handleReceived(EventType.ProvideSubscriberInfo, request);
+		super.handleReceived(EventType.ProvideSubscriberInfo, request);
 	}
 
 	@Override
 	public void onProvideSubscriberInfoResponse(ProvideSubscriberInfoResponse response) {
 		this.logger.debug("onProvideSubscriberInfoResponse");
-		this.handleReceived(EventType.ProvideSubscriberInfoResp, response);
+		super.handleReceived(EventType.ProvideSubscriberInfoResp, response);
 	}
 
 	@Override
 	public void onCheckImeiRequest(CheckImeiRequest request) {
 		this.logger.debug("onCheckImeiRequest");
-		this.handleReceived(EventType.CheckImei, request);
+		super.handleReceived(EventType.CheckImei, request);
 	}
 
 	@Override
 	public void onCheckImeiResponse(CheckImeiResponse response) {
 		this.logger.debug("onCheckImeiResponse");
-		this.handleReceived(EventType.CheckImeiResp, response);
+		super.handleReceived(EventType.CheckImeiResp, response);
 	}
 
 	@Override
 	public void onProvideSubscriberLocationRequest(ProvideSubscriberLocationRequest request) {
 		this.logger.debug("onProvideSubscriberLocationRequest");
-		this.handleReceived(EventType.ProvideSubscriberLocation, request);
+		super.handleReceived(EventType.ProvideSubscriberLocation, request);
 	}
 
 	@Override
 	public void onProvideSubscriberLocationResponse(ProvideSubscriberLocationResponse response) {
 		this.logger.debug("onProvideSubscriberLocationResponse");
-		this.handleReceived(EventType.ProvideSubscriberLocationResp, response);
+		super.handleReceived(EventType.ProvideSubscriberLocationResp, response);
 	}
 
 	@Override
 	public void onSubscriberLocationReportRequest(SubscriberLocationReportRequest request) {
 		this.logger.debug("onSubscriberLocationReportRequest");
-		this.handleReceived(EventType.SubscriberLocationReport, request);
+		super.handleReceived(EventType.SubscriberLocationReport, request);
 	}
 
 	@Override
 	public void onSubscriberLocationReportResponse(SubscriberLocationReportResponse response) {
 		this.logger.debug("onSubscriberLocationReportResponse");
-		this.handleReceived(EventType.SubscriberLocationReportResp, response);
+		super.handleReceived(EventType.SubscriberLocationReportResp, response);
 	}
 
 	@Override
 	public void onSendRoutingInfoForLCSRequest(SendRoutingInfoForLCSRequest request) {
 		this.logger.debug("onSendRoutingInforForLCSRequest");
-		this.handleReceived(EventType.SendRoutingInfoForLCS, request);
+		super.handleReceived(EventType.SendRoutingInfoForLCS, request);
 	}
 
 	@Override
 	public void onSendRoutingInfoForLCSResponse(SendRoutingInfoForLCSResponse response) {
 		this.logger.debug("onSendRoutingInforForLCSResponse");
-		this.handleReceived(EventType.SendRoutingInfoForLCSResp, response);
+		super.handleReceived(EventType.SendRoutingInfoForLCSResp, response);
 	}
 
 	@Override
 	public void onCancelLocationRequest(CancelLocationRequest request) {
 		this.logger.debug("onCancelLocationRequest");
-		this.handleReceived(EventType.CancelLocation, request);
+		super.handleReceived(EventType.CancelLocation, request);
 	}
 
 	@Override
 	public void onCancelLocationResponse(CancelLocationResponse response) {
 		this.logger.debug("onCancelLocationResponse");
-		this.handleReceived(EventType.CancelLocationResp, response);
+		super.handleReceived(EventType.CancelLocationResp, response);
 	}
 
 	@Override
 	public void onProvideRoamingNumberRequest(ProvideRoamingNumberRequest request) {
 		this.logger.debug("onProvideRoamingNumberRequest");
-		this.handleReceived(EventType.ProvideRoamingNumber, request);
+		super.handleReceived(EventType.ProvideRoamingNumber, request);
 	}
 
 	@Override
 	public void onProvideRoamingNumberResponse(ProvideRoamingNumberResponse response) {
 		this.logger.debug("onProvideRoamingNumberResponse");
-		this.handleReceived(EventType.ProvideRoamingNumberResp, response);
+		super.handleReceived(EventType.ProvideRoamingNumberResp, response);
 	}
 
 	@Override
 	public void onSendRoutingInformationRequest(SendRoutingInformationRequest request) {
 		this.logger.debug("onSendRoutingInformationRequest");
-		this.handleReceived(EventType.SendRoutingInformation, request);
+		super.handleReceived(EventType.SendRoutingInformation, request);
 	}
 
 	@Override
 	public void onSendRoutingInformationResponse(SendRoutingInformationResponse response) {
 		this.logger.debug("onSendRoutingInformationResponse");
-		this.handleReceived(EventType.SendRoutingInformationResp, response);
+		super.handleReceived(EventType.SendRoutingInformationResp, response);
 	}
 
 	@Override
 	public void onInsertSubscriberDataRequest(InsertSubscriberDataRequest request) {
 		this.logger.debug("onInsertSubscriberDataRequest");
-		this.handleReceived(EventType.InsertSubscriberData, request);
+		super.handleReceived(EventType.InsertSubscriberData, request);
 	}
 
 	@Override
 	public void onInsertSubscriberDataResponse(InsertSubscriberDataResponse response) {
 		this.logger.debug("onInsertSubscriberDataResponse");
-		this.handleReceived(EventType.InsertSubscriberDataResp, response);
+		super.handleReceived(EventType.InsertSubscriberDataResp, response);
 	}
 
 	@Override
 	public void onDeleteSubscriberDataRequest(DeleteSubscriberDataRequest request) {
 		this.logger.debug("onDeleteSubscriberDataRequest");
-		this.handleReceived(EventType.DeleteSubscriberData, request);
+		super.handleReceived(EventType.DeleteSubscriberData, request);
 	}
 
 	@Override
 	public void onDeleteSubscriberDataResponse(DeleteSubscriberDataResponse response) {
 		this.logger.debug("onDeleteSubscriberDataResponse");
-		this.handleReceived(EventType.DeleteSubscriberDataResp, response);
+		super.handleReceived(EventType.DeleteSubscriberDataResp, response);
 	}
 
 	@Override
 	public void onSendIdentificationRequest(SendIdentificationRequest request) {
 		this.logger.debug("onSendIdentificationRequest");
-		this.handleReceived(EventType.SendIdentification, request);
+		super.handleReceived(EventType.SendIdentification, request);
 	}
 
 	@Override
 	public void onSendIdentificationResponse(SendIdentificationResponse response) {
 		this.logger.debug("onSendIdentificationResponse");
-		this.handleReceived(EventType.SendIdentificationResp, response);
+		super.handleReceived(EventType.SendIdentificationResp, response);
 	}
 
 	@Override
 	public void onUpdateGprsLocationRequest(UpdateGprsLocationRequest request) {
 		this.logger.debug("onUpdateGprsLocationRequest");
-		this.handleReceived(EventType.UpdateGprsLocation, request);
+		super.handleReceived(EventType.UpdateGprsLocation, request);
 	}
 
 	@Override
 	public void onUpdateGprsLocationResponse(UpdateGprsLocationResponse response) {
 		this.logger.debug("onUpdateGprsLocationResponse");
-		this.handleReceived(EventType.UpdateGprsLocationResp, response);
+		super.handleReceived(EventType.UpdateGprsLocationResp, response);
 	}
 
 	@Override
 	public void onPurgeMSRequest(PurgeMSRequest request) {
 		this.logger.debug("onPurgeMSRequest");
-		this.handleReceived(EventType.PurgeMS, request);
+		super.handleReceived(EventType.PurgeMS, request);
 	}
 
 	@Override
 	public void onPurgeMSResponse(PurgeMSResponse response) {
 		this.logger.debug("onPurgeMSResponse");
-		this.handleReceived(EventType.PurgeMSResp, response);
+		super.handleReceived(EventType.PurgeMSResp, response);
 	}
 
 	@Override
 	public void onResetRequest(ResetRequest request) {
 		this.logger.debug("onResetRequest");
-		this.handleReceived(EventType.Reset, request);
+		super.handleReceived(EventType.Reset, request);
 	}
 
 	@Override
 	public void onForwardCheckSSIndicationRequest(ForwardCheckSSIndicationRequest request) {
 		this.logger.debug("ForwardCheckSSIndicationRequest");
-		this.handleReceived(EventType.ForwardCheckSSIndication, request);
+		super.handleReceived(EventType.ForwardCheckSSIndication, request);
 	}
 
 	@Override
 	public void onRestoreDataRequest(RestoreDataRequest request) {
 		this.logger.debug("onRestoreDataRequest");
-		this.handleReceived(EventType.RestoreData, request);
+		super.handleReceived(EventType.RestoreData, request);
 	}
 
 	@Override
 	public void onRestoreDataResponse(RestoreDataResponse response) {
 		this.logger.debug("onRestoreDataResponse");
-		this.handleReceived(EventType.RestoreDataResp, response);
+		super.handleReceived(EventType.RestoreDataResp, response);
 	}
 
 	@Override
 	public void onSendImsiRequest(SendImsiRequest request) {
 		this.logger.debug("onSendImsiRequest");
-		this.handleReceived(EventType.SendImsi, request);
+		super.handleReceived(EventType.SendImsi, request);
 	}
 
 	@Override
 	public void onSendImsiResponse(SendImsiResponse response) {
 		this.logger.debug("onSendImsiResponse");
-		this.handleReceived(EventType.SendImsiResp, response);
+		super.handleReceived(EventType.SendImsiResp, response);
 	}
 
 	@Override
 	public void onRegisterSSRequest(RegisterSSRequest request) {
 		this.logger.debug("onRegisterSSRequest");
-		this.handleReceived(EventType.RegisterSS, request);
+		super.handleReceived(EventType.RegisterSS, request);
 	}
 
 	@Override
 	public void onRegisterSSResponse(RegisterSSResponse response) {
 		this.logger.debug("onRegisterSSResponse");
-		this.handleReceived(EventType.RegisterSSResp, response);
+		super.handleReceived(EventType.RegisterSSResp, response);
 	}
 
 	@Override
 	public void onEraseSSRequest(EraseSSRequest request) {
 		this.logger.debug("onEraseSSRequest");
-		this.handleReceived(EventType.EraseSS, request);
+		super.handleReceived(EventType.EraseSS, request);
 	}
 
 	@Override
 	public void onEraseSSResponse(EraseSSResponse response) {
 		this.logger.debug("onEraseSSResponse");
-		this.handleReceived(EventType.EraseSSResp, response);
+		super.handleReceived(EventType.EraseSSResp, response);
 	}
 
 	@Override
 	public void onActivateSSRequest(ActivateSSRequest request) {
 		this.logger.debug("onActivateSSRequest");
-		this.handleReceived(EventType.ActivateSS, request);
+		super.handleReceived(EventType.ActivateSS, request);
 	}
 
 	@Override
 	public void onActivateSSResponse(ActivateSSResponse response) {
 		this.logger.debug("onActivateSSResponse");
-		this.handleReceived(EventType.ActivateSSResp, response);
+		super.handleReceived(EventType.ActivateSSResp, response);
 	}
 
 	@Override
 	public void onDeactivateSSRequest(DeactivateSSRequest request) {
 		this.logger.debug("onDeactivateSSRequest");
-		this.handleReceived(EventType.DeactivateSS, request);
+		super.handleReceived(EventType.DeactivateSS, request);
 	}
 
 	@Override
 	public void onDeactivateSSResponse(DeactivateSSResponse response) {
 		this.logger.debug("onDeactivateSSResponse");
-		this.handleReceived(EventType.DeactivateSSResp, response);
+		super.handleReceived(EventType.DeactivateSSResp, response);
 	}
 
 	@Override
 	public void onInterrogateSSRequest(InterrogateSSRequest request) {
 		this.logger.debug("onInterrogateSSRequest");
-		this.handleReceived(EventType.InterrogateSS, request);
+		super.handleReceived(EventType.InterrogateSS, request);
 	}
 
 	@Override
 	public void onInterrogateSSResponse(InterrogateSSResponse response) {
 		this.logger.debug("onInterrogateSSResponse");
-		this.handleReceived(EventType.InterrogateSSResp, response);
+		super.handleReceived(EventType.InterrogateSSResp, response);
 	}
 
 	@Override
 	public void onReadyForSMRequest(ReadyForSMRequest request) {
 		this.logger.debug("onReadyForSMRequest");
-		this.handleReceived(EventType.ReadyForSM, request);
+		super.handleReceived(EventType.ReadyForSM, request);
 	}
 
 	@Override
 	public void onReadyForSMResponse(ReadyForSMResponse response) {
 		this.logger.debug("onReadyForSMResponse");
-		this.handleReceived(EventType.ReadyForSMResp, response);
+		super.handleReceived(EventType.ReadyForSMResp, response);
 	}
 
 	@Override
 	public void onNoteSubscriberPresentRequest(NoteSubscriberPresentRequest request) {
 		this.logger.debug("onNoteSubscriberPresentRequest");
-		this.handleReceived(EventType.NoteSubscriberPresent, request);
+		super.handleReceived(EventType.NoteSubscriberPresent, request);
 	}
 
 	@Override
 	public void onSendRoutingInfoForGprsRequest(SendRoutingInfoForGprsRequest request) {
 		this.logger.debug("onSendRoutingInfoForGprsRequest");
-		this.handleReceived(EventType.SendRoutingInfoForGprs, request);
+		super.handleReceived(EventType.SendRoutingInfoForGprs, request);
 	}
 
 	@Override
 	public void onSendRoutingInfoForGprsResponse(SendRoutingInfoForGprsResponse response) {
 		this.logger.debug("onSendRoutingInfoForGprsResponse");
-		this.handleReceived(EventType.SendRoutingInfoForGprsResp, response);
+		super.handleReceived(EventType.SendRoutingInfoForGprsResp, response);
 	}
 
 	@Override
 	public void onActivateTraceModeRequest_Oam(ActivateTraceModeRequest_Oam request) {
 		this.logger.debug("onActivateTraceModeRequest");
-		this.handleReceived(EventType.ActivateTraceMode, request);
+		super.handleReceived(EventType.ActivateTraceMode, request);
 	}
 
 	@Override
 	public void onActivateTraceModeResponse_Oam(ActivateTraceModeResponse_Oam response) {
 		this.logger.debug("onActivateTraceModeResponse");
-		this.handleReceived(EventType.ActivateTraceModeResp, response);
+		super.handleReceived(EventType.ActivateTraceModeResp, response);
 	}
 
 	@Override
 	public void onActivateTraceModeRequest_Mobility(ActivateTraceModeRequest_Mobility request) {
 		this.logger.debug("onActivateTraceModeRequest");
-		this.handleReceived(EventType.ActivateTraceMode, request);
+		super.handleReceived(EventType.ActivateTraceMode, request);
 	}
 
 	@Override
 	public void onActivateTraceModeResponse_Mobility(ActivateTraceModeResponse_Mobility response) {
 		this.logger.debug("onActivateTraceModeResponse");
-		this.handleReceived(EventType.ActivateTraceModeResp, response);
+		super.handleReceived(EventType.ActivateTraceModeResp, response);
 	}
 
 	@Override
 	public void onGetPasswordRequest(GetPasswordRequest request) {
 		this.logger.debug("onGetPasswordRequest");
-		this.handleReceived(EventType.GetPassword, request);
+		super.handleReceived(EventType.GetPassword, request);
 	}
 
 	@Override
 	public void onGetPasswordResponse(GetPasswordResponse response) {
 		this.logger.debug("onGetPasswordResponse");
-		this.handleReceived(EventType.GetPasswordResp, response);
+		super.handleReceived(EventType.GetPasswordResp, response);
 	}
 
 	@Override
 	public void onRegisterPasswordRequest(RegisterPasswordRequest request) {
 		this.logger.debug("onRegisterPasswordRequest");
-		this.handleReceived(EventType.RegisterPassword, request);
+		super.handleReceived(EventType.RegisterPassword, request);
 	}
 
 	@Override
 	public void onRegisterPasswordResponse(RegisterPasswordResponse response) {
 		this.logger.debug("onRegisterPasswordResponse");
-		this.handleReceived(EventType.RegisterPasswordResp, response);
+		super.handleReceived(EventType.RegisterPasswordResp, response);
 	}
 
 	@Override
 	public void onIstCommandRequest(IstCommandRequest request) {
 		this.logger.debug("onSendIstCommandRequest");
-		this.handleReceived(EventType.IstCommand, request);
+		super.handleReceived(EventType.IstCommand, request);
 	}
 
 	@Override
 	public void onIstCommandResponse(IstCommandResponse response) {
 		this.logger.debug("onSendIstCommandResponse");
-		this.handleReceived(EventType.IstCommandResp, response);
+		super.handleReceived(EventType.IstCommandResp, response);
 	}
 
-	public void compareEvents(List<TestEvent> expectedEvents) {
-		List<TestEvent> actualEvents = new ArrayList<TestEvent>(observerdEvents);
-		int expectedSize = expectedEvents.size();
-		int actualSize = actualEvents.size();
-
-		try {
-			assertEquals("Size of received events: " + actualSize + ", does not equal expected events: " + expectedSize,
-					expectedSize, actualSize);
-
-			for (int index = 0; index < expectedSize; index++) {
-				TestEvent expected = expectedEvents.get(index);
-				TestEvent actual = actualEvents.get(index);
-
-				assertEquals(expected, actual);
-			}
-		} catch (AssertionError err) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(err.getMessage()).append("\n");
-			sb.append("Received events:").append("\n");
-			sb.append(doStringCompare(expectedEvents, actualEvents));
-
-			fail(sb.toString());
-		}
-	}
-
-	private String doStringCompare(List<TestEvent> expectedEvents, List<TestEvent> observerdEvents) {
-		StringBuilder sb = new StringBuilder();
-		int size1 = expectedEvents.size();
-		int size2 = observerdEvents.size();
-		int count = size1;
-		if (count < size2)
-			count = size2;
-
-		for (int index = 0; count > index; index++) {
-			String s1 = size1 > index ? expectedEvents.get(index).toString() : "NOP";
-			String s2 = size2 > index ? observerdEvents.get(index).toString() : "NOP";
-			sb.append(s1).append(" - ").append(s2).append("\n\n");
-		}
-
-		return sb.toString();
+	public MAPDialog getCurrentDialog() {
+		return currentDialog;
 	}
 }

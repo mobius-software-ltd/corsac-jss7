@@ -1943,14 +1943,15 @@ public class DialogImpl implements Dialog {
 		}
 	}
 
-	protected synchronized void setState(TRPseudoState newState) {
+	protected void setState(TRPseudoState newState) {
 		if (this.state.get() == TRPseudoState.Expunged)
 			return;
 
-		if (this.state.getAndSet(newState) == TRPseudoState.Expunged)
+		TRPseudoState oldState = this.state.getAndSet(newState);
+		if (oldState == TRPseudoState.Expunged)
 			this.state.set(TRPseudoState.Expunged);
 
-		if (newState == TRPseudoState.Expunged) {
+		if (oldState != TRPseudoState.Expunged && newState == TRPseudoState.Expunged) {
 			stopIdleTimer();
 			getProvider().release(this);
 		}

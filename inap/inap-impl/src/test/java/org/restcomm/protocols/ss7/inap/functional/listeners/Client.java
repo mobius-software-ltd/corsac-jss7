@@ -77,7 +77,7 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingExceptio
  *
  * @author yulianoifa
  */
-public class Client extends EventTestHarness {
+public class Client extends INAPTestHarness {
 	private static final Logger logger = LogManager.getLogger(Client.class);
 	private static final int INVOKE_TIMEOUT = 10000;
 
@@ -87,8 +87,8 @@ public class Client extends EventTestHarness {
 	public INAPStack inapStack;
 	public INAPProvider inapProvider;
 
-	protected INAPParameterFactory inapParameterFactory;
-	protected ISUPParameterFactory isupParameterFactory;
+	public INAPParameterFactory inapParameterFactory;
+	public ISUPParameterFactory isupParameterFactory;
 
 	public INAPDialogCircuitSwitchedCall clientCscDialog;
 
