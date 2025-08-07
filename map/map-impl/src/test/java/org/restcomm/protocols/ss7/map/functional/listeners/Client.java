@@ -56,7 +56,6 @@ import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
-import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
@@ -381,10 +380,16 @@ public class Client extends MAPTestHarness {
 		clientDialogSms.addAlertServiceCentreRequest(msisdn, serviceCentreAddress);
 
 		super.handleSent(EventType.AlertServiceCentreIndication, null);
-		clientDialogSms.send(dummyCallback);
+		clientDialogSms.send(new TaskCallback<Exception>() {
+			@Override
+			public void onSuccess() {
+				clientDialogSms.release();
+			}
 
-		clientDialogSms.release();
-
+			@Override
+			public void onError(Exception exception) {
+			}
+		});
 	}
 
 	public void sendEmptyV1Request() throws Exception {
@@ -1003,9 +1008,16 @@ public class Client extends MAPTestHarness {
 		// hlrList
 
 		super.handleSent(EventType.Reset, null);
-		clientDialogMobility.send(dummyCallback);
+		clientDialogMobility.send(new TaskCallback<Exception>() {
+			@Override
+			public void onSuccess() {
+				clientDialogMobility.release();
+			}
 
-		clientDialogMobility.release();
+			@Override
+			public void onError(Exception exception) {
+			}
+		});
 	}
 
 	public void sendForwardCheckSSIndicationRequest_V3() throws Exception {
@@ -1022,9 +1034,16 @@ public class Client extends MAPTestHarness {
 		clientDialogMobility.addForwardCheckSSIndicationRequest();
 
 		super.handleSent(EventType.ForwardCheckSSIndication, null);
-		clientDialogMobility.send(dummyCallback);
+		clientDialogMobility.send(new TaskCallback<Exception>() {
+			@Override
+			public void onSuccess() {
+				clientDialogMobility.release();
+			}
 
-		clientDialogMobility.release();
+			@Override
+			public void onError(Exception exception) {
+			}
+		});
 	}
 
 	public void sendRestoreData() throws Exception {
@@ -2123,18 +2142,6 @@ public class Client extends MAPTestHarness {
 
 		super.handleSent(EventType.ProcessUnstructuredSSRequestIndication, null);
 		clientDialog.send(dummyCallback);
-	}
-
-	public MAPDialog getMapDialog() {
-		return this.clientDialog;
-	}
-
-	public void debug(String message) {
-		logger.debug(message);
-	}
-
-	public void error(String message, Exception e) {
-		logger.error(message, e);
 	}
 
 	public void stop() {

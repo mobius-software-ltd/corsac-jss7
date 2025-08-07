@@ -3577,34 +3577,26 @@ public class CAPFunctionalTest extends SccpHarness {
 
 			ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
 		}
+		CAPDialogSms serverDlg;
 		server.awaitReceived(EventType.DialogDelimiter);
 		{
 			TestEvent<EventType> event = server.getNextEvent(EventType.DialogDelimiter);
 			CAPDialog capDialog = (CAPDialog) event.getEvent();
 
-			CAPDialogSms dlg = (CAPDialogSms) capDialog;
+			serverDlg = (CAPDialogSms) capDialog;
+		}
+
+		// 4. <- furnishChargingInformationSMS
+		{
 			FreeFormatDataSMS freeFormatData = server.capParameterFactory
 					.createFreeFormatDataSMS(Unpooled.wrappedBuffer(freeFD));
 			FCIBCCCAMELSequence1SMS fciBCCCAMELsequence1 = server.capParameterFactory
 					.createFCIBCCCAMELsequence1(freeFormatData, null);
-			dlg.addFurnishChargingInformationSMSRequest(fciBCCCAMELsequence1);
+			serverDlg.addFurnishChargingInformationSMSRequest(fciBCCCAMELsequence1);
 			server.handleSent(EventType.FurnishChargingInformationSMSRequest, null);
 
-			dlg.send(dummyCallback);
-
-			SMSAddressString callingPartysNumber = server.capParameterFactory
-					.createSMSAddressString(AddressNature.reserved, NumberingPlan.ISDN, "Drosd");
-			CalledPartyBCDNumber destinationSubscriberNumber = server.capParameterFactory
-					.createCalledPartyBCDNumber(AddressNature.international_number, NumberingPlan.ISDN, "1111144444");
-			ISDNAddressString smscAddress = server.capParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "1111155555");
-			dlg.addConnectSMSRequest(callingPartysNumber, destinationSubscriberNumber, smscAddress, null);
-			server.handleSent(EventType.ConnectSMSRequest, null);
-
-			dlg.close(false, dummyCallback);
+			serverDlg.send(dummyCallback);
 		}
-
-		// 4. <- furnishChargingInformationSMS
 		server.awaitSent(EventType.FurnishChargingInformationSMSRequest);
 
 		client.awaitReceived(EventType.FurnishChargingInformationSMSRequest);
@@ -3619,6 +3611,18 @@ public class CAPFunctionalTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogDelimiter);
 
 		// 5. <- connectSMS (TC-END)
+		{
+			SMSAddressString callingPartysNumber = server.capParameterFactory
+					.createSMSAddressString(AddressNature.reserved, NumberingPlan.ISDN, "Drosd");
+			CalledPartyBCDNumber destinationSubscriberNumber = server.capParameterFactory
+					.createCalledPartyBCDNumber(AddressNature.international_number, NumberingPlan.ISDN, "1111144444");
+			ISDNAddressString smscAddress = server.capParameterFactory
+					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "1111155555");
+			serverDlg.addConnectSMSRequest(callingPartysNumber, destinationSubscriberNumber, smscAddress, null);
+			server.handleSent(EventType.ConnectSMSRequest, null);
+
+			serverDlg.close(false, dummyCallback);
+		}
 		server.awaitSent(EventType.ConnectSMSRequest);
 
 		client.awaitReceived(EventType.ConnectSMSRequest);

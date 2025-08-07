@@ -157,15 +157,7 @@ public class Server extends CAPTestHarness {
 				}
 			});
 		} catch (CAPException e) {
-			this.error("Error while trying to send/close() Dialog", e);
+			logger.error("Error while trying to send/close() Dialog", e);
 		}
-	}
-
-	public void debug(String message) {
-		logger.debug(message);
-	}
-
-	public void error(String message, Exception e) {
-		logger.error(message, e);
 	}
 }

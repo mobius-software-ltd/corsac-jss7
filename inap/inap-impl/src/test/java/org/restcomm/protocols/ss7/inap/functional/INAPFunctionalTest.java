@@ -55,7 +55,6 @@ import org.restcomm.protocols.ss7.commonapp.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.INAPStackImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPApplicationContext;
 import org.restcomm.protocols.ss7.inap.api.INAPDialog;
-import org.restcomm.protocols.ss7.inap.api.INAPException;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
 import org.restcomm.protocols.ss7.inap.api.INAPProvider;
@@ -124,8 +123,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
-
-import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -683,203 +680,182 @@ public class INAPFunctionalTest extends SccpHarness {
 	 */
 	@Test
 	public void testPlayAnnouncment() throws Exception {
-
-		Client client = new Client(stack1, peer1Address, peer2Address) {
-			private int dialogStep;
-
-			@Override
-			public void onRequestReportBCSMEventRequest(RequestReportBCSMEventRequest ind) {
-				super.onRequestReportBCSMEventRequest(ind);
-
-				this.checkRequestReportBCSMEventRequest(ind);
-				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-			}
-
-			@Override
-			public void onConnectToResourceRequest(ConnectToResourceRequest ind) {
-				super.onConnectToResourceRequest(ind);
-
-				try {
-					CalledPartyNumber cpn = ind.getResourceAddress().getIPRoutingAddress().getCalledPartyNumber();
-					assertTrue(cpn.getAddress().equals("111222333"));
-					assertEquals(cpn.getInternalNetworkNumberIndicator(), CalledPartyNumber._INN_ROUTING_NOT_ALLOWED);
-					assertEquals(cpn.getNatureOfAddressIndicator(), NAINumber._NAI_INTERNATIONAL_NUMBER);
-					assertEquals(cpn.getNumberingPlanIndicator(), CalledPartyNumber._NPI_ISDN);
-				} catch (ASNParsingException e) {
-					this.error("Error while checking ConnectToResourceRequest", e);
-				}
-				assertFalse(ind.getResourceAddressNull());
-				assertNull(ind.getExtensions());
-				assertNull(ind.getServiceInteractionIndicators());
-				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-			}
-
-			private int playAnnounsmentInvokeId;
-
-			@Override
-			public void onPlayAnnouncementRequest(PlayAnnouncementRequest ind) {
-				super.onPlayAnnouncementRequest(ind);
-
-				assertEquals(ind.getInformationToSend().getTone().getToneID(), 10);
-				assertEquals((int) ind.getInformationToSend().getTone().getDuration(), 100);
-				assertTrue(ind.getDisconnectFromIPForbidden());
-				assertTrue(ind.getRequestAnnouncementCompleteNotification());
-				assertNull(ind.getExtensions());
-
-				playAnnounsmentInvokeId = ind.getInvokeId();
-
-				dialogStep = 1;
-				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-			}
-
-			@Override
-			public void onDisconnectForwardConnectionRequest(DisconnectForwardConnectionRequest ind) {
-				super.onDisconnectForwardConnectionRequest(ind);
-
-				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-			}
-
-			@Override
-			public void onReleaseCallRequest(ReleaseCallRequest ind) {
-				super.onReleaseCallRequest(ind);
-
-				CauseIndicators ci;
-				try {
-					ci = ind.getCause().getCauseIndicators();
-					assertEquals(ci.getCauseValue(), CauseIndicators._CV_SEND_SPECIAL_TONE);
-					assertEquals(ci.getCodingStandard(), CauseIndicators._CODING_STANDARD_ITUT);
-					assertNull(ci.getDiagnostics());
-					assertEquals(ci.getLocation(), CauseIndicators._LOCATION_INTERNATIONAL_NETWORK);
-				} catch (ASNParsingException e) {
-					this.error("Error while checking ReleaseCallRequest", e);
-				}
-				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-			}
-
-			@Override
-			public void onDialogDelimiter(INAPDialog inapDialog) {
-				super.onDialogDelimiter(inapDialog);
-
-				INAPDialogCircuitSwitchedCall dlg = (INAPDialogCircuitSwitchedCall) inapDialog;
-
-				try {
-					switch (dialogStep) {
-					case 1: // after PlayAnnouncementRequest
-						dlg.addSpecializedResourceReportRequest(playAnnounsmentInvokeId);
-						super.handleSent(EventType.SpecializedResourceReportRequest, null);
-						dlg.send(dummyCallback);
-
-						dialogStep = 0;
-
-						break;
-					}
-				} catch (INAPException e) {
-					this.error("Error while trying to close() Dialog", e);
-				}
-			}
-		};
-
-		Server server = new Server(this.stack2, peer2Address, peer1Address) {
-			private int dialogStep = 0;
-
-			@Override
-			public void onInitialDPRequest(InitialDPRequest ind) {
-				super.onInitialDPRequest(ind);
-
-				assertTrue(Client.checkTestInitialDp(ind));
-
-				dialogStep = 1;
-				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-			}
-
-			@Override
-			public void onSpecializedResourceReportRequest(SpecializedResourceReportRequest ind) {
-				super.onSpecializedResourceReportRequest(ind);
-
-				dialogStep = 2;
-				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-			}
-
-			@Override
-			public void onDialogDelimiter(INAPDialog inapDialog) {
-				super.onDialogDelimiter(inapDialog);
-
-				INAPDialogCircuitSwitchedCall dlg = (INAPDialogCircuitSwitchedCall) inapDialog;
-
-				try {
-					switch (dialogStep) {
-					case 1: // after InitialDp
-						RequestReportBCSMEventRequest rrc = this.getRequestReportBCSMEventRequest();
-						dlg.addRequestReportBCSMEventRequest(rrc.getBCSMEventList(), null, rrc.getExtensions());
-						super.handleSent(EventType.RequestReportBCSMEventRequest, null);
-						dlg.send(dummyCallback);
-
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException ex) {
-
-						}
-
-						CalledPartyNumber calledPartyNumber = this.isupParameterFactory.createCalledPartyNumber();
-						calledPartyNumber.setAddress("111222333");
-						calledPartyNumber.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_NOT_ALLOWED);
-						calledPartyNumber.setNatureOfAddresIndicator(NAINumber._NAI_INTERNATIONAL_NUMBER);
-						calledPartyNumber.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
-						CalledPartyNumberIsup resourceAddress_IPRoutingAddress = this.inapParameterFactory
-								.createCalledPartyNumber(calledPartyNumber);
-						dlg.addConnectToResourceRequest(resourceAddress_IPRoutingAddress, null, null);
-						super.handleSent(EventType.ConnectToResourceRequest, null);
-						dlg.send(dummyCallback);
-
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException ex) {
-
-						}
-
-						Tone tone = this.inapParameterFactory.createTone(10, 100);
-						InformationToSend informationToSend = this.inapParameterFactory.createInformationToSend(tone);
-
-						dlg.addPlayAnnouncementRequest(informationToSend, true, true, null);
-						super.handleSent(EventType.PlayAnnouncementRequest, null);
-						dlg.send(dummyCallback);
-
-						dialogStep = 0;
-
-						break;
-
-					case 2: // after SpecializedResourceReportRequest
-						dlg.addDisconnectForwardConnectionRequest(LegType.leg1);
-						super.handleSent(EventType.DisconnectForwardConnectionRequest, null);
-						dlg.send(dummyCallback);
-
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException ex) {
-
-						}
-
-						CauseIndicators causeIndicators = this.isupParameterFactory.createCauseIndicators();
-						causeIndicators.setCauseValue(CauseIndicators._CV_SEND_SPECIAL_TONE);
-						causeIndicators.setCodingStandard(CauseIndicators._CODING_STANDARD_ITUT);
-						causeIndicators.setDiagnostics(null);
-						causeIndicators.setLocation(CauseIndicators._LOCATION_INTERNATIONAL_NETWORK);
-						CauseIsup cause = this.inapParameterFactory.createCause(causeIndicators);
-						dlg.addReleaseCallRequest(cause);
-						super.handleSent(EventType.ReleaseCallRequest, null);
-						dlg.close(false, dummyCallback);
-
-						dialogStep = 0;
-
-						break;
-					}
-				} catch (INAPException e) {
-					this.error("Error while trying to close() Dialog", e);
-				}
-			}
-		};
-
+		// 1. TC-BEGIN + InitialDPRequest
 		client.sendInitialDp(INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B);
+		client.awaitSent(EventType.InitialDpRequest);
+
+		server.awaitReceived(EventType.DialogRequest);
+		server.awaitReceived(EventType.InitialDpRequest);
+		{
+			TestEvent<EventType> event = server.getNextEvent(EventType.InitialDpRequest);
+			InitialDPRequest ind = (InitialDPRequest) event.getEvent();
+
+			ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+		}
+		INAPDialogCircuitSwitchedCall serverDlg;
+		server.awaitReceived(EventType.DialogDelimiter);
+		{
+			TestEvent<EventType> event = server.getNextEvent(EventType.DialogDelimiter);
+			INAPDialog inapDialog = (INAPDialog) event.getEvent();
+
+			serverDlg = (INAPDialogCircuitSwitchedCall) inapDialog;
+		}
+
+		// 2. TC-CONTINUE + RequestReportBCSMEventRequest
+		{
+			RequestReportBCSMEventRequest rrc = server.getRequestReportBCSMEventRequest();
+			serverDlg.addRequestReportBCSMEventRequest(rrc.getBCSMEventList(), null, rrc.getExtensions());
+			server.handleSent(EventType.RequestReportBCSMEventRequest, null);
+			serverDlg.send(dummyCallback);
+		}
+		server.awaitSent(EventType.RequestReportBCSMEventRequest);
+
+		client.awaitReceived(EventType.DialogAccept);
+		client.awaitReceived(EventType.RequestReportBCSMEventRequest);
+		{
+			TestEvent<EventType> event = client.getNextEvent(EventType.RequestReportBCSMEventRequest);
+			RequestReportBCSMEventRequest ind = (RequestReportBCSMEventRequest) event.getEvent();
+
+			client.checkRequestReportBCSMEventRequest(ind);
+			ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+		}
+		client.awaitReceived(EventType.DialogDelimiter);
+
+		// 3. TC-CONTINUE + ConnectToResourceRequest
+		{
+			CalledPartyNumber calledPartyNumber = server.isupParameterFactory.createCalledPartyNumber();
+			calledPartyNumber.setAddress("111222333");
+			calledPartyNumber.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_NOT_ALLOWED);
+			calledPartyNumber.setNatureOfAddresIndicator(NAINumber._NAI_INTERNATIONAL_NUMBER);
+			calledPartyNumber.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
+			CalledPartyNumberIsup resourceAddress_IPRoutingAddress = server.inapParameterFactory
+					.createCalledPartyNumber(calledPartyNumber);
+			serverDlg.addConnectToResourceRequest(resourceAddress_IPRoutingAddress, null, null);
+			server.handleSent(EventType.ConnectToResourceRequest, null);
+			serverDlg.send(dummyCallback);
+		}
+		server.awaitSent(EventType.ConnectToResourceRequest);
+
+		client.awaitReceived(EventType.ConnectToResourceRequest);
+		{
+			TestEvent<EventType> event = client.getNextEvent(EventType.ConnectToResourceRequest);
+			ConnectToResourceRequest ind = (ConnectToResourceRequest) event.getEvent();
+
+			CalledPartyNumber cpn = ind.getResourceAddress().getIPRoutingAddress().getCalledPartyNumber();
+			assertTrue(cpn.getAddress().equals("111222333"));
+			assertEquals(cpn.getInternalNetworkNumberIndicator(), CalledPartyNumber._INN_ROUTING_NOT_ALLOWED);
+			assertEquals(cpn.getNatureOfAddressIndicator(), NAINumber._NAI_INTERNATIONAL_NUMBER);
+			assertEquals(cpn.getNumberingPlanIndicator(), CalledPartyNumber._NPI_ISDN);
+
+			assertFalse(ind.getResourceAddressNull());
+			assertNull(ind.getExtensions());
+			assertNull(ind.getServiceInteractionIndicators());
+			ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+
+		}
+		client.awaitReceived(EventType.DialogDelimiter);
+
+		// 4. TC-CONTINUE + PlayAnnouncementRequest
+		{
+			Tone tone = server.inapParameterFactory.createTone(10, 100);
+			InformationToSend informationToSend = server.inapParameterFactory.createInformationToSend(tone);
+
+			serverDlg.addPlayAnnouncementRequest(informationToSend, true, true, null);
+			server.handleSent(EventType.PlayAnnouncementRequest, null);
+			serverDlg.send(dummyCallback);
+		}
+		server.awaitSent(EventType.PlayAnnouncementRequest);
+
+		int playAnnounsmentInvokeId;
+		client.awaitReceived(EventType.PlayAnnouncementRequest);
+		{
+			TestEvent<EventType> event = client.getNextEvent(EventType.PlayAnnouncementRequest);
+			PlayAnnouncementRequest ind = (PlayAnnouncementRequest) event.getEvent();
+
+			assertEquals(ind.getInformationToSend().getTone().getToneID(), 10);
+			assertEquals((int) ind.getInformationToSend().getTone().getDuration(), 100);
+			assertTrue(ind.getDisconnectFromIPForbidden());
+			assertTrue(ind.getRequestAnnouncementCompleteNotification());
+			assertNull(ind.getExtensions());
+
+			playAnnounsmentInvokeId = ind.getInvokeId();
+			ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+		}
+		client.awaitReceived(EventType.DialogDelimiter);
+		{
+			TestEvent<EventType> event = client.getNextEvent(EventType.DialogDelimiter);
+			INAPDialog inapDialog = (INAPDialog) event.getEvent();
+
+			INAPDialogCircuitSwitchedCall dlg = (INAPDialogCircuitSwitchedCall) inapDialog;
+
+			dlg.addSpecializedResourceReportRequest(playAnnounsmentInvokeId);
+			client.handleSent(EventType.SpecializedResourceReportRequest, null);
+			dlg.send(dummyCallback);
+		}
+
+		// 5. TC-CONTINUE + SpecializedResourceReportRequest
+		client.awaitSent(EventType.SpecializedResourceReportRequest);
+
+		server.awaitReceived(EventType.SpecializedResourceReportRequest);
+		{
+			TestEvent<EventType> event = server.getNextEvent(EventType.SpecializedResourceReportRequest);
+			SpecializedResourceReportRequest ind = (SpecializedResourceReportRequest) event.getEvent();
+
+			ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+		}
+		server.awaitReceived(EventType.DialogDelimiter);
+		{
+			TestEvent<EventType> event = server.getNextEvent(EventType.DialogDelimiter);
+			INAPDialog inapDialog = (INAPDialog) event.getEvent();
+
+			serverDlg = (INAPDialogCircuitSwitchedCall) inapDialog;
+		}
+
+		// 6. TC-CONTINUE + DisconnectForwardConnectionRequest
+		{
+			serverDlg.addDisconnectForwardConnectionRequest(LegType.leg1);
+			server.handleSent(EventType.DisconnectForwardConnectionRequest, null);
+			serverDlg.send(dummyCallback);
+		}
+		server.awaitSent(EventType.DisconnectForwardConnectionRequest);
+
+		client.awaitReceived(EventType.DisconnectForwardConnectionRequest);
+		{
+			TestEvent<EventType> event = client.getNextEvent(EventType.DisconnectForwardConnectionRequest);
+			DisconnectForwardConnectionRequest ind = (DisconnectForwardConnectionRequest) event.getEvent();
+
+			ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+		}
+		client.awaitReceived(EventType.DialogDelimiter);
+
+		// 7. TC-END + ReleaseCallRequest
+		{
+			CauseIndicators causeIndicators = server.isupParameterFactory.createCauseIndicators();
+			causeIndicators.setCauseValue(CauseIndicators._CV_SEND_SPECIAL_TONE);
+			causeIndicators.setCodingStandard(CauseIndicators._CODING_STANDARD_ITUT);
+			causeIndicators.setDiagnostics(null);
+			causeIndicators.setLocation(CauseIndicators._LOCATION_INTERNATIONAL_NETWORK);
+			CauseIsup cause = server.inapParameterFactory.createCause(causeIndicators);
+			serverDlg.addReleaseCallRequest(cause);
+			server.handleSent(EventType.ReleaseCallRequest, null);
+			serverDlg.close(false, dummyCallback);
+		}
+		server.awaitSent(EventType.ReleaseCallRequest);
+
+		client.awaitReceived(EventType.ReleaseCallRequest);
+		{
+			TestEvent<EventType> event = client.getNextEvent(EventType.ReleaseCallRequest);
+			ReleaseCallRequest ind = (ReleaseCallRequest) event.getEvent();
+
+			CauseIndicators ci = ind.getCause().getCauseIndicators();
+			assertEquals(ci.getCauseValue(), CauseIndicators._CV_SEND_SPECIAL_TONE);
+			assertEquals(ci.getCodingStandard(), CauseIndicators._CODING_STANDARD_ITUT);
+			assertNull(ci.getDiagnostics());
+			assertEquals(ci.getLocation(), CauseIndicators._LOCATION_INTERNATIONAL_NETWORK);
+
+			ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+		}
+		client.awaitReceived(EventType.DialogClose);
 
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);

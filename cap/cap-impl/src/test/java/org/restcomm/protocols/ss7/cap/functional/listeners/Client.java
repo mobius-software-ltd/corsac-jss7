@@ -895,12 +895,4 @@ public class Client extends CAPTestHarness {
 //        super.handleSent(EventType.ReleaseSMSRequest, null);
 //        clientSmsDialog.send(dummyCallback);
 //    }
-
-	public void debug(String message) {
-		logger.debug(message);
-	}
-
-	public void error(String message, Exception e) {
-		logger.error(message, e);
-	}
 }
