@@ -19,20 +19,6 @@
 
 package org.restcomm.protocols.ss7.cap.functional.listeners;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPDialogListener;
@@ -106,6 +92,7 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.InitialDPSMSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ReleaseSMSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.RequestReportSMSEventRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ResetTimerSMSRequest;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventHarness;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
@@ -116,104 +103,18 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
  * @author yulianoifa
  *
  */
-public class EventTestHarness implements CAPDialogListener, CAPServiceCircuitSwitchedCallListener,
-		CAPServiceGprsListener, CAPServiceSmsListener {
-	private static final long EVENT_TIMEOUT = 10000;
-
+public class CAPTestHarness extends TestEventHarness<EventType> implements CAPDialogListener,
+		CAPServiceCircuitSwitchedCallListener, CAPServiceGprsListener, CAPServiceSmsListener {
 	private Logger logger;
 
-	protected Queue<TestEvent> observerdEvents = new ConcurrentLinkedQueue<TestEvent>();
-	protected AtomicInteger sequence = new AtomicInteger(0);
-	protected boolean invokeTimeoutSuppressed = false;
+	public boolean invokeTimeoutSuppressed = false;
 
-	protected Map<EventType, Semaphore> sentSemaphores = new ConcurrentHashMap<>();
-	protected Map<EventType, Semaphore> receivedSemaphores = new ConcurrentHashMap<>();
-
-	EventTestHarness(Logger logger) {
+	CAPTestHarness(Logger logger) {
 		this.logger = logger;
 	}
 
 	public void suppressInvokeTimeout() {
 		invokeTimeoutSuppressed = true;
-	}
-
-	public void compareEvents(List<TestEvent> expectedEvents) {
-		List<TestEvent> actualEvents = new ArrayList<TestEvent>(observerdEvents);
-		if (expectedEvents.size() != actualEvents.size()) {
-			String comparedEvents = doStringCompare(expectedEvents, actualEvents);
-
-			fail("Size of received events: " + actualEvents.size() + ", does not equal expected events: "
-					+ expectedEvents.size() + "\n" + comparedEvents);
-		}
-
-		for (int index = 0; index < expectedEvents.size(); index++)
-			try {
-				assertEquals(expectedEvents.get(index), actualEvents.get(index));
-			} catch (AssertionError err) {
-				StringBuilder sb = new StringBuilder();
-				sb.append("Assertion failed between two events: " + err.getMessage());
-				sb.append("\nEvents:\n" + doStringCompare(expectedEvents, actualEvents));
-
-				fail(sb.toString());
-			}
-	}
-
-	protected String doStringCompare(List<TestEvent> expectedEvents, List<TestEvent> observerdEvents) {
-		StringBuilder sb = new StringBuilder();
-		int size1 = expectedEvents.size();
-		int size2 = observerdEvents.size();
-		int count = size1;
-		if (count < size2)
-			count = size2;
-
-		for (int index = 0; count > index; index++) {
-			String s1 = size1 > index ? expectedEvents.get(index).toString() : "NOP";
-			String s2 = size2 > index ? observerdEvents.get(index).toString() : "NOP";
-			sb.append(s1).append(" - ").append(s2).append("\n\n");
-		}
-		return sb.toString();
-	}
-
-	private void handleAwait(EventType eventType, Map<EventType, Semaphore> semaphores) {
-		Semaphore semaphore = semaphores.getOrDefault(eventType, new Semaphore(0));
-		semaphores.putIfAbsent(eventType, semaphore);
-
-		try {
-			boolean isAcquired = semaphore.tryAcquire(EVENT_TIMEOUT, TimeUnit.MILLISECONDS);
-			assertTrue("Event for type " + eventType + " is not acquired in " + EVENT_TIMEOUT + " milliseconds",
-					isAcquired);
-		} catch (InterruptedException e) {
-			logger.error("Interrupted exception occured while waiting for event for type " + eventType + ": " + e);
-			return;
-		}
-	}
-
-	public void awaitReceived(EventType eventType) {
-		handleAwait(eventType, this.receivedSemaphores);
-	}
-
-	public void awaitSent(EventType eventType) {
-		handleAwait(eventType, this.sentSemaphores);
-	}
-
-	private void handleEvent(TestEvent testEvent, Map<EventType, Semaphore> semaphores) {
-		this.observerdEvents.add(testEvent);
-
-		EventType eventType = testEvent.getEventType();
-		if (semaphores.containsKey(eventType))
-			semaphores.get(eventType).release();
-		else
-			semaphores.put(eventType, new Semaphore(1));
-	}
-
-	protected void handleReceived(EventType eventType, Object eventSource) {
-		TestEvent receivedEvent = TestEvent.createReceivedEvent(eventType, eventSource, sequence.getAndIncrement());
-		this.handleEvent(receivedEvent, this.receivedSemaphores);
-	}
-
-	protected void handleSent(EventType eventType, Object eventSource) {
-		TestEvent sentEvent = TestEvent.createSentEvent(eventType, eventSource, sequence.getAndIncrement());
-		this.handleEvent(sentEvent, this.sentSemaphores);
 	}
 
 	@Override

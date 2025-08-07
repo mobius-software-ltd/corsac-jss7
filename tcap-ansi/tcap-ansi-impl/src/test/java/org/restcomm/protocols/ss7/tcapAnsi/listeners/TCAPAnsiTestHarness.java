@@ -210,13 +210,13 @@ public class TCAPAnsiTestHarness extends TestEventHarness<EventType> implements 
 
 	@Override
 	public void onTCUni(TCUniIndication ind) {
-		super.handleReceived(EventType.Uni, ind);
 		this.dialog = ind.getDialog();
+
+		super.handleReceived(EventType.Uni, ind);
 	}
 
 	@Override
 	public void onTCQuery(TCQueryIndication ind) {
-		super.handleReceived(EventType.Begin, ind);
 		this.dialog = ind.getDialog();
 
 		if (ind.getApplicationContext() != null)
@@ -224,6 +224,8 @@ public class TCAPAnsiTestHarness extends TestEventHarness<EventType> implements 
 
 		if (ind.getUserInformation() != null)
 			this.ui = ind.getUserInformation();
+
+		super.handleReceived(EventType.Begin, ind);
 	}
 
 	@Override

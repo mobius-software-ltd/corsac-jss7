@@ -56,16 +56,16 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  * @author yulianoifa
  *
  */
-public class Server extends EventTestHarness {
+public class Server extends CAPTestHarness {
 
 	private static Logger logger = LogManager.getLogger(Server.class);
 
 	public CAPStack capStack;
 	public CAPProvider capProvider;
 
-	protected CAPParameterFactory capParameterFactory;
-	protected CAPErrorMessageFactory capErrorMessageFactory;
-	protected ISUPParameterFactory isupParameterFactory;
+	public CAPParameterFactory capParameterFactory;
+	public CAPErrorMessageFactory capErrorMessageFactory;
+	public ISUPParameterFactory isupParameterFactory;
 
 	protected CAPDialog serverCscDialog;
 

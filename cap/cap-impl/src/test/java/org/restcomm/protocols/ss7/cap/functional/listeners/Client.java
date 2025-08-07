@@ -110,7 +110,7 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-public class Client extends EventTestHarness {
+public class Client extends CAPTestHarness {
 
 	private static Logger logger = LogManager.getLogger(Client.class);
 
@@ -121,8 +121,8 @@ public class Client extends EventTestHarness {
 	public CAPStack capStack;
 	protected CAPProvider capProvider;
 
-	protected CAPParameterFactory capParameterFactory;
-	protected ISUPParameterFactory isupParameterFactory;
+	public CAPParameterFactory capParameterFactory;
+	public ISUPParameterFactory isupParameterFactory;
 
 	// private boolean _S_receivedUnstructuredSSIndication, _S_sentEnd;
 

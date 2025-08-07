@@ -2329,9 +2329,8 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(serviceCentreAddress.getNumberingPlan(), NumberingPlan.national);
 			assertEquals(serviceCentreAddress.getAddress(), "0011");
 
-			if (d.getApplicationContext().getApplicationContextVersion() == MAPApplicationContextVersion.version1) {
+			if (d.getApplicationContext().getApplicationContextVersion() == MAPApplicationContextVersion.version1)
 				d.processInvokeWithoutAnswer(alertServiceCentreInd.getInvokeId());
-			}
 		}
 		server.awaitReceived(EventType.DialogDelimiter);
 		{
@@ -3512,11 +3511,10 @@ public class MAPFunctionalTest extends SccpHarness {
 			int maxMsgLen = dlg.getMaxUserDataLength();
 			int curMsgLen = dlg.getMessageUserDataLengthOnSend();
 
-			if (curMsgLen > maxMsgLen) {
+			if (curMsgLen > maxMsgLen)
 				dlg.cancelInvocation(invokeId);
-			} else {
+			else
 				super.handleSent(EventType.MoForwardShortMessageIndication, null);
-			}
 
 			dlg.send(dummyCallback);
 		}
@@ -4677,11 +4675,10 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					IMEI imei = this.mapParameterFactory.createIMEI("333333334444444");
 					d.addCheckImeiRequest(imei);
-					if (dialogStep == 0) {
+					if (dialogStep == 0)
 						d.closeDelayed(false, dummyCallback);
-					} else {
+					else
 						d.sendDelayed(dummyCallback);
-					}
 					dialogStep++;
 					super.handleSent(EventType.CheckImei, null);
 				} catch (MAPException e) {
@@ -4743,9 +4740,8 @@ public class MAPFunctionalTest extends SccpHarness {
 						this.error("Error while adding CheckImeiResponse/sending", e);
 						fail("Error while adding CheckImeiResponse/sending");
 					}
-				} else {
+				} else
 					assertEquals(d.getTCAPMessageType(), MessageType.End);
-				}
 
 				dialogStep++;
 			}
@@ -5984,18 +5980,16 @@ public class MAPFunctionalTest extends SccpHarness {
 					assertFalse(ind.isReturnResultNotLast());
 
 					dialogStep++;
-				} else {
+				} else
 					fail("Wrong dialogStep - in testSendRoutingInformation_V3_NonLast - Client " + dialogStep);
-				}
 			}
 
 			@Override
 			public void onDialogDelimiter(MAPDialog mapDialog) {
 				super.onDialogDelimiter(mapDialog);
 				try {
-					if (dialogStep == 1) {
+					if (dialogStep == 1)
 						mapDialog.send(dummyCallback);
-					}
 				} catch (MAPException e) {
 					this.error("Error while sending testSendRoutingInformation_V3_NonLast - empty TC-CONTINUE", e);
 					fail("Error while sending testSendRoutingInformation_V3_NonLast - empty TC-CONTINUE");
@@ -6099,9 +6093,8 @@ public class MAPFunctionalTest extends SccpHarness {
 
 						d.close(false, dummyCallback);
 						dialogStep++;
-					} else {
+					} else
 						fail("Wrong dialogStep - in testSendRoutingInformation_V3_NonLast - Client " + dialogStep);
-					}
 				} catch (MAPException e) {
 					this.error(
 							"Error while sending testSendRoutingInformation_V3_NonLast - error of sending of back a response",
