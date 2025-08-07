@@ -94,12 +94,4 @@ public class Server extends MAPTestHarness {
 		mapProvider.getMAPServiceOam().removeMAPServiceListener(this);
 		mapProvider.getMAPServicePdpContextActivation().removeMAPServiceListener(this);
 	}
-
-	public void debug(String message) {
-		logger.debug(message);
-	}
-
-	public void error(String message, Exception e) {
-		logger.error(message, e);
-	}
 }

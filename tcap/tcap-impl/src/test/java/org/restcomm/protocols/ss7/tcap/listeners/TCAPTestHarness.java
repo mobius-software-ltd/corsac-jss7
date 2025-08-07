@@ -219,13 +219,13 @@ public abstract class TCAPTestHarness extends TestEventHarness<EventType> implem
 
 	@Override
 	public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
-		super.handleReceived(EventType.Continue, ind);
-
 		if (ind.getApplicationContextName() != null)
 			this.acn = ind.getApplicationContextName();
 
 		if (ind.getUserInformation() != null)
 			this.ui = ind.getUserInformation();
+
+		super.handleReceived(EventType.Continue, ind);
 	}
 
 	@Override

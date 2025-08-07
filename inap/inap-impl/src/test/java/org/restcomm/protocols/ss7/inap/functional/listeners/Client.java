@@ -580,12 +580,4 @@ public class Client extends INAPTestHarness {
 //        super.handleSent(EventType.ReleaseSMSRequest, null);
 //        clientSmsDialog.send();
 //    }
-
-	public void debug(String message) {
-		logger.debug(message);
-	}
-
-	public void error(String message, Exception e) {
-		logger.error(message, e);
-	}
 }
