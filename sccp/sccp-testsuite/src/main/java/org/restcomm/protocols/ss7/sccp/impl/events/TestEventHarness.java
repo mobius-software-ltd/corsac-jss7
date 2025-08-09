@@ -9,13 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class TestEventHarness<T> {
 	public static final int DEFAULT_EVENT_TIMEOUT = 10 * 1000;
 	protected int eventTimeout = DEFAULT_EVENT_TIMEOUT;
-
-	protected AtomicInteger sequence = new AtomicInteger(0);
 
 	protected Queue<TestEvent<T>> observerdEvents = new ConcurrentLinkedQueue<>();
 	protected Map<T, Queue<TestEvent<T>>> receivedEventsByType = new ConcurrentHashMap<>();
@@ -23,14 +20,9 @@ public abstract class TestEventHarness<T> {
 	protected Map<T, Semaphore> sentSemaphores = new ConcurrentHashMap<>();
 	protected Map<T, Semaphore> receivedSemaphores = new ConcurrentHashMap<>();
 
-	private synchronized Semaphore getSemaphoreOrCreate(T event, boolean isSent) {
+	private Semaphore getSemaphoreOrCreate(T eventType, boolean isSent) {
 		Map<T, Semaphore> semaphores = isSent ? sentSemaphores : receivedSemaphores;
-
-		Semaphore newSemaphore = new Semaphore(0);
-		Semaphore result = semaphores.getOrDefault(event, newSemaphore);
-		semaphores.putIfAbsent(event, newSemaphore);
-
-		return result;
+		return semaphores.computeIfAbsent(eventType, k -> new Semaphore(0));
 	}
 
 	private void handleAwait(T eventType, boolean isSent) {
@@ -48,14 +40,14 @@ public abstract class TestEventHarness<T> {
 		}
 	}
 
-	private synchronized void handleEvent(TestEvent<T> testEvent, Map<T, Semaphore> semaphores) {
+	private void handleEvent(TestEvent<T> testEvent, Map<T, Semaphore> semaphores) {
+		this.observerdEvents.add(testEvent);
 		T eventType = testEvent.getEventType();
 
-		this.observerdEvents.add(testEvent);
-
 		if (!testEvent.isSent()) {
-			this.receivedEventsByType.putIfAbsent(eventType, new ConcurrentLinkedQueue<>());
-			this.receivedEventsByType.get(eventType).add(testEvent);
+			Queue<TestEvent<T>> events = receivedEventsByType.computeIfAbsent(eventType,
+					k -> new ConcurrentLinkedQueue<>());
+			events.add(testEvent);
 		}
 
 		Semaphore semaphore = getSemaphoreOrCreate(eventType, testEvent.isSent());
@@ -63,12 +55,12 @@ public abstract class TestEventHarness<T> {
 	}
 
 	public void handleReceived(T eventType, Object eventSource) {
-		TestEvent<T> receivedEvent = TestEvent.createReceivedEvent(eventType, eventSource, sequence.getAndIncrement());
+		TestEvent<T> receivedEvent = TestEvent.createReceivedEvent(eventType, eventSource, observerdEvents.size());
 		this.handleEvent(receivedEvent, this.receivedSemaphores);
 	}
 
 	public void handleSent(T eventType, Object eventSource) {
-		TestEvent<T> sentEvent = TestEvent.createSentEvent(eventType, eventSource, sequence.getAndIncrement());
+		TestEvent<T> sentEvent = TestEvent.createSentEvent(eventType, eventSource, observerdEvents.size());
 		this.handleEvent(sentEvent, this.sentSemaphores);
 	}
 
@@ -107,7 +99,6 @@ public abstract class TestEventHarness<T> {
 
 	public void clear() {
 		eventTimeout = DEFAULT_EVENT_TIMEOUT;
-		sequence.set(0);
 		observerdEvents.clear();
 
 		receivedEventsByType.clear();

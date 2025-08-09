@@ -132,7 +132,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogDelimiter(MAPDialog mapDialog) {
+	public synchronized void onDialogDelimiter(MAPDialog mapDialog) {
 		currentDialog = mapDialog;
 
 		this.logger.debug("onDialogDelimiter");
@@ -140,8 +140,8 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
-			MAPExtensionContainer extensionContainer) {
+	public synchronized void onDialogRequest(MAPDialog mapDialog, AddressString destReference,
+			AddressString origReference, MAPExtensionContainer extensionContainer) {
 		currentDialog = mapDialog;
 
 		// assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
@@ -151,7 +151,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
+	public synchronized void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
 		currentDialog = mapDialog;
 
 		this.logger.debug("onDialogAccept");
@@ -161,7 +161,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
+	public synchronized void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
 			ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
 		currentDialog = mapDialog;
 
@@ -171,7 +171,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason,
+	public synchronized void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason,
 			MAPExtensionContainer extensionContainer) {
 		currentDialog = mapDialog;
 
@@ -180,7 +180,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
+	public synchronized void onDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
 			MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
 		currentDialog = mapDialog;
 
@@ -190,7 +190,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogClose(MAPDialog mapDialog) {
+	public synchronized void onDialogClose(MAPDialog mapDialog) {
 		currentDialog = mapDialog;
 
 		this.logger.debug("onDialogClose");
@@ -198,7 +198,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogNotice(MAPDialog mapDialog, MAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
+	public synchronized void onDialogNotice(MAPDialog mapDialog, MAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
 		currentDialog = mapDialog;
 
 		this.logger.debug("onDialogNotice");
@@ -206,7 +206,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogRelease(MAPDialog mapDialog) {
+	public synchronized void onDialogRelease(MAPDialog mapDialog) {
 		currentDialog = mapDialog;
 
 		this.logger.debug("onDialogRelease");
@@ -214,7 +214,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogTimeout(MAPDialog mapDialog) {
+	public synchronized void onDialogTimeout(MAPDialog mapDialog) {
 		currentDialog = mapDialog;
 
 		this.logger.debug("onDialogTimeout");
@@ -222,7 +222,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
+	public synchronized void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
 		currentDialog = mapDialog;
 
 		this.logger.debug("onErrorComponent");
@@ -230,7 +230,8 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
+	public synchronized void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem,
+			boolean isLocalOriginated) {
 		currentDialog = mapDialog;
 
 		this.logger.debug("onRejectComponent");
@@ -239,7 +240,7 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onInvokeTimeout(MAPDialog mapDialog, Integer invokeId) {
+	public synchronized void onInvokeTimeout(MAPDialog mapDialog, Integer invokeId) {
 		currentDialog = mapDialog;
 
 		this.logger.debug("onInvokeTimeout");
@@ -364,8 +365,8 @@ public abstract class MAPTestHarness extends TestEventHarness<EventType> impleme
 	}
 
 	@Override
-	public void onDialogRequestEricsson(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
-			AddressString eriImsi, AddressString eriVlrNo) {
+	public synchronized void onDialogRequestEricsson(MAPDialog mapDialog, AddressString destReference,
+			AddressString origReference, AddressString eriImsi, AddressString eriVlrNo) {
 		currentDialog = mapDialog;
 
 		this.logger.debug("onDialogRequestEricsson");

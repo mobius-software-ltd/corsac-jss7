@@ -84,12 +84,12 @@ public class Server extends TCAPAnsiTestHarness {
 		Invoke invokeLast = (Invoke) c;
 		Invoke invoke2 = this.tcapProvider.getComponentPrimitiveFactory()
 				.createTCInvokeRequestNotLast(InvokeClass.Class1);
-		invoke2.setInvokeId(this.dialog.getNewInvokeId());
+		invoke2.setInvokeId(super.dialog.getNewInvokeId());
 		invoke2.setCorrelationId(invokeLast.getInvokeId());
 		OperationCode oc = TcapFactory.createPrivateOperationCode(14);
 		invoke2.setOperationCode(oc);
 		// no parameter
-		this.dialog.sendComponent(invoke2);
+		super.dialog.sendComponent(invoke2);
 
 		super.sendContinue(addingInv);
 	}

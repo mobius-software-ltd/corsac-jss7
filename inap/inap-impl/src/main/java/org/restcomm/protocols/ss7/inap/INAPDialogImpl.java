@@ -222,7 +222,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
 
 			this.inapProviderImpl.fireTCBegin(this.getTcapDialog(), acn, this.getReturnMessageOnError(), callback);
 			break;
-			
+
 		case Active:
 			// Its Active send TC-CONTINUE
 
@@ -237,13 +237,23 @@ public abstract class INAPDialogImpl implements INAPDialog {
 
 			INAPDialogState oldState = getState();
 			this.setState(INAPDialogState.ACTIVE);
-			try {
-				this.inapProviderImpl.fireTCContinue(this.getTcapDialog(), acn1, this.getReturnMessageOnError(),
-						callback);
-			} catch (Exception ex) {
-				this.state = oldState;
-				setUserObject(getUserObject());
-			}
+
+			this.inapProviderImpl.fireTCContinue(this.getTcapDialog(), acn1, this.getReturnMessageOnError(),
+					new TaskCallback<Exception>() {
+						@Override
+						public void onSuccess() {
+							callback.onSuccess();
+						}
+
+						@Override
+						public void onError(Exception ex) {
+							INAPDialogImpl.this.state = oldState;
+							setUserObject(getUserObject());
+
+							callback.onError(ex);
+						}
+					});
+
 			break;
 
 		case InitialSent: // we have sent TC-BEGIN already, need to wait
@@ -265,8 +275,10 @@ public abstract class INAPDialogImpl implements INAPDialog {
 			switch (this.delayedAreaState) {
 			case No:
 				this.delayedAreaState = INAPDialogImpl.DelayedAreaState.Continue;
+				callback.onSuccess();
 				break;
 			default:
+				callback.onSuccess();
 				break;
 			}
 	}
@@ -285,14 +297,24 @@ public abstract class INAPDialogImpl implements INAPDialog {
 				// we do not send any data in a prearrangedEnd case
 				if (this.tcapDialog != null)
 					this.tcapDialog.release();
+
+				callback.onSuccess();
 			} else
-				try {
-					this.inapProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn,
-							this.getReturnMessageOnError(), callback);
-				} catch (Exception ex) {
-					this.state = oldState;
-					setUserObject(getUserObject());
-				}
+				this.inapProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn,
+						this.getReturnMessageOnError(), new TaskCallback<Exception>() {
+							@Override
+							public void onSuccess() {
+								callback.onSuccess();
+							}
+
+							@Override
+							public void onError(Exception ex) {
+								INAPDialogImpl.this.state = oldState;
+								setUserObject(getUserObject());
+
+								callback.onError(ex);
+							}
+						});
 
 			break;
 
@@ -303,15 +325,24 @@ public abstract class INAPDialogImpl implements INAPDialog {
 				// we do not send any data in a prearrangedEnd case
 				if (this.tcapDialog != null)
 					this.tcapDialog.release();
-			} else
-				try {
-					this.inapProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, null,
-							this.getReturnMessageOnError(), callback);
-				} catch (Exception ex) {
-					this.state = oldState;
-					setUserObject(getUserObject());
-				}
 
+				callback.onSuccess();
+			} else
+				this.inapProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, null,
+						this.getReturnMessageOnError(), new TaskCallback<Exception>() {
+							@Override
+							public void onSuccess() {
+								callback.onSuccess();
+							}
+
+							@Override
+							public void onError(Exception ex) {
+								INAPDialogImpl.this.state = oldState;
+								setUserObject(getUserObject());
+
+								callback.onError(ex);
+							}
+						});
 			break;
 
 		case Idle:
@@ -324,6 +355,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
 				if (this.tcapDialog != null)
 					this.tcapDialog.release();
 				this.setState(INAPDialogState.EXPUNGED);
+				callback.onSuccess();
 				return;
 			} else {
 				callback.onError(new INAPException(
@@ -384,7 +416,6 @@ public abstract class INAPDialogImpl implements INAPDialog {
 			@Override
 			public void onSuccess() {
 				callback.onSuccess();
-
 			}
 
 			@Override

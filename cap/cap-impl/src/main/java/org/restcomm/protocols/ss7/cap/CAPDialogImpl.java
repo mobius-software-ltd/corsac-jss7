@@ -230,7 +230,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	}
 
 	@Override
-	public void send(TaskCallback<Exception> callback) throws CAPException {
+	public void send(TaskCallback<Exception> callback) {
 
 		switch (this.tcapDialog.getState()) {
 		case Idle:
@@ -259,25 +259,36 @@ public abstract class CAPDialogImpl implements CAPDialog {
 
 			CAPDialogState oldState = this.getState();
 			this.setState(CAPDialogState.ACTIVE);
-			try {
-				this.capProviderImpl.fireTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber,
-						this.getReturnMessageOnError(), callback);
-				this.gprsReferenceNumber = null;
-			} catch (Exception ex) {
-				this.state = oldState;
-				setUserObject(getUserObject());
-			}
+
+			this.capProviderImpl.fireTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber,
+					this.getReturnMessageOnError(), new TaskCallback<Exception>() {
+						@Override
+						public void onSuccess() {
+							CAPDialogImpl.this.gprsReferenceNumber = null;
+							callback.onSuccess();
+						}
+
+						@Override
+						public void onError(Exception exception) {
+							CAPDialogImpl.this.state = oldState;
+							setUserObject(getUserObject());
+						}
+					});
+
 			break;
 
 		case InitialSent: // we have sent TC-BEGIN already, need to wait
-			throw new CAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!");
+			callback.onError(
+					new CAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!"));
+			break;
 		case Expunged: // dialog has been terminated on TC level, cant send
-			throw new CAPException("Dialog has been terminated, can not send primitives!");
+			callback.onError(new CAPException("Dialog has been terminated, can not send primitives!"));
+			break;
 		}
 	}
 
 	@Override
-	public void sendDelayed(TaskCallback<Exception> callback) throws CAPException {
+	public void sendDelayed(TaskCallback<Exception> callback) {
 
 		if (this.delayedAreaState == null)
 			this.send(callback);
@@ -285,14 +296,16 @@ public abstract class CAPDialogImpl implements CAPDialog {
 			switch (this.delayedAreaState) {
 			case No:
 				this.delayedAreaState = CAPDialogImpl.DelayedAreaState.Continue;
+				callback.onSuccess();
 				break;
 			default:
+				callback.onSuccess();
 				break;
 			}
 	}
 
 	@Override
-	public void close(boolean prearrangedEnd, TaskCallback<Exception> callback) throws CAPException {
+	public void close(boolean prearrangedEnd, TaskCallback<Exception> callback) {
 
 		switch (this.tcapDialog.getState()) {
 		case InitialReceived:
@@ -306,14 +319,22 @@ public abstract class CAPDialogImpl implements CAPDialog {
 				if (this.tcapDialog != null)
 					this.tcapDialog.release();
 			} else
-				try {
-					this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn, this.gprsReferenceNumber,
-							this.getReturnMessageOnError(), callback);
-					this.gprsReferenceNumber = null;
-				} catch (Exception ex) {
-					this.state = oldState;
-					setUserObject(getUserObject());
-				}
+				this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn, this.gprsReferenceNumber,
+						this.getReturnMessageOnError(), new TaskCallback<Exception>() {
+							@Override
+							public void onSuccess() {
+								callback.onSuccess();
+							}
+
+							@Override
+							public void onError(Exception ex) {
+								CAPDialogImpl.this.state = oldState;
+								setUserObject(getUserObject());
+
+								callback.onError(ex);
+							}
+						});
+			this.gprsReferenceNumber = null;
 
 			break;
 
@@ -325,34 +346,48 @@ public abstract class CAPDialogImpl implements CAPDialog {
 				if (this.tcapDialog != null)
 					this.tcapDialog.release();
 			} else
-				try {
-					this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, null, null,
-							this.getReturnMessageOnError(), callback);
-				} catch (Exception ex) {
-					this.state = oldState;
-					setUserObject(getUserObject());
-				}
+				this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, null, null,
+						this.getReturnMessageOnError(), new TaskCallback<Exception>() {
+							@Override
+							public void onSuccess() {
+								callback.onSuccess();
+							}
+
+							@Override
+							public void onError(Exception ex) {
+								CAPDialogImpl.this.state = oldState;
+								setUserObject(getUserObject());
+
+								callback.onError(ex);
+							}
+						});
 
 			break;
 
 		case Idle:
-			throw new CAPException("Awaiting TC-BEGIN to be sent, can not send another dialog initiating primitive!");
+			callback.onError(new CAPException(
+					"Awaiting TC-BEGIN to be sent, can not send another dialog initiating primitive!"));
+			break;
 		case InitialSent: // we have sent TC-BEGIN already, need to wait
 			if (prearrangedEnd) {
 				// we do not send any data in a prearrangedEnd case
 				if (this.tcapDialog != null)
 					this.tcapDialog.release();
 				this.setState(CAPDialogState.EXPUNGED);
+				callback.onSuccess();
 				return;
 			} else
-				throw new CAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!");
+				callback.onError(new CAPException(
+						"Awaiting TC-BEGIN response, can not send another dialog initiating primitive!"));
+			break;
 		case Expunged: // dialog has been terminated on TC level, cant send
-			throw new CAPException("Dialog has been terminated, can not send primitives!");
+			callback.onError(new CAPException("Dialog has been terminated, can not send primitives!"));
+			break;
 		}
 	}
 
 	@Override
-	public void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback) throws CAPException {
+	public void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback) {
 
 		if (this.delayedAreaState == null)
 			this.close(prearrangedEnd, callback);
@@ -362,8 +397,10 @@ public abstract class CAPDialogImpl implements CAPDialog {
 			case Continue:
 			case End:
 				this.delayedAreaState = CAPDialogImpl.DelayedAreaState.PrearrangedEnd;
+				callback.onSuccess();
 				break;
 			default:
+				callback.onSuccess();
 				break;
 			}
 		else
@@ -371,33 +408,45 @@ public abstract class CAPDialogImpl implements CAPDialog {
 			case No:
 			case Continue:
 				this.delayedAreaState = CAPDialogImpl.DelayedAreaState.End;
+				callback.onSuccess();
 				break;
 			default:
+				callback.onSuccess();
 				break;
 			}
 	}
 
 	@Override
-	public void abort(CAPUserAbortReason abortReason, TaskCallback<Exception> callback) throws CAPException {
+	public void abort(CAPUserAbortReason abortReason, TaskCallback<Exception> callback) {
 
 		// Dialog is not started or has expunged - we need not send
 		// TC-U-ABORT,
 		// only Dialog removing
 		if (this.getState() == CAPDialogState.EXPUNGED || this.getState() == CAPDialogState.IDLE) {
 			this.setState(CAPDialogState.EXPUNGED);
+			callback.onSuccess();
 			return;
 		}
 
 		CAPDialogState oldState = getState();
 		this.setState(CAPDialogState.EXPUNGED);
-		try {
-			// this.setNormalDialogShutDown();
-			this.capProviderImpl.fireTCAbort(this.getTcapDialog(), CAPGeneralAbortReason.UserSpecific, abortReason,
-					this.getReturnMessageOnError(), callback);
-		} catch (Exception ex) {
-			this.state = oldState;
-			setUserObject(getUserObject());
-		}
+
+		// this.setNormalDialogShutDown();
+		this.capProviderImpl.fireTCAbort(this.getTcapDialog(), CAPGeneralAbortReason.UserSpecific, abortReason,
+				this.getReturnMessageOnError(), new TaskCallback<Exception>() {
+					@Override
+					public void onSuccess() {
+						callback.onSuccess();
+					}
+
+					@Override
+					public void onError(Exception ex) {
+						CAPDialogImpl.this.state = oldState;
+						setUserObject(getUserObject());
+
+						callback.onError(ex);
+					}
+				});
 	}
 
 	@Override

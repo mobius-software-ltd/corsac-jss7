@@ -199,13 +199,13 @@ public abstract class TCAPTestHarness extends TestEventHarness<EventType> implem
 	}
 
 	@Override
-	public void onTCUni(TCUniIndication ind) {
+	public synchronized void onTCUni(TCUniIndication ind) {
 		this.dialog = ind.getDialog();
 		super.handleReceived(EventType.Uni, ind);
 	}
 
 	@Override
-	public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
+	public synchronized void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
 		this.dialog = ind.getDialog();
 
 		if (ind.getApplicationContextName() != null)
@@ -218,7 +218,7 @@ public abstract class TCAPTestHarness extends TestEventHarness<EventType> implem
 	}
 
 	@Override
-	public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
+	public synchronized void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
 		if (ind.getApplicationContextName() != null)
 			this.acn = ind.getApplicationContextName();
 

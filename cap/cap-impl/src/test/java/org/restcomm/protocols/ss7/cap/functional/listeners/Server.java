@@ -26,7 +26,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
-import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPParameterFactory;
 import org.restcomm.protocols.ss7.cap.api.CAPProvider;
 import org.restcomm.protocols.ss7.cap.api.CAPStack;
@@ -146,18 +145,14 @@ public class Server extends CAPTestHarness {
 	}
 
 	public void sendAccept() {
-		try {
-			serverCscDialog.send(new TaskCallback<Exception>() {
-				@Override
-				public void onSuccess() {
-				}
+		serverCscDialog.send(new TaskCallback<Exception>() {
+			@Override
+			public void onSuccess() {
+			}
 
-				@Override
-				public void onError(Exception exception) {
-				}
-			});
-		} catch (CAPException e) {
-			logger.error("Error while trying to send/close() Dialog", e);
-		}
+			@Override
+			public void onError(Exception exception) {
+			}
+		});
 	}
 }
