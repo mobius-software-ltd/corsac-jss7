@@ -678,7 +678,7 @@ public class Client extends MAPTestHarness {
 				.createAddressString(AddressNature.network_specific_number, NumberingPlan.national, "999000");
 		SMDeliveryOutcome sMDeliveryOutcome = SMDeliveryOutcome.absentSubscriber;
 
-		clientDialogSms.addReportSMDeliveryStatusRequest(sequence.get(), msisdn1, serviceCentreAddress,
+		clientDialogSms.addReportSMDeliveryStatusRequest(observerdEvents.size(), msisdn1, serviceCentreAddress,
 				sMDeliveryOutcome, null, null, false, false, null, null);
 
 		super.handleSent(EventType.ReportSMDeliveryStatusIndication, null);

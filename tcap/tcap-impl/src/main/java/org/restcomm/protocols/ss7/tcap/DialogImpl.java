@@ -707,7 +707,6 @@ public class DialogImpl implements Dialog {
 			// local address may change, lets check it
 			if (event.getOriginatingAddress() != null && !event.getOriginatingAddress().equals(this.localAddress))
 				this.localAddress = event.getOriginatingAddress();
-
 		} else if (state.get() == TRPseudoState.Active) {
 			restartIdleTimer();
 

@@ -245,7 +245,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	}
 
 	@Override
-	public void abort(MAPUserAbortChoice userAbortChoise, TaskCallback<Exception> callback) throws MAPException {
+	public void abort(MAPUserAbortChoice userAbortChoise, TaskCallback<Exception> callback) {
 		MAPUserAbortInfoImpl mapUserAbortInfoImpl = new MAPUserAbortInfoImpl();
 		mapUserAbortInfoImpl.setUserAbortChoise(userAbortChoise);
 		mapUserAbortInfoImpl.setExtensionContainer(this.extContainer);
@@ -255,43 +255,62 @@ public abstract class MAPDialogImpl implements MAPDialog {
 		// only Dialog removing
 		if (this.getState() == MAPDialogState.EXPUNGED || this.getState() == MAPDialogState.IDLE) {
 			this.setState(MAPDialogState.EXPUNGED);
+			callback.onSuccess();
 			return;
 		}
 
 		MAPDialogState oldState = this.getState();
 		this.setState(MAPDialogState.EXPUNGED);
-		try {
-			this.mapProviderImpl.fireTCAbortUser(this.getTcapDialog(), mapUserAbortInfoImpl,
-					this.getReturnMessageOnError(), callback);
-			this.extContainer = null;
-		} catch (Exception ex) {
-			this.state = oldState;
-			setUserObject(getUserObject());
-		}
+
+		this.mapProviderImpl.fireTCAbortUser(this.getTcapDialog(), mapUserAbortInfoImpl, this.getReturnMessageOnError(),
+				new TaskCallback<Exception>() {
+					@Override
+					public void onSuccess() {
+						MAPDialogImpl.this.extContainer = null;
+						callback.onSuccess();
+					}
+
+					@Override
+					public void onError(Exception ex) {
+						MAPDialogImpl.this.state = oldState;
+						setUserObject(getUserObject());
+
+						callback.onError(ex);
+					}
+				});
 	}
 
 	@Override
-	public void refuse(Reason reason, TaskCallback<Exception> callback) throws MAPException {
-
+	public void refuse(Reason reason, TaskCallback<Exception> callback) {
 		// Dialog must be in the InitialReceived state
-		if (this.getState() != MAPDialogState.INITIAL_RECEIVED)
-			throw new MAPException("Refuse can be called in the Dialog InitialReceived state");
+		if (this.getState() != MAPDialogState.INITIAL_RECEIVED) {
+			callback.onError(new MAPException("Refuse can be called in the Dialog InitialReceived state"));
+			return;
+		}
 
 		MAPDialogState oldState = this.getState();
 		this.setState(MAPDialogState.EXPUNGED);
-		try {
-			this.mapProviderImpl.fireTCAbortRefused(this.getTcapDialog(), reason, this.extContainer,
-					this.getReturnMessageOnError(), callback);
-			this.extContainer = null;
-		} catch (Exception ex) {
-			this.state = oldState;
-			setUserObject(getUserObject());
-		}
+
+		this.mapProviderImpl.fireTCAbortRefused(this.getTcapDialog(), reason, this.extContainer,
+				this.getReturnMessageOnError(), new TaskCallback<Exception>() {
+					@Override
+					public void onSuccess() {
+						MAPDialogImpl.this.extContainer = null;
+						callback.onSuccess();
+					}
+
+					@Override
+					public void onError(Exception ex) {
+						MAPDialogImpl.this.state = oldState;
+						setUserObject(getUserObject());
+
+						callback.onError(ex);
+					}
+				});
 	}
 
 	@Override
-	public void close(boolean prearrangedEnd, TaskCallback<Exception> callback) throws MAPException {
-
+	public void close(boolean prearrangedEnd, TaskCallback<Exception> callback) {
 		switch (this.tcapDialog.getState()) {
 		case InitialReceived:
 			ApplicationContextName acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
@@ -304,15 +323,25 @@ public abstract class MAPDialogImpl implements MAPDialog {
 				// we do not send any data in a prearrangedEnd case
 				if (this.tcapDialog != null)
 					this.tcapDialog.release();
+
+				callback.onSuccess();
 			} else
-				try {
-					this.mapProviderImpl.fireTCEnd(this.getTcapDialog(), true, prearrangedEnd, acn, this.extContainer,
-							this.getReturnMessageOnError(), callback);
-					this.extContainer = null;
-				} catch (Exception ex) {
-					this.state = oldState;
-					setUserObject(getUserObject());
-				}
+				this.mapProviderImpl.fireTCEnd(this.getTcapDialog(), true, prearrangedEnd, acn, this.extContainer,
+						this.getReturnMessageOnError(), new TaskCallback<Exception>() {
+							@Override
+							public void onSuccess() {
+								MAPDialogImpl.this.extContainer = null;
+								callback.onSuccess();
+							}
+
+							@Override
+							public void onError(Exception ex) {
+								MAPDialogImpl.this.state = oldState;
+								setUserObject(getUserObject());
+
+								callback.onError(ex);
+							}
+						});
 
 			break;
 
@@ -323,20 +352,31 @@ public abstract class MAPDialogImpl implements MAPDialog {
 				// we do not send any data in a prearrangedEnd case
 				if (this.tcapDialog != null)
 					this.tcapDialog.release();
+
+				callback.onSuccess();
 			} else
-				try {
-					this.mapProviderImpl.fireTCEnd(this.getTcapDialog(), false, prearrangedEnd, null, null,
-							this.getReturnMessageOnError(), callback);
-				} catch (Exception ex) {
-					this.state = oldState;
-					setUserObject(getUserObject());
-				}
+				this.mapProviderImpl.fireTCEnd(this.getTcapDialog(), false, prearrangedEnd, null, null,
+						this.getReturnMessageOnError(), new TaskCallback<Exception>() {
+							@Override
+							public void onSuccess() {
+								callback.onSuccess();
+							}
+
+							@Override
+							public void onError(Exception ex) {
+								MAPDialogImpl.this.state = oldState;
+								setUserObject(getUserObject());
+
+								callback.onError(ex);
+							}
+						});
 
 			break;
 
 		case Idle:
-			throw new MAPException("Awaiting TC-BEGIN to be sent, can not send another dialog initiating primitive!");
-
+			callback.onError(new MAPException(
+					"Awaiting TC-BEGIN to be sent, can not send another dialog initiating primitive!"));
+			break;
 		case InitialSent: // we have sent TC-BEGIN already, need to wait
 			if (prearrangedEnd) {
 				// we do not send any data in a prearrangedEnd case
@@ -344,21 +384,24 @@ public abstract class MAPDialogImpl implements MAPDialog {
 					this.tcapDialog.release();
 
 				this.setState(MAPDialogState.EXPUNGED);
+				callback.onSuccess();
 				return;
 			} else
-				throw new MAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!");
-
+				callback.onError(new MAPException(
+						"Awaiting TC-BEGIN response, can not send another dialog initiating primitive!"));
+			break;
 		case Expunged: // dialog has been terminated on TC level, cant send
-			throw new MAPException("Dialog has been terminated, can not send primitives!");
+			callback.onError(new MAPException("Dialog has been terminated, can not send primitives!"));
+			break;
 		}
 	}
 
 	@Override
-	public void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback) throws MAPException {
+	public void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback) {
 
 		if (this.delayedAreaState == null)
 			this.close(prearrangedEnd, callback);
-		else if (prearrangedEnd)
+		else if (prearrangedEnd) {
 			switch (this.delayedAreaState) {
 			case No:
 			case Continue:
@@ -368,7 +411,9 @@ public abstract class MAPDialogImpl implements MAPDialog {
 			default:
 				break;
 			}
-		else
+
+			callback.onSuccess();
+		} else {
 			switch (this.delayedAreaState) {
 			case No:
 			case Continue:
@@ -377,6 +422,9 @@ public abstract class MAPDialogImpl implements MAPDialog {
 			default:
 				break;
 			}
+
+			callback.onSuccess();
+		}
 	}
 
 	@Override
@@ -438,11 +486,11 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	}
 
 	@Override
-	public void sendDelayed(TaskCallback<Exception> callback) throws MAPException {
+	public void sendDelayed(TaskCallback<Exception> callback) {
 
 		if (this.delayedAreaState == null)
 			this.send(callback);
-		else
+		else {
 			switch (this.delayedAreaState) {
 			case No:
 				this.delayedAreaState = MAPDialogImpl.DelayedAreaState.Continue;
@@ -450,6 +498,9 @@ public abstract class MAPDialogImpl implements MAPDialog {
 			default:
 				break;
 			}
+
+			callback.onSuccess();
+		}
 	}
 
 	@Override
