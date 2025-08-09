@@ -269,9 +269,11 @@ public abstract class CAPDialogImpl implements CAPDialog {
 						}
 
 						@Override
-						public void onError(Exception exception) {
+						public void onError(Exception ex) {
 							CAPDialogImpl.this.state = oldState;
 							setUserObject(getUserObject());
+
+							callback.onError(ex);
 						}
 					});
 
