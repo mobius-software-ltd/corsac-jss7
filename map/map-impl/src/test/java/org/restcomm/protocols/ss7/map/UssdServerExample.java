@@ -1,4 +1,5 @@
 package org.restcomm.protocols.ss7.map;
+
 /*
  * Mobius Software LTD
  * Copyright 2019, Mobius Software LTD and individual contributors
@@ -67,8 +68,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import com.mobius.software.common.dal.timers.TaskCallback;
 
 /**
- * A simple example show-casing how to use MAP stack. Demonstrates how to listen to incoming Dialog from peer and process the
- * MAP messages and send response.
+ * A simple example show-casing how to use MAP stack. Demonstrates how to listen
+ * to incoming Dialog from peer and process the MAP messages and send response.
  *
  * @author Amit Bhayani
  * @author yulianoifa
@@ -76,277 +77,273 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  */
 public class UssdServerExample implements MAPDialogListener, MAPServiceSupplementaryListener {
 
-    private MAPProvider mapProvider;
-    private MAPParameterFactory paramFact;
+	private MAPProvider mapProvider;
+	private MAPParameterFactory paramFact;
 
-    private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
 		@Override
-		public void onSuccess() {			
+		public void onSuccess() {
 		}
-		
+
 		@Override
 		public void onError(Exception exception) {
 		}
 	};
-	
-    public UssdServerExample() throws NamingException {
-        InitialContext ctx = new InitialContext();
-        try {
-            String providerJndiName = "java:/restcomm/ss7/map";
-            this.mapProvider = ((MAPProvider) ctx.lookup(providerJndiName));
-        } finally {
-            ctx.close();
-        }
-    }
 
-    public MAPProvider getMAPProvider() {
-        return mapProvider;
-    }
+	public UssdServerExample() throws NamingException {
+		InitialContext ctx = new InitialContext();
+		try {
+			String providerJndiName = "java:/restcomm/ss7/map";
+			this.mapProvider = ((MAPProvider) ctx.lookup(providerJndiName));
+		} finally {
+			ctx.close();
+		}
+	}
 
-    public void start() {
-        // Listen for Dialog events
-        mapProvider.addMAPDialogListener(UUID.randomUUID(),this);
-        // Listen for USSD related messages
-        mapProvider.getMAPServiceSupplementary().addMAPServiceListener(this);
+	public MAPProvider getMAPProvider() {
+		return mapProvider;
+	}
 
-        // Make the supplementary service activated
-        mapProvider.getMAPServiceSupplementary().acivate();
-    }
+	public void start() {
+		// Listen for Dialog events
+		mapProvider.addMAPDialogListener(UUID.randomUUID(), this);
+		// Listen for USSD related messages
+		mapProvider.getMAPServiceSupplementary().addMAPServiceListener(this);
 
-    public void stop() {
-        mapProvider.getMAPServiceSupplementary().deactivate();
-    }
+		// Make the supplementary service activated
+		mapProvider.getMAPServiceSupplementary().acivate();
+	}
 
-    @Override
+	public void stop() {
+		mapProvider.getMAPServiceSupplementary().deactivate();
+	}
+
+	@Override
 	public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest ind) {
 
-        USSDString ussdString = ind.getUSSDString();
-        MAPDialogSupplementary currentMapDialog = ind.getMAPDialog();
+		USSDString ussdString = ind.getUSSDString();
+		MAPDialogSupplementary currentMapDialog = ind.getMAPDialog();
 
-        try {
-            ussdString.getString(null);
+		try {
+			ussdString.getString(null);
 
-            // processing USSD request
-            String response = "Your balans is 100$";
+			// processing USSD request
+			String response = "Your balans is 100$";
 
-            CBSDataCodingScheme ussdDataCodingScheme = new CBSDataCodingSchemeImpl(0x0f);
-            USSDString ussdResponse = paramFact.createUSSDString(response, null, null);
+			CBSDataCodingScheme ussdDataCodingScheme = new CBSDataCodingSchemeImpl(0x0f);
+			USSDString ussdResponse = paramFact.createUSSDString(response, null, null);
 
-            currentMapDialog.addProcessUnstructuredSSResponse(ind.getInvokeId(), ussdDataCodingScheme, ussdResponse);
-        } catch (MAPException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-    }
+			currentMapDialog.addProcessUnstructuredSSResponse(ind.getInvokeId(), ussdDataCodingScheme, ussdResponse);
+		} catch (MAPException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
 
-    @Override
+	@Override
 	public void onDialogDelimiter(MAPDialog mapDialog) {
-        // This will initiate the TC-END with ReturnResultLast component
-        try {
-            mapDialog.send(dummyCallback);
-        } catch (MAPException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+		// This will initiate the TC-END with ReturnResultLast component
+		mapDialog.send(dummyCallback);
+	}
 
-    @Override
+	@Override
 	public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onInvokeTimeout(MAPDialog mapDialog, Integer invokeId) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onMAPMessage(MAPMessage mapMessage) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onProcessUnstructuredSSResponse(ProcessUnstructuredSSResponse ind) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onUnstructuredSSRequest(UnstructuredSSRequest unstrReqInd) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onUnstructuredSSResponse(UnstructuredSSResponse unstrResInd) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onUnstructuredSSNotifyRequest(UnstructuredSSNotifyRequest unstrNotifyInd) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onUnstructuredSSNotifyResponse(UnstructuredSSNotifyResponse unstrNotifyInd) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
-            MAPExtensionContainer extensionContainer) {
-        // TODO Auto-generated method stub
+			MAPExtensionContainer extensionContainer) {
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onDialogRequestEricsson(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
-            AddressString eriImsi, AddressString eriVlrNo) {
-        // TODO Auto-generated method stub
+			AddressString eriImsi, AddressString eriVlrNo) {
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
-        // TODO Auto-generated method stub
+			ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
-	public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason, MAPExtensionContainer extensionContainer) {
-        // TODO Auto-generated method stub
+	@Override
+	public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason,
+			MAPExtensionContainer extensionContainer) {
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
-            MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
-        // TODO Auto-generated method stub
+			MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onDialogClose(MAPDialog mapDialog) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onDialogNotice(MAPDialog mapDialog, MAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
+	@Override
 	public void onDialogRelease(MAPDialog mapDialog) {
-    }
+	}
 
-    @Override
+	@Override
 	public void onDialogTimeout(MAPDialog mapDialog) {
-        // TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
-    public void onRegisterSSRequest(RegisterSSRequest request) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void onRegisterSSRequest(RegisterSSRequest request) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onRegisterSSResponse(RegisterSSResponse response) {
-        // TODO Auto-generated method stub
-        
-    }
+	}
 
-    @Override
-    public void onEraseSSRequest(EraseSSRequest request) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void onRegisterSSResponse(RegisterSSResponse response) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onEraseSSResponse(EraseSSResponse response) {
-        // TODO Auto-generated method stub
-        
-    }
+	}
 
-    @Override
-    public void onActivateSSRequest(ActivateSSRequest request) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void onEraseSSRequest(EraseSSRequest request) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onActivateSSResponse(ActivateSSResponse response) {
-        // TODO Auto-generated method stub
-        
-    }
+	}
 
-    @Override
-    public void onDeactivateSSRequest(DeactivateSSRequest request) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void onEraseSSResponse(EraseSSResponse response) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onDeactivateSSResponse(DeactivateSSResponse response) {
-        // TODO Auto-generated method stub
-        
-    }
+	}
 
-    @Override
-    public void onInterrogateSSRequest(InterrogateSSRequest request) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void onActivateSSRequest(ActivateSSRequest request) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onInterrogateSSResponse(InterrogateSSResponse response) {
-        // TODO Auto-generated method stub
-        
-    }
+	}
 
-    @Override
-    public void onGetPasswordRequest(GetPasswordRequest request) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void onActivateSSResponse(ActivateSSResponse response) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onGetPasswordResponse(GetPasswordResponse response) {
-        // TODO Auto-generated method stub
-        
-    }
+	}
 
-    @Override
-    public void onRegisterPasswordRequest(RegisterPasswordRequest request) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void onDeactivateSSRequest(DeactivateSSRequest request) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onRegisterPasswordResponse(RegisterPasswordResponse response) {
-        // TODO Auto-generated method stub
-        
-    }
+	}
+
+	@Override
+	public void onDeactivateSSResponse(DeactivateSSResponse response) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onInterrogateSSRequest(InterrogateSSRequest request) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onInterrogateSSResponse(InterrogateSSResponse response) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onGetPasswordRequest(GetPasswordRequest request) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onGetPasswordResponse(GetPasswordResponse response) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onRegisterPasswordRequest(RegisterPasswordRequest request) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onRegisterPasswordResponse(RegisterPasswordResponse response) {
+		// TODO Auto-generated method stub
+
+	}
 }

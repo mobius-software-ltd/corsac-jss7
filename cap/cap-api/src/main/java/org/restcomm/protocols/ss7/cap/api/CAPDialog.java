@@ -42,253 +42,276 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  */
 public interface CAPDialog extends Serializable {
 
-    int _Timer_Default = -1;
+	int _Timer_Default = -1;
 
-    // Invoke timers
-    int getTimerCircuitSwitchedCallControlShort();
-    int getTimerCircuitSwitchedCallControlMedium();
-    int getTimerCircuitSwitchedCallControlLong();
-    int getTimerSmsShort();
-    int getTimerGprsShort();
+	// Invoke timers
+	int getTimerCircuitSwitchedCallControlShort();
 
-    /*
-     * Setting this property to true lead that all sent to TCAP messages of this Dialog will be marked as "ReturnMessageOnError"
-     * (SCCP will return the notification is the message has non been delivered to the peer)
-     */
-     void setReturnMessageOnError(boolean val);
+	int getTimerCircuitSwitchedCallControlMedium();
 
-     boolean getReturnMessageOnError();
+	int getTimerCircuitSwitchedCallControlLong();
 
-     SccpAddress getLocalAddress();
+	int getTimerSmsShort();
 
-    /**
-     * Sets local Sccp Address.
-     *
-     * @param localAddress
-     */
-     void setLocalAddress(SccpAddress localAddress);
+	int getTimerGprsShort();
 
-     SccpAddress getRemoteAddress();
+	/*
+	 * Setting this property to true lead that all sent to TCAP messages of this
+	 * Dialog will be marked as "ReturnMessageOnError" (SCCP will return the
+	 * notification is the message has non been delivered to the peer)
+	 */
+	void setReturnMessageOnError(boolean val);
 
-    /**
-     * Sets remote Sccp Address
-     *
-     * @param remoteAddress
-     */
-     void setRemoteAddress(SccpAddress remoteAddress);
+	boolean getReturnMessageOnError();
 
-    /**
-     * This method can be called on timeout of dialog, inside {@link CAPDialogListener#onDialogTimeout(Dialog)} callback. If its
-     * called, dialog wont be removed in case application does not perform 'send'.
-     */
-     void keepAlive();
+	SccpAddress getLocalAddress();
 
-    /**
-     * Returns this Dialog's ID. This ID is actually TCAP's Dialog ID.
-     * {@link org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog}
-     *
-     * @return
-     */
-     Long getLocalDialogId();
+	/**
+	 * Sets local Sccp Address.
+	 *
+	 * @param localAddress
+	 */
+	void setLocalAddress(SccpAddress localAddress);
 
-    /**
-     * Returns this Dialog's remote ID. This ID is actually TCAP's remote Dialog ID.
-     * {@link org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog}
-     *
-     * @return
-     */
-     Long getRemoteDialogId();
+	SccpAddress getRemoteAddress();
 
-    /**
-     * Returns the CAP service that serve this dialog
-     *
-     * @return
-     */
-     CAPServiceBase getService();
+	/**
+	 * Sets remote Sccp Address
+	 *
+	 * @param remoteAddress
+	 */
+	void setRemoteAddress(SccpAddress remoteAddress);
 
-     CAPDialogState getState();
+	/**
+	 * This method can be called on timeout of dialog, inside
+	 * {@link CAPDialogListener#onDialogTimeout(Dialog)} callback. If its called,
+	 * dialog wont be removed in case application does not perform 'send'.
+	 */
+	void keepAlive();
 
-    /**
-     * Set CAPGprsReferenceNumber that will be send in 1) T-BEGIN 2) first T-CONTINUE messages. This parameter is applied only
-     * to gprsSSF-gsmSCF interface
-     */
-     void setGprsReferenceNumber(CAPGprsReferenceNumber capGprsReferenceNumber);
+	/**
+	 * Returns this Dialog's ID. This ID is actually TCAP's Dialog ID.
+	 * {@link org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog}
+	 *
+	 * @return
+	 */
+	Long getLocalDialogId();
 
-     CAPGprsReferenceNumber getGprsReferenceNumber();
+	/**
+	 * Returns this Dialog's remote ID. This ID is actually TCAP's remote Dialog ID.
+	 * {@link org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog}
+	 *
+	 * @return
+	 */
+	Long getRemoteDialogId();
 
-    /**
-     * Return received GprsReferenceNumber or null if no GprsReferenceNumber has been received
-     *
-     * @return
-     */
-     CAPGprsReferenceNumber getReceivedGprsReferenceNumber();
+	/**
+	 * Returns the CAP service that serve this dialog
+	 *
+	 * @return
+	 */
+	CAPServiceBase getService();
 
-    /**
-     * Returns the type of the last incoming TCAP primitive (TC-BEGIN, TC-CONTINUE, TC-END or TC-ABORT) It will be equal null if
-     * we have just created a Dialog and no messages has income
-     *
-     * @return
-     */
-     MessageType getTCAPMessageType();
+	CAPDialogState getState();
 
-     /**
-      * @return NetworkId to which virtual network Dialog belongs to
-      */
-     int getNetworkId();
+	/**
+	 * Set CAPGprsReferenceNumber that will be send in 1) T-BEGIN 2) first
+	 * T-CONTINUE messages. This parameter is applied only to gprsSSF-gsmSCF
+	 * interface
+	 */
+	void setGprsReferenceNumber(CAPGprsReferenceNumber capGprsReferenceNumber);
 
-     /**
-      * @param networkId
-      *            NetworkId to which virtual network Dialog belongs to
-      */
-     void setNetworkId(int networkId);
+	CAPGprsReferenceNumber getGprsReferenceNumber();
 
-     void release();
+	/**
+	 * Return received GprsReferenceNumber or null if no GprsReferenceNumber has
+	 * been received
+	 *
+	 * @return
+	 */
+	CAPGprsReferenceNumber getReceivedGprsReferenceNumber();
 
-    /**
-     * Sends TB-BEGIN, TC-CONTINUE depends on dialogue state including primitives
-     */
-     void send(TaskCallback<Exception> callback) throws CAPException;
+	/**
+	 * Returns the type of the last incoming TCAP primitive (TC-BEGIN, TC-CONTINUE,
+	 * TC-END or TC-ABORT) It will be equal null if we have just created a Dialog
+	 * and no messages has income
+	 *
+	 * @return
+	 */
+	MessageType getTCAPMessageType();
 
-    /**
-     * This service is used for releasing a previously established CAP dialogue. Sends TC-CLOSE
-     *
-     * @param prearrangedEnd If prearrangedEnd is false, all the Service Primitive added to CAPDialog and not sent yet, will be
-     *        sent to peer. If prearrangedEnd is true, all the Service Primitive added to CAPDialog and not sent yet, will not
-     *        be sent to peer.
-     */
-     void close(boolean prearrangedEnd, TaskCallback<Exception> callback) throws CAPException;
+	/**
+	 * @return NetworkId to which virtual network Dialog belongs to
+	 */
+	int getNetworkId();
 
-    /**
-     * This method makes the same as send() method. But when invoking it from events of parsing incoming components real sending
-     * will occur only when all incoming components events and onDialogDelimiter() or onDialogClose() would be processed
-     *
-     * If you are receiving several primitives you can invoke sendDelayed() in several processing components events - the result
-     * will be sent after onDialogDelimiter() in a single TC-CONTINUE message
-     */
-     void sendDelayed(TaskCallback<Exception> callback) throws CAPException;
+	/**
+	 * @param networkId NetworkId to which virtual network Dialog belongs to
+	 */
+	void setNetworkId(int networkId);
 
-    /**
-     * This method makes the same as close() method. But when invoking it from events of parsing incoming components real
-     * sending and dialog closing will occur only when all incoming components events and onDialogDelimiter() or onDialogClose()
-     * would be processed
-     *
-     * If you are receiving several primitives you can invoke closeDelayed() in several processing components events - the
-     * result will be sent and the dialog will be closed after onDialogDelimiter() in a single TC-END message
-     *
-     * If both of sendDelayed() and closeDelayed() have been invoked TC-END will be issued and the dialog will be closed If
-     * sendDelayed() or closeDelayed() were invoked, TC-CONTINUE/TC-END were not sent and abort() or release() are invoked - no
-     * TC-CONTINUE/TC-END messages will be sent
-     */
-     void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback) throws CAPException;
+	void release();
 
-    /**
-     * Sends TC_U_ABORT Service Request with an abort reason.
-     *
-     * @param abortReason optional - may be null
-     */
-     void abort(CAPUserAbortReason abortReason, TaskCallback<Exception> callback) throws CAPException;
+	/**
+	 * Sends TB-BEGIN, TC-CONTINUE depends on dialogue state including primitives
+	 */
+	void send(TaskCallback<Exception> callback);
 
-    /**
-     * If a CAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this
-     * method to remove the incoming Invoke from a pending incoming Invokes list
-     *
-     * @param invokeId
-     */
-     void processInvokeWithoutAnswer(Integer invokeId);
+	/**
+	 * This service is used for releasing a previously established CAP dialogue.
+	 * Sends TC-CLOSE
+	 *
+	 * @param prearrangedEnd If prearrangedEnd is false, all the Service Primitive
+	 *                       added to CAPDialog and not sent yet, will be sent to
+	 *                       peer. If prearrangedEnd is true, all the Service
+	 *                       Primitive added to CAPDialog and not sent yet, will not
+	 *                       be sent to peer.
+	 */
+	void close(boolean prearrangedEnd, TaskCallback<Exception> callback);
 
-     /**
-      * Sends the TC-INVOKE,TC-RESULT or TC-RESULT-L component
-      *
-      * @param invoke
-      * @throws CAPException
-      */
-     public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,CAPMessage param,Boolean isRequest,Boolean isLastResponse) throws CAPException;
+	/**
+	 * This method makes the same as send() method. But when invoking it from events
+	 * of parsing incoming components real sending will occur only when all incoming
+	 * components events and onDialogDelimiter() or onDialogClose() would be
+	 * processed
+	 *
+	 * If you are receiving several primitives you can invoke sendDelayed() in
+	 * several processing components events - the result will be sent after
+	 * onDialogDelimiter() in a single TC-CONTINUE message
+	 */
+	void sendDelayed(TaskCallback<Exception> callback);
 
-     /**
-      * Sends the TC-U-ERROR component
-      *
-      * @param invokeId
-      * @param mapErrorMessage
-      * @throws CAPException
-      */
-     public void sendErrorComponent(Integer invokeId, CAPErrorMessage mem) throws CAPException;
+	/**
+	 * This method makes the same as close() method. But when invoking it from
+	 * events of parsing incoming components real sending and dialog closing will
+	 * occur only when all incoming components events and onDialogDelimiter() or
+	 * onDialogClose() would be processed
+	 *
+	 * If you are receiving several primitives you can invoke closeDelayed() in
+	 * several processing components events - the result will be sent and the dialog
+	 * will be closed after onDialogDelimiter() in a single TC-END message
+	 *
+	 * If both of sendDelayed() and closeDelayed() have been invoked TC-END will be
+	 * issued and the dialog will be closed If sendDelayed() or closeDelayed() were
+	 * invoked, TC-CONTINUE/TC-END were not sent and abort() or release() are
+	 * invoked - no TC-CONTINUE/TC-END messages will be sent
+	 */
+	void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback);
 
-     /**
-      * Sends the TC-U-REJECT component
-      *
-      * @param invokeId This parameter is optional and may be the null
-      * @param problem
-      * @throws CAPException
-      */
-     public void sendRejectComponent(Integer invokeId, Problem problem) throws CAPException;
+	/**
+	 * Sends TC_U_ABORT Service Request with an abort reason.
+	 *
+	 * @param abortReason optional - may be null
+	 */
+	void abort(CAPUserAbortReason abortReason, TaskCallback<Exception> callback);
 
-    /**
-     * Reset the Invoke Timeout timer for the Invoke. (TC-TIMER-RESET)
-     *
-     * @param invokeId
-     * @throws CAPException
-     */
-     void resetInvokeTimer(Integer invokeId) throws CAPException;
+	/**
+	 * If a CAP user will not answer to an incoming Invoke with Response, Error or
+	 * Reject components it should invoke this method to remove the incoming Invoke
+	 * from a pending incoming Invokes list
+	 *
+	 * @param invokeId
+	 */
+	void processInvokeWithoutAnswer(Integer invokeId);
 
-    /**
-     * Causes local termination of an operation invocation (TC-U-CANCEL)
-     *
-     * @param invokeId
-     * @return true:OK, false: Invoke not found
-     * @throws CAPException
-     */
-     boolean cancelInvocation(Integer invokeId) throws CAPException;
+	/**
+	 * Sends the TC-INVOKE,TC-RESULT or TC-RESULT-L component
+	 *
+	 * @param invoke
+	 * @throws CAPException
+	 */
+	public Integer sendDataComponent(Integer invokeId, Integer linkedId, InvokeClass invokeClass, Long customTimeout,
+			Integer operationCode, CAPMessage param, Boolean isRequest, Boolean isLastResponse) throws CAPException;
 
-    /**
-     * Getting from the CAPDialog a user-defined object to save relating to the Dialog information
-     *
-     * @return
-     */
-     Externalizable getUserObject();
+	/**
+	 * Sends the TC-U-ERROR component
+	 *
+	 * @param invokeId
+	 * @param mapErrorMessage
+	 * @throws CAPException
+	 */
+	public void sendErrorComponent(Integer invokeId, CAPErrorMessage mem) throws CAPException;
 
-    /**
-     * Store in the CAPDialog a user-defined object to save relating to the Dialog information
-     *
-     * @param userObject
-     */
-     void setUserObject(Externalizable userObject);
+	/**
+	 * Sends the TC-U-REJECT component
+	 *
+	 * @param invokeId This parameter is optional and may be the null
+	 * @param problem
+	 * @throws CAPException
+	 */
+	public void sendRejectComponent(Integer invokeId, Problem problem) throws CAPException;
 
-     CAPApplicationContext getApplicationContext();
+	/**
+	 * Reset the Invoke Timeout timer for the Invoke. (TC-TIMER-RESET)
+	 *
+	 * @param invokeId
+	 * @throws CAPException
+	 */
+	void resetInvokeTimer(Integer invokeId) throws CAPException;
 
-    /**
-     * Return the maximum CAP message length (in bytes) that are allowed for this dialog
-     *
-     * @return
-     */
-     int getMaxUserDataLength();
+	/**
+	 * Causes local termination of an operation invocation (TC-U-CANCEL)
+	 *
+	 * @param invokeId
+	 * @return true:OK, false: Invoke not found
+	 * @throws CAPException
+	 */
+	boolean cancelInvocation(Integer invokeId) throws CAPException;
 
-    /**
-     * Return the CAP message length (in bytes) that will be after encoding if TC-BEGIN or TC-CONTINUE cases This value must not
-     * exceed getMaxUserDataLength() value
-     *
-     * @return
-     */
-     int getMessageUserDataLengthOnSend() throws CAPException;
+	/**
+	 * Getting from the CAPDialog a user-defined object to save relating to the
+	 * Dialog information
+	 *
+	 * @return
+	 */
+	Externalizable getUserObject();
 
-    /**
-     * Return the CAP message length (in bytes) that will be after encoding if TC-END case This value must not exceed
-     * getMaxUserDataLength() value
-     *
-     * @param prearrangedEnd
-     * @return
-     */
-     int getMessageUserDataLengthOnClose(boolean prearrangedEnd) throws CAPException;
+	/**
+	 * Store in the CAPDialog a user-defined object to save relating to the Dialog
+	 * information
+	 *
+	 * @param userObject
+	 */
+	void setUserObject(Externalizable userObject);
 
-     /**
-     *
-     * @return IdleTaskTimeout value in milliseconds
-     */
-     long getIdleTaskTimeout();
+	CAPApplicationContext getApplicationContext();
 
-     /**
-      * Set IdleTaskTimeout in milliseconds.
-      *
-      * @param idleTaskTimeoutMs
-      */
-     void setIdleTaskTimeout(long idleTaskTimeoutMs);
+	/**
+	 * Return the maximum CAP message length (in bytes) that are allowed for this
+	 * dialog
+	 *
+	 * @return
+	 */
+	int getMaxUserDataLength();
+
+	/**
+	 * Return the CAP message length (in bytes) that will be after encoding if
+	 * TC-BEGIN or TC-CONTINUE cases This value must not exceed
+	 * getMaxUserDataLength() value
+	 *
+	 * @return
+	 */
+	int getMessageUserDataLengthOnSend() throws CAPException;
+
+	/**
+	 * Return the CAP message length (in bytes) that will be after encoding if
+	 * TC-END case This value must not exceed getMaxUserDataLength() value
+	 *
+	 * @param prearrangedEnd
+	 * @return
+	 */
+	int getMessageUserDataLengthOnClose(boolean prearrangedEnd) throws CAPException;
+
+	/**
+	 *
+	 * @return IdleTaskTimeout value in milliseconds
+	 */
+	long getIdleTaskTimeout();
+
+	/**
+	 * Set IdleTaskTimeout in milliseconds.
+	 *
+	 * @param idleTaskTimeoutMs
+	 */
+	void setIdleTaskTimeout(long idleTaskTimeoutMs);
 }

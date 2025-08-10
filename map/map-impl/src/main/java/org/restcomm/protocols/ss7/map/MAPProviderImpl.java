@@ -1546,24 +1546,18 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 		if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED)
 			return;
 
-		try {
-			switch (mapDialogImpl.delayedAreaState) {
-			case Continue:
-				mapDialogImpl.send(callback);
-				break;
-			case End:
-				mapDialogImpl.close(false, callback);
-				break;
-			case PrearrangedEnd:
-				mapDialogImpl.close(true, callback);
-				break;
-			default:
-				break;
-			}
-		} catch (MAPException e) {
-			loger.error(
-					"Error while finishComponentProcessingState, delayedAreaState=" + mapDialogImpl.delayedAreaState,
-					e);
+		switch (mapDialogImpl.delayedAreaState) {
+		case Continue:
+			mapDialogImpl.send(callback);
+			break;
+		case End:
+			mapDialogImpl.close(false, callback);
+			break;
+		case PrearrangedEnd:
+			mapDialogImpl.close(true, callback);
+			break;
+		default:
+			break;
 		}
 
 		mapDialogImpl.delayedAreaState = null;
