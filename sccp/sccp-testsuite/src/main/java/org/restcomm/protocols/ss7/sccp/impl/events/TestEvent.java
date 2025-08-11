@@ -5,34 +5,32 @@ import java.util.Objects;
 public class TestEvent<T> {
 	private final T eventType;
 	private final boolean sent;
-	private final long timestamp;
 	private final Object event;
-	private final int sequence;
+	private int sequence;
+
+	public static <T> TestEvent<T> createReceivedEvent(T eventType, Object eventSource) {
+		TestEvent<T> te = new TestEvent<>(eventType, false, eventSource, Integer.MIN_VALUE);
+		return te;
+	}
+
+	public static <T> TestEvent<T> createSentEvent(T eventType, Object eventSource) {
+		TestEvent<T> te = new TestEvent<>(eventType, true, eventSource, Integer.MIN_VALUE);
+		return te;
+	}
 
 	public static <T> TestEvent<T> createReceivedEvent(T eventType, Object eventSource, int sequence) {
-		TestEvent<T> te = new TestEvent<>(eventType, false, System.currentTimeMillis(), eventSource, sequence);
+		TestEvent<T> te = new TestEvent<>(eventType, false, eventSource, sequence);
 		return te;
 	}
 
 	public static <T> TestEvent<T> createSentEvent(T eventType, Object eventSource, int sequence) {
-		TestEvent<T> te = new TestEvent<>(eventType, true, System.currentTimeMillis(), eventSource, sequence);
+		TestEvent<T> te = new TestEvent<>(eventType, true, eventSource, sequence);
 		return te;
 	}
 
-	public static <T> TestEvent<T> createReceivedEvent(T eventType, Object eventSource, int sequence, long stamp) {
-		TestEvent<T> te = new TestEvent<>(eventType, false, stamp, eventSource, sequence);
-		return te;
-	}
-
-	public static <T> TestEvent<T> createSentEvent(T eventType, Object eventSource, int sequence, long stamp) {
-		TestEvent<T> te = new TestEvent<>(eventType, true, stamp, eventSource, sequence);
-		return te;
-	}
-
-	public TestEvent(T eventType, boolean sent, long timestamp, Object event, int sequence) {
+	public TestEvent(T eventType, boolean sent, Object event, int sequence) {
 		this.eventType = eventType;
 		this.sent = sent;
-		this.timestamp = timestamp;
 		this.event = event;
 		this.sequence = sequence;
 	}
@@ -45,16 +43,16 @@ public class TestEvent<T> {
 		return sent;
 	}
 
-	public long getTimestamp() {
-		return timestamp;
-	}
-
 	public Object getEvent() {
 		return event;
 	}
 
 	public int getSequence() {
 		return sequence;
+	}
+
+	public void setSequence(int sequence) {
+		this.sequence = sequence;
 	}
 
 	@Override
@@ -84,7 +82,7 @@ public class TestEvent<T> {
 
 	@Override
 	public String toString() {
-		return "TestEvent [eventType=" + eventType + ", sent=" + sent + ", timestamp=" + timestamp + ", sequence="
-				+ sequence + ", source=" + event + "]";
+		return "TestEvent [eventType=" + eventType + ", sent=" + sent + ", sequence=" + sequence + ", source=" + event
+				+ "]";
 	}
 }

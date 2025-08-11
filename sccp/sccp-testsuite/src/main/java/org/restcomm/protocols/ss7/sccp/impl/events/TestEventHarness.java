@@ -2,7 +2,9 @@ package org.restcomm.protocols.ss7.sccp.impl.events;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,12 +57,12 @@ public abstract class TestEventHarness<T> {
 	}
 
 	public void handleReceived(T eventType, Object eventSource) {
-		TestEvent<T> receivedEvent = TestEvent.createReceivedEvent(eventType, eventSource, observerdEvents.size());
+		TestEvent<T> receivedEvent = TestEvent.createReceivedEvent(eventType, eventSource);
 		this.handleEvent(receivedEvent, this.receivedSemaphores);
 	}
 
 	public void handleSent(T eventType, Object eventSource) {
-		TestEvent<T> sentEvent = TestEvent.createSentEvent(eventType, eventSource, observerdEvents.size());
+		TestEvent<T> sentEvent = TestEvent.createSentEvent(eventType, eventSource);
 		this.handleEvent(sentEvent, this.sentSemaphores);
 	}
 
@@ -90,7 +92,14 @@ public abstract class TestEventHarness<T> {
 	}
 
 	public Collection<TestEvent<T>> getEvents() {
-		return observerdEvents;
+		List<TestEvent<T>> events = new ArrayList<>();
+		int i = 0;
+		for (TestEvent<T> event : observerdEvents) {
+			event.setSequence(i++);
+			events.add(event);
+		}
+
+		return events;
 	}
 
 	public void updateEventTimeout(int newTimeout) {
