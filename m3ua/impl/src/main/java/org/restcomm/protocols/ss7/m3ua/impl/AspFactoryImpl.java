@@ -107,7 +107,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
 	protected ConcurrentHashMap<UUID, Asp> aspList = new ConcurrentHashMap<UUID, Asp>();
 
 	// data buffer for incoming TCP data
-	private CompositeByteBuf tcpIncBuffer = Unpooled.buffer().alloc().compositeBuffer();
+	private CompositeByteBuf remainingTcpChunk = null;
 
 	protected Management transportManagement = null;
 
@@ -777,23 +777,31 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
 				byteBuf.release();
 			}
 		} else {
-			tcpIncBuffer.addComponent(true, byteBuf);
-			bytes = tcpIncBuffer.readableBytes();
+			ByteBuf currBuf = byteBuf;
+			if (remainingTcpChunk != null) {
+				remainingTcpChunk.addComponent(true, byteBuf);
+				currBuf = remainingTcpChunk;
+			}
+
+			bytes = currBuf.readableBytes();
 			do {
-				m3UAMessage = this.messageFactory.createMessage(tcpIncBuffer);
+				m3UAMessage = this.messageFactory.createMessage(currBuf);
 				if (m3UAMessage == null)
 					continue;
 
-				int messageBytes = bytes - tcpIncBuffer.readableBytes();
+				int messageBytes = bytes - currBuf.readableBytes();
 				if (this.isHeartBeatEnabled())
 					this.heartBeatTimer.reset();
 				this.read(m3UAMessage, messageBytes);
-				bytes = tcpIncBuffer.readableBytes();
-			} while (m3UAMessage != null && tcpIncBuffer.readableBytes() > 0);
+				bytes = currBuf.readableBytes();
+			} while (m3UAMessage != null && currBuf.readableBytes() > 0);
 
-			if (tcpIncBuffer.readableBytes() == 0) {
-				tcpIncBuffer.release();
-				tcpIncBuffer = Unpooled.buffer().alloc().compositeBuffer();
+			if (currBuf.readableBytes() == 0)
+				remainingTcpChunk = null;
+			else {
+				CompositeByteBuf newBuffer = Unpooled.buffer().alloc().compositeBuffer();
+				newBuffer.addComponent(true, currBuf.copy(currBuf.readerIndex(), currBuf.readableBytes()));
+				remainingTcpChunk = newBuffer;
 			}
 		}
 	}
