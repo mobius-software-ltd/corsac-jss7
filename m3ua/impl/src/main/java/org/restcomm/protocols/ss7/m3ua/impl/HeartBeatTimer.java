@@ -104,4 +104,9 @@ public class HeartBeatTimer extends M3UATask {
 			this.stop();
 		}
 	}
+
+	@Override
+	public String printTaskDetails() {
+		return "Task name: M3UAHeartBeatTimer";
+	}
 }

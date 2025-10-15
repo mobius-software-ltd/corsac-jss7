@@ -78,4 +78,8 @@ public class AspFactoryStopTimer extends M3UATask {
 		} // if(now-this.initiatedTime >= STOP_TIMER_TIMEOUT)
 	}
 
+	@Override
+	public String printTaskDetails() {
+		return "Task name: M3UAAspFactoryStopTimer";
+	}
 }

@@ -146,6 +146,11 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 				logger.error(e);
 			}
 		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: SccpConnEstProcess";
+		}
 	}
 
 	protected class IasInactivitySendProcess extends BaseProcess {
@@ -175,6 +180,11 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 				logger.error(e);
 			}
 		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: SccpIasInactivitySendProcess";
+		}
 	}
 
 	protected class IarInactivityReceiveProcess extends BaseProcess {
@@ -194,6 +204,11 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 			} catch (Exception e) {
 				logger.error(e);
 			}
+		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: SccpIarInactivityReceiveProcess";
 		}
 	}
 
@@ -223,6 +238,11 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 				logger.error(e);
 			}
 		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: SccpRelProcess";
+		}
 	}
 
 	protected class RepeatRelProcess extends BaseProcess {
@@ -249,6 +269,11 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 			} catch (Exception e) {
 				logger.error(e);
 			}
+		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: SccpRepeatRelProcess";
 		}
 	}
 
@@ -277,6 +302,11 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 						new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
 			stack.removeConnection(getLocalReference());
 		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: SccpIntProcess";
+		}
 	}
 
 	protected class GuardProcess extends BaseProcess {
@@ -288,6 +318,11 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 		public void run() {
 			if (getState() == CLOSED)
 				return;
+		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: SccpGuardProcess";
 		}
 	}
 
@@ -308,6 +343,11 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 			} catch (Exception e) {
 				logger.error(e);
 			}
+		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: SccpResetProcess";
 		}
 	}
 

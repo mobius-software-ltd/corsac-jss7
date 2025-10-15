@@ -870,7 +870,7 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
 					mtp3TransferPrimitive.release();
 				}
 			}
-		}, taskID);
+		}, taskID, "M3UAOutgointMessageTask");
 
 		if (super.affinityEnabled)
 			this.workerPool.addTaskLast(outgoingTask);

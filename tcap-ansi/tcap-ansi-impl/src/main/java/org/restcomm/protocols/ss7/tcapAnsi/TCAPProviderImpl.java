@@ -415,7 +415,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 				sccpProvider.send(msg, callback);
 				data.release();
 			}
-		}, taskID);
+		}, taskID, "TcapAnsiOutgoingMessageTask");
 
 		if (this.affinityEnabled)
 			workerPool.addTaskLast(outgoingTask);
@@ -692,7 +692,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 				else if (message instanceof TCUniMessage)
 					dialog.processUni((TCUniMessage) message, localAddress, remoteAddress);
 			}
-		}, dialog.getLocalDialogId().toString());
+		}, dialog.getLocalDialogId().toString(), "TcapAnsiIncomingMessageTask");
 
 		if (this.affinityEnabled)
 			this.workerPool.addTaskLast(incomingTask);

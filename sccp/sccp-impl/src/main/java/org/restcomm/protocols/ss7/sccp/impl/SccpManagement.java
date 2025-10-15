@@ -758,6 +758,11 @@ public class SccpManagement {
 		public long getStartTime() {
 			return System.currentTimeMillis();
 		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: SccpSubSystemTest";
+		}
 	}
 
 	public void start() {

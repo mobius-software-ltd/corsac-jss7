@@ -783,6 +783,11 @@ class Circuit {
 			this.active = false;
 			this.startTime = Long.MAX_VALUE;
 		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: Isup" + this.getClass().getSimpleName();
+		}
 	}
 
 	private class TimerT1 extends CircuitTimer {
