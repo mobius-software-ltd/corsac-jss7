@@ -172,4 +172,8 @@ public class FSM extends M3UATask {
 				(this.currentState != null) ? this.currentState.getName() : "");
 	}
 
+	@Override
+	public String printTaskDetails() {
+		return "Task name: M3UAFSM";
+	}
 }

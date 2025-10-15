@@ -379,6 +379,11 @@ public abstract class InvokeImpl implements Invoke {
 		public void stop() {
 			this.startTime = Long.MAX_VALUE;
 		}
+
+		@Override
+		public String printTaskDetails() {
+			return "Task name: TcapAnsiOperationTimer";
+		}
 	}
 
 	@Override

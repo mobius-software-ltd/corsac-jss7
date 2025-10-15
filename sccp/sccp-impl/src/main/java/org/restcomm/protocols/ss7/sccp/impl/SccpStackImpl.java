@@ -1136,7 +1136,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 					mup.sendMessage(mtp3Msg, dummyCallback);
 					mtp3Msg.release();
 				}
-			}, taskID);
+			}, taskID, "SccpIncomingNonLocalMessageTask");
 
 			if (this.affinityEnabled)
 				workerPool.addTaskLast(task);
@@ -1342,7 +1342,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 
 				sccpMessage.release();
 			}
-		}, taskID);
+		}, taskID, "SccpIncomingMessageTask");
 
 		if (this.affinityEnabled)
 			workerPool.addTaskLast(incomingTask);
@@ -1355,7 +1355,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 		private SccpAddress callingPartyAddress;
 
 		public MessageReassemblyProcess(int segmentationLocalRef, SccpAddress callingPartyAddress, String processID) {
-			super(null, System.currentTimeMillis() + reassemblyTimerDelay, processID);
+			super(null, System.currentTimeMillis() + reassemblyTimerDelay, processID, "SccpMessageReassemblyProcess");
 
 			this.segmentationLocalRef = segmentationLocalRef;
 			this.callingPartyAddress = callingPartyAddress;
@@ -1472,18 +1472,18 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 
 		mtp3Message.retain();
 
-		RunnableTask incomingTask = new RunnableTask(new Runnable() {
+		RunnableTask outgoingTask = new RunnableTask(new Runnable() {
 			@Override
 			public void run() {
 				mup.sendMessage(mtp3Message, callback);
 				mtp3Message.release();
 			}
-		}, taskID);
+		}, taskID, "SccpMessageOutgoingTask");
 
 		if (this.affinityEnabled)
-			workerPool.addTaskLast(incomingTask);
+			workerPool.addTaskLast(outgoingTask);
 		else
-			workerPool.getQueue().offerLast(incomingTask);
+			workerPool.getQueue().offerLast(outgoingTask);
 	}
 
 	@Override

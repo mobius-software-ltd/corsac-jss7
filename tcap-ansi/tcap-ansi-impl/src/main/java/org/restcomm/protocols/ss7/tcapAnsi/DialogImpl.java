@@ -1497,7 +1497,7 @@ public class DialogImpl implements Dialog {
 		private DialogImpl d = DialogImpl.this;
 
 		public IdleTimer(Long startTime) {
-			super(null, startTime, localTransactionIdObject.toString());
+			super(null, startTime, localTransactionIdObject.toString(), "TcapAnsiIdleTimer");
 		}
 
 		@Override

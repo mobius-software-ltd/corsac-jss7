@@ -257,7 +257,7 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 		protected AtomicBoolean canceled = new AtomicBoolean(false);
 
 		public MsgDeliveryHandler(String handlerID, TaskCallback<Exception> callback) {
-			super(null, handlerID);
+			super(null, handlerID, "Mtp3MsgDeliveryHandler");
 			this.callback = callback;
 		}
 
