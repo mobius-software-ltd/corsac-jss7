@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>tcap-ansi-parent</artifactId>
 		<groupId>com.mobius-software.protocols.ss7.tcapAnsi</groupId>
-		<version>10.0.56-SNAPSHOT</version>
+		<version>10.0.56-java11</version>
 	</parent>
 
 	<artifactId>tcap-ansi-impl</artifactId>

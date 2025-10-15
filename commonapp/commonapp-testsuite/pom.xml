@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.mobius-software.protocols.ss7.commonapp</groupId>
     <artifactId>commonapp-parent</artifactId>
-    <version>10.0.56-SNAPSHOT</version>
+    <version>10.0.56-java11</version>
   </parent>
   
   <artifactId>commonapp-testsuite</artifactId>
