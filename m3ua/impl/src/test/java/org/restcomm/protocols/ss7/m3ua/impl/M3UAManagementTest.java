@@ -91,7 +91,7 @@ public class M3UAManagementTest {
     @Before
     public void setUp() throws Exception {
         this.transportManagement = new NettyTransportManagement();
-		this.workerPool = new WorkerPool();
+		this.workerPool = new WorkerPool("M3UA");
 		this.workerPool.start(4);
 
         UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );

@@ -99,7 +99,7 @@ public class GatewayTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.workerPool = new WorkerPool();
+		this.workerPool = new WorkerPool("M3UA");
 		this.workerPool.start(4);
 
 		this.mtp3UserPartListener = new Mtp3UserPartListenerImpl();

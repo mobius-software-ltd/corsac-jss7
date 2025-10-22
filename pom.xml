@@ -334,7 +334,7 @@
 			<properties>
 				<sctp.version>2.2.14</sctp.version>
 				<xmlbind.version>3.0.1</xmlbind.version>
-				<timers.version>1.0.0-37</timers.version>    
+				<timers.version>1.0.0-38</timers.version>    
 			</properties>
 			<build>
 				<plugins>
@@ -357,7 +357,7 @@
 			<properties>
 				<sctp.version>2.2.14-java11</sctp.version>
 				<xmlbind.version>4.0.0</xmlbind.version>
-				<timers.version>1.0.0-37-java11</timers.version> 				
+				<timers.version>1.0.0-38-java11</timers.version> 				
 			</properties>
 			<build>
 				<plugins>

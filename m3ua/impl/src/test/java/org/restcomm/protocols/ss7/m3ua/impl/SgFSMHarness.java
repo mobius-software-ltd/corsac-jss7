@@ -29,7 +29,7 @@ public class SgFSMHarness {
 	protected final Semaphore receiveSemaphore = new Semaphore(0);
 
 	public void setUp() throws Exception {
-		this.workerPool = new WorkerPool();
+		this.workerPool = new WorkerPool("M3UA");
 		this.workerPool.start(16);
 	}
 	

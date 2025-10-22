@@ -41,7 +41,7 @@ import com.mobius.software.common.dal.timers.WorkerPool;
  *
  */
 public class FSMTest {
-	private WorkerPool workerPool = new WorkerPool();
+	private WorkerPool workerPool = new WorkerPool("M3UA");
 
 	private volatile boolean timedOut = false;
     private volatile boolean stateEntered = false;

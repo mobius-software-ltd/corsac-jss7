@@ -85,7 +85,7 @@ public abstract class EventTestHarness implements ISUPListener {
 
 	public void setUp() throws Exception {
 		listenerUUID = UUID.randomUUID();
-		workerPool = new WorkerPool();
+		workerPool = new WorkerPool("ISUP");
 		workerPool.start(4);
 
 		userPart = new TimerTestMtp3UserPart(workerPool);
