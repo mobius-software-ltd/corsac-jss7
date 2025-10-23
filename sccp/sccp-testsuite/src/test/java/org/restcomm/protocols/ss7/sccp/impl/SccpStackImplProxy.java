@@ -40,7 +40,7 @@ public class SccpStackImplProxy extends SccpStackImpl {
 	private static WorkerPool workerPool;
 
 	static {
-		workerPool = new WorkerPool();
+		workerPool = new WorkerPool("SCCP");
 		workerPool.start(4);
 	}
 

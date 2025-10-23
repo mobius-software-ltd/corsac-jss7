@@ -319,7 +319,7 @@ public class MAPFunctionalTest extends SccpHarness {
 		super.sccpStack1Name = "MAPFunctionalTestSccpStack1";
 		super.sccpStack2Name = "MAPFunctionalTestSccpStack2";
 
-		super.workerPool = new WorkerPool();
+		super.workerPool = new WorkerPool("MAP");
 		workerPool.start(2);
 
 		super.setUp();

@@ -59,7 +59,7 @@ public class SccpConnCcMessageTest {
 
     @Before
     public void setUp() {
-	workerPool = new WorkerPool();
+	workerPool = new WorkerPool("SCCP");
 	workerPool.start(4);
 	this.stack = new SccpStackImpl("SccpConnCcMessageTestStack", workerPool);
 		

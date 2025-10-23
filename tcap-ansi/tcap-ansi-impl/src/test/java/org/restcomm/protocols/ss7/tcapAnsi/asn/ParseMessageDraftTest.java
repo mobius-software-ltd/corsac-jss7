@@ -67,7 +67,7 @@ public class ParseMessageDraftTest {
 
 	@Test
 	public void testTCQuery() throws IOException, ParseException {
-		WorkerPool workerPool = new WorkerPool();
+		WorkerPool workerPool = new WorkerPool("TCAP");
 		workerPool.start(4);
 
 		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool);
@@ -85,7 +85,7 @@ public class ParseMessageDraftTest {
 
 	@Test
 	public void testTCConversation() throws IOException, ParseException {
-		WorkerPool workerPool = new WorkerPool();
+		WorkerPool workerPool = new WorkerPool("TCAP");
 		workerPool.start(4);
 
 		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool);
@@ -103,7 +103,7 @@ public class ParseMessageDraftTest {
 
 	@Test
 	public void testTCResponse() throws IOException, ParseException {
-		WorkerPool workerPool = new WorkerPool();
+		WorkerPool workerPool = new WorkerPool("TCAP");
 		workerPool.start(4);
 
 		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool);
@@ -121,7 +121,7 @@ public class ParseMessageDraftTest {
 
 	@Test
 	public void testTCAbort() throws IOException, ParseException {
-		WorkerPool workerPool = new WorkerPool();
+		WorkerPool workerPool = new WorkerPool("TCAP");
 		workerPool.start(4);
 
 		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool);
@@ -139,7 +139,7 @@ public class ParseMessageDraftTest {
 
 	@Test
 	public void testTCUnidirectional() throws IOException, ParseException {
-		WorkerPool workerPool = new WorkerPool();
+		WorkerPool workerPool = new WorkerPool("TCAP");
 		workerPool.start(4);
 
 		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool);

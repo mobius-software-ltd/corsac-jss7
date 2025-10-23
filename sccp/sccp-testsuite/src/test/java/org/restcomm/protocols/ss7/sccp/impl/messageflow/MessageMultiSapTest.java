@@ -79,7 +79,7 @@ public class MessageMultiSapTest extends SccpHarness {
 		this.sccpStack1Name = "MessageMultiSapTestStack1";
 		this.sccpStack2Name = "MessageMultiSapTestStack2";
 
-		workerPool = new WorkerPool();
+		workerPool = new WorkerPool("SCCP");
 		workerPool.start(16);
 
 		mtp3UserPart11 = new Mtp3UserPartImpl(null, workerPool);

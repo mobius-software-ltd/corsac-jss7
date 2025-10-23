@@ -84,7 +84,7 @@ public class MessageSegmentationTest {
 
     @Before
     public void setUp() throws Exception {
-	workerPool = new WorkerPool();
+	workerPool = new WorkerPool("SCCP");
 	workerPool.start(4);
 	stack = new SccpStackImpl("MessageSegmentationTestStack", workerPool);
 

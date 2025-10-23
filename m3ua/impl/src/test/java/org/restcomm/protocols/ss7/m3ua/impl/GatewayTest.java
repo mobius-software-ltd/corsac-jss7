@@ -63,7 +63,6 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@SuppressWarnings("restriction")
 public class GatewayTest {
 	private static final Logger logger = LogManager.getLogger(GatewayTest.class);
 

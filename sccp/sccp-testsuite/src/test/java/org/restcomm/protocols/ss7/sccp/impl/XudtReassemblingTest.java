@@ -74,7 +74,7 @@ public class XudtReassemblingTest {
 
 	@Test
 	public void testA() throws Exception {
-		WorkerPool workerPool = new WorkerPool();
+		WorkerPool workerPool = new WorkerPool("SCCP");
 		workerPool.start(4);
 
 		SccpStackImpl sccpStack = new SccpStackImpl("TestUudt", workerPool);

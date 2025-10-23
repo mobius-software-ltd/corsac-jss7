@@ -51,7 +51,7 @@ public class MapParserLoopTest {
 	@Test
 	public void testLoop1() {
 		System.out.println("Starting...");
-		WorkerPool workerPool = new WorkerPool();
+		WorkerPool workerPool = new WorkerPool("MAP");
 		workerPool.start(4);
 
 		try {
@@ -80,7 +80,7 @@ public class MapParserLoopTest {
 	@Test
 	public void testLoop2() {
 		System.out.println("Starting...");
-		WorkerPool workerPool = new WorkerPool();
+		WorkerPool workerPool = new WorkerPool("MAP");
 		workerPool.start(4);
 
 		try {
@@ -109,7 +109,7 @@ public class MapParserLoopTest {
 	@Test
 	public void testCaptureFiles() throws Exception {
 		org.restcomm.protocols.ss7.m3ua.message.MessageFactory messageFactory = new org.restcomm.protocols.ss7.m3ua.impl.message.MessageFactoryImpl();
-		WorkerPool workerPool = new WorkerPool();
+		WorkerPool workerPool = new WorkerPool("MAP");
 		workerPool.start(4);
 
 		UUIDGenerator uuidGenerator = new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });

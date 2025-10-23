@@ -60,7 +60,7 @@ public class CreateDialogTest {
 
 	@Before
 	public void setUp() throws Exception {
-		workerPool = new WorkerPool();
+		workerPool = new WorkerPool("TCAP");
 		workerPool.start(4);
 
 		tcapStack1 = new TCAPStackImplWrapper(sccpProv, 8, "CreateDialogTest", workerPool);
