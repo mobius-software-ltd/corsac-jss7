@@ -91,7 +91,7 @@ public class SccpHarness {
 
 	public void setUp() throws Exception {
 		if (workerPool == null) {
-			workerPool = new WorkerPool();
+			workerPool = new WorkerPool("SCCP");
 			workerPool.start(4);
 		}
 
