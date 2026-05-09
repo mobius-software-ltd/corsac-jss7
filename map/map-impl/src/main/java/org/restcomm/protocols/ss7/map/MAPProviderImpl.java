@@ -19,6 +19,7 @@
 
 package org.restcomm.protocols.ss7.map;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -1143,6 +1144,159 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 			// already registered
 		}
 	}
+	
+	public static List<Class<?>> getMessageClasses() {
+		return Arrays.asList(new Class<?>[] {
+			MAPErrorMessageExtensionContainerImpl.class,
+			MAPErrorMessageAbsentSubscriberSMImpl.class,
+			MAPErrorMessageSMDeliveryFailureImpl.class,
+			MAPErrorMessageSMDeliveryFailure1Impl.class,
+			MAPErrorMessageSytemFailure1Impl.class,
+			MAPErrorMessageSystemFailureImpl.class,
+			MAPErrorMessageCallBarred1Impl.class,
+			MAPErrorMessageCallBarredImpl.class,
+			MAPErrorMessageFacilityNotSupImpl.class,
+			MAPErrorMessageUnknownSubscriberImpl.class,
+			MAPErrorMessageSubscriberBusyForMtSmsImpl.class,
+
+			MAPErrorMessageAbsentSubscriber1Impl.class,
+			MAPErrorMessageAbsentSubscriberImpl.class,
+
+			MAPErrorMessageUnauthorizedLCSClientImpl.class,
+			MAPErrorMessagePositionMethodFailureImpl.class,
+			MAPErrorMessageBusySubscriberImpl.class,
+			MAPErrorMessageCUGRejectImpl.class,
+			MAPErrorMessageRoamingNotAllowedImpl.class,
+			MAPErrorMessageSsErrorStatusImpl.class,
+			MAPErrorMessageSsIncompatibilityImpl.class,
+			MAPErrorMessagePwRegistrationFailureImpl.class,
+			MAPErrorMessageParameterlessImpl.class,
+			
+			IstCommandRequestImpl.class,
+			ProvideRoamingNumberRequestImpl.class,
+
+			SendRoutingInformationRequestImplV1.class,
+			SendRoutingInformationRequestImplV2.class,
+			SendRoutingInformationRequestImplV3.class,
+
+			ProvideSubscriberLocationRequestImpl.class,
+			SendRoutingInfoForLCSRequestImpl.class,
+			SubscriberLocationReportRequestImpl.class,
+
+			AuthenticationFailureReportRequestImpl.class,
+			SendAuthenticationInfoRequestImplV1.class,
+			SendAuthenticationInfoRequestImplV3.class,
+
+			ResetRequestImpl.class,
+			RestoreDataRequestImpl.class,
+
+			CheckImeiRequestImplV1.class,
+			CheckImeiRequestImplV3.class,
+
+			CancelLocationRequestImplV1.class,
+			CancelLocationRequestImplV3.class,
+			PurgeMSRequestImplV1.class,
+			PurgeMSRequestImplV3.class,
+			SendIdentificationRequestImplV1.class,
+			SendIdentificationRequestImplV3.class,
+			UpdateGprsLocationRequestImpl.class,
+			UpdateLocationRequestImpl.class,
+
+			AnyTimeInterrogationRequestImpl.class,
+			AnyTimeSubscriptionInterrogationRequestImpl.class,
+			ProvideSubscriberInfoRequestImpl.class,
+
+			DeleteSubscriberDataRequestImpl.class,
+
+			InsertSubscriberDataRequestImplV1.class,
+			InsertSubscriberDataRequestImplV3.class,
+
+			ActivateTraceModeRequestImpl.class,
+			SendImsiRequestImpl.class,
+
+			SendRoutingInfoForGprsRequestImpl.class,
+
+			AlertServiceCentreRequestImpl.class,
+			MoForwardShortMessageRequestImpl.class,
+			InformServiceCentreRequestImpl.class,
+			MtForwardShortMessageRequestImpl.class,
+			NoteSubscriberPresentRequestImpl.class,
+			ReadyForSMRequestImpl.class,
+			ReportSMDeliveryStatusRequestImpl.class,
+			SendRoutingInfoForSMRequestImpl.class,
+
+			ActivateSSRequestImpl.class,
+			DeactivateSSRequestImpl.class,
+			EraseSSRequestImpl.class,
+			GetPasswordRequestImpl.class,
+			InterrogateSSRequestImpl.class,
+			ProcessUnstructuredSSRequestImpl.class,
+			RegisterPasswordRequestImpl.class,
+			RegisterSSRequestImpl.class,
+			UnstructuredSSNotifyRequestImpl.class,
+			UnstructuredSSRequestImpl.class,
+			
+			IstCommandResponseImpl.class,
+			ProvideRoamingNumberResponseImplV1.class,
+			ProvideRoamingNumberResponseImplV3.class,
+			SendRoutingInformationResponseImplV1.class,
+			SendRoutingInformationResponseImplV3.class,
+
+			ProvideSubscriberLocationResponseImpl.class,
+			SendRoutingInfoForLCSResponseImpl.class,
+			SubscriberLocationReportResponseImpl.class,
+
+			AuthenticationFailureReportResponseImpl.class,
+			SendAuthenticationInfoResponseImplV1.class,
+			SendAuthenticationInfoResponseImplV3.class,
+
+			RestoreDataResponseImpl.class,
+
+			CheckImeiResponseImplV1.class,
+			CheckImeiResponseImplV3.class,
+
+			CancelLocationResponseImpl.class,
+			PurgeMSResponseImpl.class,
+			SendIdentificationResponseImplV1.class,
+			SendIdentificationResponseImplV3.class,
+			UpdateGprsLocationResponseImpl.class,
+			UpdateLocationResponseImplV1.class,
+			UpdateLocationResponseImplV2.class,
+
+			AnyTimeInterrogationResponseImpl.class,
+			AnyTimeSubscriptionInterrogationResponseImpl.class,
+			ProvideSubscriberInfoResponseImpl.class,
+
+			DeleteSubscriberDataResponseImpl.class,
+
+			InsertSubscriberDataResponseImplV1.class,
+			InsertSubscriberDataResponseImplV3.class,
+
+			ActivateTraceModeResponseImpl.class,
+			SendImsiResponseImpl.class,
+
+			SendRoutingInfoForGprsResponseImpl.class,
+
+			AlertServiceCentreResponseImpl.class,
+			MoForwardShortMessageResponseImpl.class,
+			MtForwardShortMessageResponseImpl.class,
+			ReadyForSMResponseImpl.class,
+			ReportSMDeliveryStatusResponseImplV1.class,
+			ReportSMDeliveryStatusResponseImplV3.class,
+			SendRoutingInfoForSMResponseImpl.class,
+			
+			ActivateSSResponseImpl.class,
+			DeactivateSSResponseImpl.class,
+			EraseSSResponseImpl.class,
+			GetPasswordResponseImpl.class,
+			InterrogateSSResponseImpl.class,
+			ProcessUnstructuredSSResponseImpl.class,
+			RegisterPasswordResponseImpl.class,
+			RegisterSSResponseImpl.class,
+			UnstructuredSSNotifyResponseImpl.class,
+			UnstructuredSSResponseImpl.class
+		});
+	};
 
 	public MAPStackImpl getMAPStack() {
 		return this.mapStack;

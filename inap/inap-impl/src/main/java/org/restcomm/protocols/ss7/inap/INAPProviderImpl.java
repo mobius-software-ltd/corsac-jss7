@@ -19,6 +19,7 @@
 
 package org.restcomm.protocols.ss7.inap;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -803,6 +804,119 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 		}
 	}
 
+	public static List<Class<?>> getMessageClasses() {
+		return Arrays.asList(new Class<?>[] {
+			INAPErrorMessageCancelFailedImpl.class,
+			INAPErrorMessageSystemFailureImpl.class,
+			INAPErrorMessageRequestedInfoErrorImpl.class,
+			INAPErrorMessageOctetStringImpl.class,
+			INAPErrorMessageTaskRefusedImpl.class,
+			INAPErrorMessageOctetStringImpl.class,
+			INAPErrorMessageImproperCallerResponseCS1PlusImpl.class,
+			INAPErrorMessageOctetStringImpl.class,
+			INAPErrorMessageOctetStringImpl.class,
+			
+			InitialDPRequestImpl.class,
+			OriginationAttemptAuthorizedRequestImpl.class,
+			CollectedInformationRequestImpl.class,
+			AnalysedInformationRequestImpl.class,
+			RouteSelectFailureRequestImpl.class,
+			OCalledPartyBusyRequestImpl.class,
+			ONoAnswerRequestImpl.class,
+			OAnswerRequestImpl.class,
+			ODisconnectRequestImpl.class,
+			TermAttemptAuthorizedRequestImpl.class,
+			TBusyRequestImpl.class,
+			TNoAnswerRequestImpl.class,
+			TAnswerRequestImpl.class,
+			TDisconnectRequestImpl.class,
+			OMidCallRequestImpl.class,
+			TMidCallRequestImpl.class,
+
+			AssistRequestInstructionsRequestImpl.class,
+
+			RetrieveRequestImpl.class,
+
+			EstablishTemporaryConnectionRequestImpl.class,
+
+			DisconnectForwardConnectionCS1PlusRequestImpl.class,
+			// does nothing since its empty class
+			DisconnectForwardConnectionRequestImpl.class,
+
+			ConnectToResourceRequestImpl.class,
+			
+			ConnectRequestImpl.class,
+
+			// one is choise another is sequence , so we should be fine here
+			HoldCallInNetworkRequestImpl.class,
+			UpdateRequestImpl.class,
+
+			ReleaseCallRequestImpl.class,
+			RequestReportBCSMEventRequestImpl.class,
+			EventReportBCSMRequestImpl.class,
+			RequestNotificationChargingEventRequestImpl.class,
+			EventNotificationChargingRequestImpl.class,
+			CollectInformationRequestImpl.class,
+			AnalyseInformationRequestImpl.class,
+			SelectRouteRequestImpl.class,
+
+			SelectFacilityRequestImpl.class,
+
+			ContinueCS1PlusRequestImpl.class,
+			// does nothing
+			ContinueRequestImpl.class,
+
+			InitiateCallAttemptRequestImpl.class,
+			ResetTimerRequestImpl.class,
+			FurnishChargingInformationRequestImpl.class,
+
+			ApplyChargingRequestImpl.class,
+			ApplyChargingRequestCS1Impl.class,
+
+			ApplyChargingReportRequestImpl.class,
+			ApplyChargingReportRequestCS1Impl.class,
+
+			RequestCurrentStatusReportRequestImpl.class,
+			RequestEveryStatusChangeReportRequestImpl.class,
+			RequestFirstStatusMatchReportRequestImpl.class,
+
+			StatusReportRequestImpl.class,
+			CallGapRequestImpl.class,
+			ActivateServiceFilteringRequestImpl.class,
+			ServiceFilteringResponseRequestImpl.class,
+			CallInformationReportRequestImpl.class,
+			CallInformationRequestImpl.class,
+			SendChargingInformationCS1RequestImpl.class,
+			SendChargingInformationRequestImpl.class,
+			PlayAnnouncementRequestImpl.class,
+			PromptAndCollectUserInformationRequestImpl.class,
+
+			SpecializedResourceReportCS1PlusRequestImpl.class,
+			// does nothing
+			SpecializedResourceReportRequestImpl.class,
+
+			CancelRequestImpl.class,
+			CancelStatusReportRequestImpl.class,
+
+			// does nothing
+			ActivityTestRequestImpl.class,
+			CallLimitRequestImpl.class,
+			ContinueWithArgumentRequestImpl.class,
+			DialogueUserInformationRequestImpl.class,
+			HandOverRequestImpl.class,
+			HoldCallPartyConnectionRequestImpl.class,
+			ReconnectRequestImpl.class,
+			ReleaseCallPartyConnectionRequestImpl.class,
+			SignallingInformationRequestImpl.class,
+
+			ActivityTestResponseImpl.class,
+			PromptAndCollectUserInformationResponseImpl.class,
+			RequestCurrentStatusReportResponseImpl.class,
+			UpdateResponseImpl.class,
+			RetrieveResponseImpl.class
+		});
+	}
+	
 	public INAPStackImpl getStack() {
 		return inapStack;
 	}

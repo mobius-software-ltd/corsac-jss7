@@ -19,6 +19,7 @@
 
 package org.restcomm.protocols.ss7.cap;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -610,6 +611,80 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 		}
 	}
 
+	public static List<Class<?>> getMessageClasses() {
+		return Arrays.asList(new Class<?>[] {
+			CAPErrorMessageCancelFailedImpl.class,
+			CAPErrorMessageRequestedInfoErrorImpl.class,
+			CAPErrorMessageSystemFailureImpl.class,
+			CAPErrorMessageTaskRefusedImpl.class,
+			
+			ActivityTestRequestImpl.class,
+			ApplyChargingReportRequestImpl.class,
+			ApplyChargingRequestImpl.class,
+			AssistRequestInstructionsRequestImpl.class,
+			CallGapRequestImpl.class,
+			CallInformationReportRequestImpl.class,
+			CallInformationRequestRequestImpl.class,
+			CancelRequestImpl.class,
+			CollectInformationRequestImpl.class,
+			ConnectRequestImpl.class,
+			ConnectToResourceRequestImpl.class,
+			ContinueRequestImpl.class,
+			ContinueWithArgumentRequestImpl.class,
+			DisconnectForwardConnectionRequestImpl.class,
+			DisconnectForwardConnectionWithArgumentRequestImpl.class,
+			DisconnectLegRequestImpl.class,
+			EstablishTemporaryConnectionRequestImpl.class,
+			EventReportBCSMRequestImpl.class,
+			FurnishChargingInformationRequestImpl.class,
+			InitialDPRequestV1Impl.class,
+			InitialDPRequestV3Impl.class,
+			InitiateCallAttemptRequestImpl.class,
+			MoveLegRequestImpl.class,
+			PlayAnnouncementRequestImpl.class,
+			PromptAndCollectUserInformationRequestImpl.class,
+			ReleaseCallRequestImpl.class,
+			RequestReportBCSMEventRequestImpl.class,
+			ResetTimerRequestImpl.class,
+			SendChargingInformationRequestImpl.class,
+			SpecializedResourceReportRequestImpl.class,
+			SplitLegRequestImpl.class,
+			ActivityTestGPRSRequestImpl.class,
+			ApplyChargingGPRSRequestImpl.class,
+			ApplyChargingReportGPRSRequestImpl.class,
+			CancelGPRSRequestImpl.class,
+			ConnectGPRSRequestImpl.class,
+			ContinueGPRSRequestImpl.class,
+			EntityReleasedGPRSRequestImpl.class,
+			EventReportGPRSRequestImpl.class,
+			FurnishChargingInformationGPRSRequestImpl.class,
+			InitialDpGprsRequestImpl.class,
+			ReleaseGPRSRequestImpl.class,
+			RequestReportGPRSEventRequestImpl.class,
+			ResetTimerGPRSRequestImpl.class,
+			SendChargingInformationGPRSRequestImpl.class,
+			ConnectSMSRequestImpl.class,
+			ContinueSMSRequestImpl.class,
+			EventReportSMSRequestImpl.class,
+			FurnishChargingInformationSMSRequestImpl.class,
+			InitialDPSMSRequestImpl.class,
+			ReleaseSMSRequestImpl.class,
+			RequestReportSMSEventRequestImpl.class,
+			ResetTimerSMSRequestImpl.class,
+			
+			ActivityTestResponseImpl.class,
+			DisconnectLegResponseImpl.class,
+			InitiateCallAttemptResponseImpl.class,
+			MoveLegResponseImpl.class,
+			PromptAndCollectUserInformationResponseImpl.class,
+			SplitLegResponseImpl.class,
+			ActivityTestGPRSResponseImpl.class,
+			ApplyChargingReportGPRSResponseImpl.class,
+			EntityReleasedGPRSResponseImpl.class,
+			EventReportGPRSResponseImpl.class
+		});
+	}
+	
 	public CAPStackImpl getCAPStack() {
 		return stack;
 	}
