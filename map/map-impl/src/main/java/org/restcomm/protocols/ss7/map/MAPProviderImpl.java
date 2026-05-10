@@ -1145,7 +1145,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 		}
 	}
 	
-	public static List<Class<?>> getMessageClasses() {
+	public static List<Class<?>> getErrorClasses() {
 		return Arrays.asList(new Class<?>[] {
 			MAPErrorMessageExtensionContainerImpl.class,
 			MAPErrorMessageAbsentSubscriberSMImpl.class,
@@ -1171,7 +1171,11 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 			MAPErrorMessageSsIncompatibilityImpl.class,
 			MAPErrorMessagePwRegistrationFailureImpl.class,
 			MAPErrorMessageParameterlessImpl.class,
-			
+		});
+	}
+	
+	public static List<Class<?>> getMessageClasses() {
+		return Arrays.asList(new Class<?>[] {	
 			IstCommandRequestImpl.class,
 			ProvideRoamingNumberRequestImpl.class,
 

@@ -611,13 +611,17 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 		}
 	}
 
-	public static List<Class<?>> getMessageClasses() {
+	public static List<Class<?>> getErrorClasses() {
 		return Arrays.asList(new Class<?>[] {
 			CAPErrorMessageCancelFailedImpl.class,
 			CAPErrorMessageRequestedInfoErrorImpl.class,
 			CAPErrorMessageSystemFailureImpl.class,
-			CAPErrorMessageTaskRefusedImpl.class,
-			
+			CAPErrorMessageTaskRefusedImpl.class						
+		});
+	}
+	
+	public static List<Class<?>> getMessageClasses() {
+		return Arrays.asList(new Class<?>[] {
 			ActivityTestRequestImpl.class,
 			ApplyChargingReportRequestImpl.class,
 			ApplyChargingRequestImpl.class,

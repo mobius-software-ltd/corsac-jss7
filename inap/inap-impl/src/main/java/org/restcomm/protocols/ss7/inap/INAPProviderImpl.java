@@ -804,18 +804,19 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 		}
 	}
 
-	public static List<Class<?>> getMessageClasses() {
+	public static List<Class<?>> getErrorClasses() {
 		return Arrays.asList(new Class<?>[] {
 			INAPErrorMessageCancelFailedImpl.class,
 			INAPErrorMessageSystemFailureImpl.class,
 			INAPErrorMessageRequestedInfoErrorImpl.class,
 			INAPErrorMessageOctetStringImpl.class,
 			INAPErrorMessageTaskRefusedImpl.class,
-			INAPErrorMessageOctetStringImpl.class,
-			INAPErrorMessageImproperCallerResponseCS1PlusImpl.class,
-			INAPErrorMessageOctetStringImpl.class,
-			INAPErrorMessageOctetStringImpl.class,
-			
+			INAPErrorMessageImproperCallerResponseCS1PlusImpl.class
+		});
+	}
+	
+	public static List<Class<?>> getMessageClasses() {
+		return Arrays.asList(new Class<?>[] {
 			InitialDPRequestImpl.class,
 			OriginationAttemptAuthorizedRequestImpl.class,
 			CollectedInformationRequestImpl.class,
