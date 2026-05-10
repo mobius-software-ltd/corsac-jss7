@@ -35,6 +35,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ASNFeatureRequestIndicator;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CalledPartyBusinessGroupIDImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CallingPartyBusinessGroupIDImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CallingPartySubaddressImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.DpSpecificCommonParametersImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -62,7 +63,7 @@ public abstract class MidCallRequestImpl extends CircuitSwitchedCallMessageImpl 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1,defaultImplementation = CallingPartyBusinessGroupIDImpl.class)
 	private CallingPartyBusinessGroupID callingPartyBusinessGroupID;
     
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1,defaultImplementation = CallingPartySubaddress.class)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1,defaultImplementation = CallingPartySubaddressImpl.class)
 	private CallingPartySubaddress callingPartySubaddress;
 	
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false,index = -1)

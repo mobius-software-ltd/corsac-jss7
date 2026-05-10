@@ -38,6 +38,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FacilityGroup;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CallingPartyBusinessGroupIDImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CallingPartySubaddressImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.DpSpecificCommonParametersImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FacilityGroupWrapperImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.RouteListImpl;
@@ -65,7 +66,7 @@ public class OAnswerRequestImpl extends CircuitSwitchedCallMessageImpl implement
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1,defaultImplementation = CallingPartyBusinessGroupIDImpl.class)
 	private CallingPartyBusinessGroupID callingPartyBusinessGroupID;
     
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1,defaultImplementation = CallingPartySubaddress.class)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1,defaultImplementation = CallingPartySubaddressImpl.class)
 	private CallingPartySubaddress callingPartySubaddress;
 	
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
