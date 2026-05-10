@@ -36,7 +36,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  */
 @ASNTag(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,lengthIndefinite = false)
 public class HoldCallInNetworkRequestChoisempl {
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1, defaultImplementation = HoldCauseImpl.class)
 	private HoldCause holdCause;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
