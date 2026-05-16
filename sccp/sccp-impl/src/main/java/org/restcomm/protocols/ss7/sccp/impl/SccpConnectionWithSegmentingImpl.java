@@ -35,6 +35,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 /**
@@ -141,6 +142,6 @@ abstract class SccpConnectionWithSegmentingImpl extends SccpConnectionWithTimers
             logger.error(String.format("Message doesn't have DLN set: ", dataMessage));
             throw new IllegalStateException();
         }
-        sendMessage(dataMessage, dummyCallback);
+		sendMessage(dataMessage, MessageCallback.EMPTY);
     }
 }

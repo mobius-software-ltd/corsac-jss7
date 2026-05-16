@@ -23,7 +23,7 @@
 
 package org.restcomm.protocols.ss7.mtp;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 /**
  * @author amit bhayani
@@ -72,7 +72,7 @@ public interface Mtp3UserPart {
 	 * @param msg
 	 *
 	 */
-	void sendMessage(Mtp3TransferPrimitive msg, TaskCallback<Exception> callback);
+	void sendMessage(Mtp3TransferPrimitive msg, MessageCallback<Exception> callback);
 
 	/**
 	 * return PointCodeFormat

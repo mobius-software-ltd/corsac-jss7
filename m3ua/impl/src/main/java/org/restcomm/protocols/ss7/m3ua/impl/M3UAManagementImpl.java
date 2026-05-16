@@ -71,6 +71,7 @@ import org.restcomm.protocols.ss7.mtp.RoutingLabelFormat;
 import com.mobius.software.common.dal.timers.RunnableTask;
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
 /**
@@ -829,7 +830,7 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
 	}
 
 	@Override
-	public void sendMessage(Mtp3TransferPrimitive mtp3TransferPrimitive, TaskCallback<Exception> callback) {
+	public void sendMessage(Mtp3TransferPrimitive mtp3TransferPrimitive, MessageCallback<Exception> callback) {
 		ProtocolData data = this.parameterFactory.createProtocolData(mtp3TransferPrimitive.getOpc(),
 				mtp3TransferPrimitive.getDpc(), mtp3TransferPrimitive.getSi(), mtp3TransferPrimitive.getNi(),
 				mtp3TransferPrimitive.getMp(), mtp3TransferPrimitive.getSls(), mtp3TransferPrimitive.getData());
@@ -859,9 +860,10 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
 					payload.setNetworkAppearance(asImpl.getNetworkAppearance());
 					payload.setRoutingContext(asImpl.getRoutingContext());
 
+					String aspName = asImpl.getName();
 					try {
 						asImpl.write(payload);
-						callback.onSuccess();
+						callback.onSuccess(aspName);
 					} catch (IOException e) {
 						logger.error("An error occured while trying to send m3ua message via AS, " + e);
 						callback.onError(e);

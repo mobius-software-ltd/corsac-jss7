@@ -35,6 +35,7 @@ public class TCPAbortIndicationImpl extends DialogIndicationImpl implements TCPA
 	// This indication is used to inform user of abnormal cases.
     private PAbortCauseType cause;
 
+	private String aspName;
     // private boolean localProviderOriginated = false;
 
     TCPAbortIndicationImpl(ByteBuf originalBuffer) {
@@ -47,7 +48,8 @@ public class TCPAbortIndicationImpl extends DialogIndicationImpl implements TCPA
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication#getPAbortCause()
      */
-    public PAbortCauseType getPAbortCause() {
+    @Override
+	public PAbortCauseType getPAbortCause() {
         return this.cause;
     }
 
@@ -58,9 +60,20 @@ public class TCPAbortIndicationImpl extends DialogIndicationImpl implements TCPA
      * org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication#setPAbortCause(org.restcomm.protocols.ss7.tcap
      * .asn.comp.PAbortCauseType)
      */
-    public void setPAbortCause(PAbortCauseType t) {
+    @Override
+	public void setPAbortCause(PAbortCauseType t) {
         this.cause = t;
     }
+
+	@Override
+	public String getAspName() {
+		return aspName;
+	}
+
+	@Override
+	public void setAspName(String aspName) {
+		this.aspName = aspName;
+	}
 
     // public boolean isLocalProviderOriginated() {
     // return localProviderOriginated;

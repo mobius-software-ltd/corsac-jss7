@@ -43,19 +43,21 @@ public class RejectImpl implements Reject {
     
     private boolean localOriginated = false;
 
-
-    public RejectProblem getProblem() throws ParseException {
+    @Override
+	public RejectProblem getProblem() throws ParseException {
     	if(rejectProblem==null)
     		return null;
     	
         return rejectProblem.getType();
     }
 
-    public void setProblem(RejectProblem p) {
+    @Override
+	public void setProblem(RejectProblem p) {
         rejectProblem = new ASNRejectProblemType(p);        
     }
 
-    public Long getCorrelationId() {
+    @Override
+	public Long getCorrelationId() {
         Byte value=correlationId.getFirstValue();
         if(value==null)
         	return null;
@@ -63,26 +65,30 @@ public class RejectImpl implements Reject {
         return value.longValue();
     }
 
-    public void setCorrelationId(Long i) {
-        if ((i == null) || (i < -128 || i > 127)) {
-            throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
-        }
+    @Override
+	public void setCorrelationId(Long i) {
+        if ((i == null) || (i < -128 || i > 127))
+			throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         this.correlationId.setFirstValue(i.byteValue());
     }
 
-    public ComponentType getType() {
+    @Override
+	public ComponentType getType() {
         return ComponentType.Reject;
     }
 
-    public boolean isLocalOriginated() {
+    @Override
+	public boolean isLocalOriginated() {
         return localOriginated;
     }
 
-    public void setLocalOriginated(boolean p) {
+    @Override
+	public void setLocalOriginated(boolean p) {
         localOriginated = p;
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Reject[");
         sb.append("localOriginated=");

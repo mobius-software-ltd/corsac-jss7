@@ -42,6 +42,7 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
     private Boolean abrtApdu = false;
 
     private SccpAddress originatingAddress;
+	private String aspName;
 
     TCUserAbortIndicationImpl(ByteBuf originalBuffer) {
         super(EventType.UAbort, originalBuffer);
@@ -53,24 +54,29 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
     // return abortReason;
     // }
 
-    public Boolean IsAareApdu() {
+    @Override
+	public Boolean IsAareApdu() {
         return this.aareApdu;
     }
 
-    public void setAareApdu() {
+    @Override
+	public void setAareApdu() {
         this.aareApdu = true;
     }
 
-    public Boolean IsAbrtApdu() {
+    @Override
+	public Boolean IsAbrtApdu() {
         return this.abrtApdu;
 
     }
 
-    public void setAbrtApdu() {
+    @Override
+	public void setAbrtApdu() {
         this.abrtApdu = true;
     }
 
-    public UserInformation getUserInformation() {
+    @Override
+	public UserInformation getUserInformation() {
 
         return userInformation;
     }
@@ -78,35 +84,42 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
     /**
      * @param userInformation the userInformation to set
      */
-    public void setUserInformation(UserInformation userInformation) {
+    @Override
+	public void setUserInformation(UserInformation userInformation) {
         this.userInformation = userInformation;
     }
 
     /**
      * @return the abortSource
      */
-    public AbortSourceType getAbortSource() {
+    @Override
+	public AbortSourceType getAbortSource() {
         return abortSource;
     }
 
-    public void setAbortSource(AbortSourceType abortSource) {
+    @Override
+	public void setAbortSource(AbortSourceType abortSource) {
         this.abortSource = abortSource;
 
     }
 
-    public ApplicationContextName getApplicationContextName() {
+    @Override
+	public ApplicationContextName getApplicationContextName() {
         return this.acn;
     }
 
-    public void setApplicationContextName(ApplicationContextName acn) {
+    @Override
+	public void setApplicationContextName(ApplicationContextName acn) {
         this.acn = acn;
     }
 
-    public ResultSourceDiagnostic getResultSourceDiagnostic() {
+    @Override
+	public ResultSourceDiagnostic getResultSourceDiagnostic() {
         return this.resultSourceDiagnostic;
     }
 
-    public void setResultSourceDiagnostic(ResultSourceDiagnostic resultSourceDiagnostic) {
+    @Override
+	public void setResultSourceDiagnostic(ResultSourceDiagnostic resultSourceDiagnostic) {
         this.resultSourceDiagnostic = resultSourceDiagnostic;
     }
 
@@ -115,7 +128,8 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# getOriginatingAddress()
      */
-    public SccpAddress getOriginatingAddress() {
+    @Override
+	public SccpAddress getOriginatingAddress() {
 
         return this.originatingAddress;
     }
@@ -126,9 +140,18 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest# setOriginatingAddress
      * (org.restcomm.protocols.ss7.sccp.parameter.SccpAddress)
      */
-    public void setOriginatingAddress(SccpAddress dest) {
+    @Override
+	public void setOriginatingAddress(SccpAddress dest) {
         this.originatingAddress = dest;
+	}
 
-    }
+	@Override
+	public String getAspName() {
+		return aspName;
+	}
 
+	@Override
+	public void setAspName(String aspName) {
+		this.aspName = aspName;
+	}
 }

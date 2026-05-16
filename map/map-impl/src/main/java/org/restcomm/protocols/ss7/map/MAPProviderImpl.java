@@ -1965,7 +1965,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	}
 
 	@Override
-	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
+	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass, String aspName) {
 
 		MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(dialog);
 

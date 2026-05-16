@@ -48,7 +48,8 @@ public abstract class ReturnImpl implements Return {
     private ASNReturnSetParameterImpl setParameter=new ASNReturnSetParameterImpl();
     private ASNReturnParameterImpl seqParameter=null;
     
-    public void setDialog(Dialog dialog) {
+    @Override
+	public void setDialog(Dialog dialog) {
     	this.dialog=dialog;
     }
     
@@ -59,9 +60,9 @@ public abstract class ReturnImpl implements Return {
     		Invoke invoke=dialog.getInvoke(getCorrelationId());
     		if(invoke!=null) {
     			OperationCode realOC=invoke.getOperationCode();
-    			if(realOC!=null) {
-    				if(realOC instanceof OperationCodeImpl)
-    					oc=(OperationCodeImpl)realOC;
+    			if(realOC!=null)
+					if(realOC instanceof OperationCodeImpl)
+    					oc=realOC;
     				else if(realOC.getOperationType()==OperationCodeType.National) {
     					oc = new OperationCodeImpl();
     			    	oc.setNationalOperationCode(realOC.getNationalOperationCode());
@@ -70,7 +71,6 @@ public abstract class ReturnImpl implements Return {
     					oc = new OperationCodeImpl();
     			    	oc.setPrivateOperationCode(realOC.getPrivateOperationCode());
     				}
-    			}
     		}
     	}
     	
@@ -86,14 +86,16 @@ public abstract class ReturnImpl implements Return {
     	return null;
     }
     
-    public OperationCode getOperationCode() {
+    @Override
+	public OperationCode getOperationCode() {
     	return operationCode;
     }
 
-    public void setOperationCode(OperationCode i) {
-    	if(i!=null) {
+    @Override
+	public void setOperationCode(OperationCode i) {
+    	if(i!=null)
 			if(i instanceof OperationCodeImpl)
-				operationCode=(OperationCodeImpl)i;
+				operationCode=i;
 			else if(i.getOperationType()==OperationCodeType.National) {
 				operationCode = new OperationCodeImpl();
 				operationCode.setNationalOperationCode(i.getNationalOperationCode());
@@ -102,10 +104,10 @@ public abstract class ReturnImpl implements Return {
 				operationCode = new OperationCodeImpl();
 				operationCode.setPrivateOperationCode(i.getPrivateOperationCode());
 			}
-		}
     }
 
-    public Object getParameter() {
+    @Override
+	public Object getParameter() {
         if(this.setParameter!=null)
         	return this.setParameter.getValue();
         else if(this.seqParameter!=null)
@@ -114,17 +116,20 @@ public abstract class ReturnImpl implements Return {
         return null;
     }
 
-    public void setSetParameter(Object p) {
+    @Override
+	public void setSetParameter(Object p) {
     	this.setParameter = new ASNReturnSetParameterImpl(p);
         this.seqParameter=null;        
     }
 
-    public void setSeqParameter(Object p) {
+    @Override
+	public void setSeqParameter(Object p) {
     	this.seqParameter = new ASNReturnParameterImpl(p);
         this.setParameter=null;        
     }
 
-    public Long getCorrelationId() {
+    @Override
+	public Long getCorrelationId() {
         Byte value=correlationId.getFirstValue();
         if(value==null)
         	return null;
@@ -132,10 +137,10 @@ public abstract class ReturnImpl implements Return {
         return value.longValue();
     }
 
-    public void setCorrelationId(Long i) {
-        if ((i == null) || (i < -128 || i > 127)) {
-            throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
-        }
+    @Override
+	public void setCorrelationId(Long i) {
+        if ((i == null) || (i < -128 || i > 127))
+			throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         this.correlationId.setFirstValue(i.byteValue());
     }
 

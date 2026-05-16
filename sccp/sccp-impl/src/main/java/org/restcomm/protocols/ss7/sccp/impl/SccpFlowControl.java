@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.SequenceNumberImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SequenceNumber;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 /**
  * 
  * @author yulianoifa
@@ -60,16 +60,6 @@ public class SccpFlowControl {
     private SccpFlowControlWindow outputWindow;
 
     private boolean preemptiveAk = false; // send AK before input window exhaustion
-
-    private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {			
-		}
-		
-		@Override
-		public void onError(Exception exception) {			
-		}
-	};
     
     public SccpFlowControl(String name, int maximumWindowSize) {
         this.logger = LogManager.getLogger(SccpFlowControl.class.getCanonicalName() + "-" + name);
@@ -144,24 +134,28 @@ public class SccpFlowControl {
         if (sendSequenceNumber != null)
 			if (expectingFirstMessageInputAfterInit && !sendSequenceNumber.equals(new SequenceNumberImpl(0))) {
                 // local procedure error
-                conn.reset(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS), dummyCallback);
+				conn.reset(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS),
+						MessageCallback.EMPTY);
                 return false;
 
             } else if (sendSequenceNumber.equals(sendSequenceNumberExpectedAtInput) && inputWindow.contains(sendSequenceNumber))
 				sendSequenceNumberExpectedAtInput = sendSequenceNumberExpectedAtInput.nextNumber();
 			else {
                 if (!inputWindow.contains(sendSequenceNumber))
-					conn.reset(new ResetCauseImpl(ResetCauseValue.REMOTE_PROCEDURE_ERROR_MESSAGE_OUT_OF_WINDOW), dummyCallback);
+					conn.reset(new ResetCauseImpl(ResetCauseValue.REMOTE_PROCEDURE_ERROR_MESSAGE_OUT_OF_WINDOW),
+							MessageCallback.EMPTY);
 				else if (!sendSequenceNumber.equals(sendSequenceNumberExpectedAtInput))
 					// local procedure error
-                    conn.resetSection(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS), dummyCallback);
+					conn.resetSection(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS),
+							MessageCallback.EMPTY);
                 return false;
             }
 
         if (rangeContains(lastReceiveSequenceNumberReceived, this.sendSequenceNumber.nextNumber(), receiveSequenceNumber))
 			outputWindow.setLowerEdge(receiveSequenceNumber);
 		else {
-            conn.resetSection(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS), dummyCallback);
+			conn.resetSection(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS),
+					MessageCallback.EMPTY);
             return false;
         }
 

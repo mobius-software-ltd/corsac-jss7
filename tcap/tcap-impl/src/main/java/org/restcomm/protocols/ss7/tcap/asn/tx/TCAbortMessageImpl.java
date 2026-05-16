@@ -26,8 +26,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCAbortMessage;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
@@ -49,7 +49,8 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCAbortMessage#getPAbortCause()
      */
-    public PAbortCauseType getPAbortCause() throws ParseException {
+    @Override
+	public PAbortCauseType getPAbortCause() throws ParseException {
     	if(type==null)
     		return null;
     	
@@ -62,7 +63,8 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCAbortMessage#setPAbortCause
      * (org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType)
      */
-    public void setPAbortCause(PAbortCauseType t) {
+    @Override
+	public void setPAbortCause(PAbortCauseType t) {
         this.type = new ASNPAbortCause(t);        
     }
 

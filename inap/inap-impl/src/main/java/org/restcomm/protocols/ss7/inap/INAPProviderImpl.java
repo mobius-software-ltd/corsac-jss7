@@ -1250,7 +1250,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 	}
 
 	@Override
-	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
+	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass, String aspName) {
 
 		INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(dialog);
 

@@ -140,7 +140,7 @@ public class MessageMultiSapTest extends SccpHarness {
 		SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(a2, a1, getDataSrc(),
 				0, 8, true, null, null);
 		super.sentMessages.set(0);
-		sccpProvider1.send(message, super.getTaskCallback(1));
+		sccpProvider1.send(message, super.getCallback(1));
 		super.sendSemaphore.acquire();
 
 		Thread.sleep(PROCESSING_TIMEOUT);
@@ -153,7 +153,7 @@ public class MessageMultiSapTest extends SccpHarness {
 		message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(a3, a1, getDataSrc(), 0, 8, true, null,
 				null);
 		super.sentMessages.set(0);
-		sccpProvider1.send(message, super.getTaskCallback(1));
+		sccpProvider1.send(message, super.getCallback(1));
 		super.sendSemaphore.acquire();
 		assertEquals(u1.getMessages().size(), 0);
 		assertEquals(u2.getMessages().size(), 1);
@@ -168,7 +168,7 @@ public class MessageMultiSapTest extends SccpHarness {
 		message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(a4, a1, getDataSrc(), 0, 8, true, null,
 				null);
 		super.sentMessages.set(0);
-		sccpProvider1.send(message, super.getTaskCallback(1));
+		sccpProvider1.send(message, super.getCallback(1));
 		super.sendSemaphore.acquire();
 		assertEquals(u1.getMessages().size(), 1);
 		assertEquals(u2.getMessages().size(), 1);

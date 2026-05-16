@@ -54,4 +54,5 @@ public interface SccpAddressedMessage extends SccpMessage {
 
     boolean reduceHopCounter();
 
+	String getAspName();
 }

@@ -88,8 +88,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import com.mobius.software.common.dal.timers.RunnableTask;
 import com.mobius.software.common.dal.timers.RunnableTimer;
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -238,16 +238,6 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 			SccpMessageImpl.MESSAGE_NAME_UDT, SccpMessageImpl.MESSAGE_NAME_UDTS, SccpMessageImpl.MESSAGE_NAME_XUDT,
 			SccpMessageImpl.MESSAGE_NAME_XUDTS, SccpMessageImpl.MESSAGE_NAME_LUDT,
 			SccpMessageImpl.MESSAGE_NAME_LUDTS });
-
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-		}
-	};
 
 	public SccpStackImpl(String name, Boolean useBuffersCopy, WorkerPool workerPool) {
 		this(name, workerPool);
@@ -850,8 +840,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 		return referenceNumberCounter.get();
 	}
 
-	protected void send(SccpDataNoticeTemplateMessageImpl message, TaskCallback<Exception> callback) {
-
+	protected void send(SccpDataNoticeTemplateMessageImpl message, MessageCallback<Exception> callback) {
 		if (this.state != State.RUNNING) {
 			String errorMessage = "Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING";
 
@@ -1133,7 +1122,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 			RunnableTask task = new RunnableTask(new Runnable() {
 				@Override
 				public void run() {
-					mup.sendMessage(mtp3Msg, dummyCallback);
+					mup.sendMessage(mtp3Msg, MessageCallback.EMPTY);
 					mtp3Msg.release();
 				}
 			}, taskID, "SccpIncomingNonLocalMessageTask");
@@ -1277,7 +1266,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 									"Reassembly function failure: when receiving a next segment message order is missing. SccpMessageSegment=%s",
 									msg));
 						this.sccpRoutingControl.sendSccpError(sgmMsgFst, ReturnCauseValue.CANNOT_REASEMBLE, null,
-								dummyCallback);
+								MessageCallback.EMPTY);
 						return;
 					}
 
@@ -1313,6 +1302,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 				if (sccpMessage instanceof SccpAddressedMessageImpl) {
 					// CR or connectionless messages
 					final SccpAddressedMessageImpl msgAddr = (SccpAddressedMessageImpl) sccpMessage;
+					msgAddr.setAspName(mtp3Msg.getAspID());
 
 					// adding OPC into CallingPartyAddress if it is absent there and "RouteOnSsn"
 					SccpAddress addr = msgAddr.getCallingPartyAddress();
@@ -1395,7 +1385,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 			msg.cancelSegmentation();
 
 			try {
-				sccpRoutingControl.sendSccpError(msg, ReturnCauseValue.CANNOT_REASEMBLE, null, dummyCallback);
+				sccpRoutingControl.sendSccpError(msg, ReturnCauseValue.CANNOT_REASEMBLE, null, MessageCallback.EMPTY);
 			} catch (Exception e) {
 				logger.warn("IOException when sending an error message", e);
 			}
@@ -1409,7 +1399,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 	}
 
 	public void sendMessageToMTP(SccpMessage message, Mtp3UserPart mup, Mtp3TransferPrimitive mtp3Message,
-			TaskCallback<Exception> callback) {
+			MessageCallback<Exception> callback) {
 		messagesSentByType.get(SccpMessageImpl.getName(message.getType())).incrementAndGet();
 		bytesSentByType.get(SccpMessageImpl.getName(message.getType()))
 				.addAndGet(mtp3Message.getData().readableBytes());

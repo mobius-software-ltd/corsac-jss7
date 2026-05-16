@@ -51,8 +51,8 @@ import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
 
 import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 
@@ -179,7 +179,7 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
 	/**
 	 * @param message
 	 */
-	void send(ISUPMessage message, Mtp3TransferPrimitive mtp3Message, TaskCallback<Exception> callback) {
+	void send(ISUPMessage message, Mtp3TransferPrimitive mtp3Message, MessageCallback<Exception> callback) {
 		if (this.state != State.RUNNING)
 			return;
 

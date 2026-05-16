@@ -25,11 +25,10 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 *
 */
 
-public interface Component {
+public interface Component {	
+	ComponentType getType();
 	
-	 ComponentType getType();
-	
-	 void setCorrelationId(Long i);
+	void setCorrelationId(Long i);
 	 
-	 Long getCorrelationId();
+	Long getCorrelationId();
 }

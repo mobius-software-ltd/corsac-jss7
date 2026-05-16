@@ -1094,7 +1094,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 	}
 
 	@Override
-	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
+	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass, String aspName) {
 
 		CAPDialogImpl capDialogImpl = (CAPDialogImpl) this.getCAPDialog(dialog);
 

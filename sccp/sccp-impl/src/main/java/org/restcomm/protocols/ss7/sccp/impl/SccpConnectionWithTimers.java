@@ -45,8 +45,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCauseValue;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.Unpooled;
 
@@ -102,7 +102,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 	}
 
 	@Override
-	public void sendMessage(SccpConnMessage message, TaskCallback<Exception> callback) {
+	public void sendMessage(SccpConnMessage message, MessageCallback<Exception> callback) {
 		if (stack.state != SccpStackImpl.State.RUNNING) {
 			String errorMessage = "Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING";
 
@@ -140,7 +140,8 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 				if (getState() == CLOSED)
 					return;
 
-				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(), dummyCallback);
+				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(),
+						MessageCallback.EMPTY);
 
 			} catch (Exception e) {
 				logger.error(e);
@@ -174,7 +175,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 				it.setSequencingSegmenting(new SequencingSegmentingImpl(new SequenceNumberImpl(0, false),
 						new SequenceNumberImpl(0, false), lastMoreDataSent));
 				prepareMessageForSending(it);
-				sendMessage(it, dummyCallback);
+				sendMessage(it, MessageCallback.EMPTY);
 
 			} catch (Exception e) {
 				logger.error(e);
@@ -199,7 +200,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 					return;
 
 				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.EXPIRATION_OF_RECEIVE_INACTIVITY_TIMER),
-						Unpooled.buffer(), dummyCallback);
+						Unpooled.buffer(), MessageCallback.EMPTY);
 
 			} catch (Exception e) {
 				logger.error(e);
@@ -230,7 +231,8 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 				if (getState() == CLOSED)
 					return;
 
-				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(), dummyCallback);
+				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(),
+						MessageCallback.EMPTY);
 				intProcess.start();
 				repeatRelProcess.start();
 
@@ -263,7 +265,8 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 				if (getState() == CLOSED)
 					return;
 
-				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(), dummyCallback);
+				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(),
+						MessageCallback.EMPTY);
 				repeatRelProcess.start();
 
 			} catch (Exception e) {
@@ -337,7 +340,8 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
 				if (getState() == CLOSED)
 					return;
 
-				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(), dummyCallback);
+				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(),
+						MessageCallback.EMPTY);
 				stack.removeConnection(getLocalReference());
 
 			} catch (Exception e) {

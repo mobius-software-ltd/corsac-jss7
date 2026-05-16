@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.sccp.impl.message.SccpMessageImpl;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 /**
  * 
@@ -54,16 +54,7 @@ public class AdvancedUser extends User {
 				message.getImportance());
 		((SccpMessageImpl) newMessage).setOutgoingDpc(message.getIncomingOpc());
 
-		this.provider.send(newMessage, new TaskCallback<Exception>() {
-
-			@Override
-			public void onSuccess() {
-			}
-
-			@Override
-			public void onError(Exception exception) {
-			}
-		});
+		this.provider.send(newMessage, MessageCallback.EMPTY);
 	}
 
 }

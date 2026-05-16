@@ -36,6 +36,11 @@
 			<scope>provided</scope>
 		</dependency>
 		
+		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.common</groupId>
+			<artifactId>common</artifactId>
+		</dependency>
+		
 		<!-- timers -->
 		<dependency>
 			<groupId>com.mobius-software</groupId>

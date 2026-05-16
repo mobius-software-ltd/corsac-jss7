@@ -43,6 +43,8 @@ import org.restcomm.protocols.ss7.tcap.listeners.Client;
 import org.restcomm.protocols.ss7.tcap.listeners.Server;
 import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
 
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -125,7 +127,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		// 1. TC-BEGIN + AARQ apdu (unsupported protocol version)
 		client.startClientDialog();
-		sccpProvider1.send(message, dummyCallback);
+		sccpProvider1.send(message, MessageCallback.EMPTY);
 
 		// 2. TC-ABORT + PAbortCauseType.NoCommonDialogPortion
 		client.awaitReceived(EventType.PAbort);
@@ -164,7 +166,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 		MessageFactory messageFactory1 = sccpProvider1.getMessageFactory();
 		SccpDataMessage message = messageFactory1.createDataMessageClass1(peer2Address, peer1Address,
 				getMessageBadSyntax(), 0, 0, false, null, null);
-		sccpProvider1.send(message, dummyCallback);
+		sccpProvider1.send(message, MessageCallback.EMPTY);
 
 		// 2. TC-ABORT + PAbortCauseType.IncorrectTxPortion
 		client.awaitReceived(EventType.PAbort);
@@ -216,7 +218,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 		MessageFactory messageFactory2 = sccpProvider2.getMessageFactory();
 		SccpDataMessage message = messageFactory2.createDataMessageClass1(peer1Address, peer2Address,
 				getMessageBadTag(), 0, 0, false, null, null);
-		sccpProvider2.send(message, dummyCallback);
+		sccpProvider2.send(message, MessageCallback.EMPTY);
 
 		client.awaitReceived(EventType.DialogTimeout);
 		TestEventUtils.assertPassed(DIALOG_TIMEOUT);
@@ -594,7 +596,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		// 1. TC-Begin + AARQ apdu + unsupported protocol version (supported only V2)
 		client.startClientDialog();
-		sccpProvider1.send(message, dummyCallback);
+		sccpProvider1.send(message, MessageCallback.EMPTY);
 
 		client.awaitReceived(EventType.PAbort);
 		{

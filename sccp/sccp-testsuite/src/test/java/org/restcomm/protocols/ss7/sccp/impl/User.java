@@ -51,6 +51,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -138,7 +139,7 @@ public class User extends BaseSccpListener implements SccpListener {
         return true;
     }
 
-    public void send(TaskCallback<Exception> callback) throws IOException {
+	public void send(MessageCallback<Exception> callback) throws IOException {
         MessageFactory messageFactory = provider.getMessageFactory();
 
         // ParameterFactory paramFactory = provider.getParameterFactory();
@@ -227,9 +228,11 @@ public class User extends BaseSccpListener implements SccpListener {
     @Override
     public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress, ProtocolClass clazz, Credit credit, ByteBuf data, Importance importance) throws Exception {
         if (!refuseConnections)
-			conn.confirm(calledAddress, (options.confirmCredit != null) ? options.confirmCredit : credit, options.sendConfirmData, dummyCallback);
+			conn.confirm(calledAddress, (options.confirmCredit != null) ? options.confirmCredit : credit,
+					options.sendConfirmData, MessageCallback.EMPTY);
 		else {
-            conn.refuse(new RefusalCauseImpl(RefusalCauseValue.END_USER_ORIGINATED), Unpooled.wrappedBuffer(new byte[] { 0x31, 0x32, 0x33, 0x34 }), dummyCallback);
+			conn.refuse(new RefusalCauseImpl(RefusalCauseValue.END_USER_ORIGINATED),
+					Unpooled.wrappedBuffer(new byte[] { 0x31, 0x32, 0x33, 0x34 }), MessageCallback.EMPTY);
             stats.refusedCount++;
         }
     }

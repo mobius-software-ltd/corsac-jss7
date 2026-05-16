@@ -68,7 +68,8 @@ public class ReturnErrorImpl implements ReturnError {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#getErrorCode()
      */
-    public ErrorCode getErrorCode() {
+    @Override
+	public ErrorCode getErrorCode() {
     	return this.errorCode;
     }
 
@@ -77,7 +78,8 @@ public class ReturnErrorImpl implements ReturnError {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#getInvokeId()
      */
-    public Integer getInvokeId() {
+    @Override
+	public Integer getInvokeId() {
     	if(this.invokeId==null)
     		return null;
     	
@@ -89,7 +91,8 @@ public class ReturnErrorImpl implements ReturnError {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#getParameter()
      */
-    public Object getParameter() {
+    @Override
+	public Object getParameter() {
     	if(this.parameter==null)
     		return null;
     	
@@ -101,7 +104,8 @@ public class ReturnErrorImpl implements ReturnError {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setErrorCode(Long)
      */
-    public void setErrorCode(Integer ec) {
+    @Override
+	public void setErrorCode(Integer ec) {
     	if(ec==null)
     		this.errorCode=null;
     	else {
@@ -115,7 +119,8 @@ public class ReturnErrorImpl implements ReturnError {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setErrorCode(Long)
      */
-    public void setErrorCode(List<Long> ec) {
+    @Override
+	public void setErrorCode(List<Long> ec) {
     	if(ec==null)
     		this.errorCode=null;
     	else {
@@ -129,7 +134,8 @@ public class ReturnErrorImpl implements ReturnError {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setInvokeId(java .lang.Long)
      */
-    public void setInvokeId(Integer i) {    	
+    @Override
+	public void setInvokeId(Integer i) {    	
         this.invokeId = new ASNInteger(i,"InvokeID",-128,127,false);
     }
 
@@ -139,7 +145,8 @@ public class ReturnErrorImpl implements ReturnError {
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setParameter(org
      * .restcomm.protocols.ss7.tcap.asn.comp.Parameter)
      */
-    public void setParameter(Object p) {
+    @Override
+	public void setParameter(Object p) {
         this.parameter = new ASNReturnErrorParameterImpl(p);
     }
 
@@ -148,10 +155,11 @@ public class ReturnErrorImpl implements ReturnError {
         return ComponentType.ReturnError;
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
     	Object ec=null;
-    	if(this.errorCode!=null) {
-    		switch(this.errorCode.getErrorType()) {
+    	if(this.errorCode!=null)
+			switch(this.errorCode.getErrorType()) {
 				case Global:
 					ec=this.errorCode.getGlobalErrorCode();
 					break;
@@ -161,7 +169,6 @@ public class ReturnErrorImpl implements ReturnError {
 				default:
 					break;    		
     		}
-    	}
     	
     	Long invokeIdValue=null;
     	if(this.invokeId!=null)

@@ -28,13 +28,8 @@ import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnSegmentableMessageIm
 import org.restcomm.protocols.ss7.sccp.message.SccpConnMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
-import org.restcomm.protocols.ss7.sccp.parameter.RefusalCause;
-import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
-import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
-
-import io.netty.buffer.ByteBuf;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 /**
  * 
@@ -49,7 +44,7 @@ abstract class SccpConnectionWithTransmitQueueImpl extends SccpConnectionBaseImp
 	}
 
 	@Override
-	public void sendMessage(SccpConnMessage message, TaskCallback<Exception> callback) {
+	public void sendMessage(SccpConnMessage message, MessageCallback<Exception> callback) {
 		if (stack.state != SccpStackImpl.State.RUNNING) {
 			String errorMessage = "Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING";
 
@@ -73,20 +68,5 @@ abstract class SccpConnectionWithTransmitQueueImpl extends SccpConnectionBaseImp
 
 			SccpConnectionWithTransmitQueueImpl.super.sendMessage(message, callback);
 		}
-	}
-
-	@Override
-	public void reset(ResetCause reason, TaskCallback<Exception> callback) throws Exception {
-		super.reset(reason, callback);
-	}
-
-	@Override
-	public void disconnect(ReleaseCause reason, ByteBuf data, TaskCallback<Exception> callback) {
-		super.disconnect(reason, data, callback);
-	}
-
-	@Override
-	public void refuse(RefusalCause reason, ByteBuf data, TaskCallback<Exception> callback) throws Exception {
-		super.refuse(reason, data, callback);
 	}
 }

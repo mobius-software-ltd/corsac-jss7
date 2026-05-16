@@ -27,11 +27,8 @@ import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnItMessageImpl;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnSegmentableMessageImpl;
-import org.restcomm.protocols.ss7.sccp.message.SccpConnMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
-
-import com.mobius.software.common.dal.timers.TaskCallback;
 
 import io.netty.buffer.ByteBuf;
 
@@ -44,16 +41,6 @@ public class SccpConnectionImpl extends SccpConnectionWithCouplingImpl implement
 
     public SccpConnectionImpl(int localSsn, LocalReference localReference, ProtocolClass protocol, SccpStackImpl stack, SccpRoutingControl sccpRoutingControl) {
         super(stack.newSls(), localSsn, localReference, protocol, stack, sccpRoutingControl);
-    }
-
-    @Override
-	public void receiveMessage(SccpConnMessage message) throws Exception {
-    	super.receiveMessage(message);
-    }
-
-    @Override
-	public void sendMessage(SccpConnMessage message, TaskCallback<Exception> callback) {
-    	super.sendMessage(message, callback);
     }
 
     @Override

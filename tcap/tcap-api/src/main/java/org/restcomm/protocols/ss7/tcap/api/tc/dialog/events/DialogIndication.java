@@ -53,4 +53,8 @@ public interface DialogIndication {
     Byte getQos();
     
     ByteBuf getOriginalBuffer();
+
+	String getAspName();
+
+	void setAspName(String aspName);
 }

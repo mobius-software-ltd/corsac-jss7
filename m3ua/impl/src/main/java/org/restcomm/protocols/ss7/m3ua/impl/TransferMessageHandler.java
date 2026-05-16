@@ -70,12 +70,15 @@ public class TransferMessageHandler extends MessageHandler {
 
             FSM fsm = getAspFSMForRxPayload(aspImpl);
             AspState aspState = AspState.getState(fsm.getState().getName());
+			String aspName = aspImpl.getAspFactory().getName();
 
-            if (aspState == AspState.ACTIVE) {
+			if (aspState == AspState.ACTIVE) {
                 ProtocolData protocolData = payload.getData();
                 Mtp3TransferPrimitive mtp3TransferPrimitive = this.mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(
                         protocolData.getSI(), protocolData.getNI(), protocolData.getMP(), protocolData.getOpc(),
                         protocolData.getDpc(), protocolData.getSLS(), protocolData.getData());
+
+				mtp3TransferPrimitive.setAspID(aspName);
                 ((AsImpl) aspImpl.getAs()).getM3UAManagement().sendTransferMessageToLocalUser(mtp3TransferPrimitive,
                         payload.getData().getSLS(), super.dummyCallback);
             } else
@@ -102,12 +105,15 @@ public class TransferMessageHandler extends MessageHandler {
 
             FSM fsm = getAspFSMForRxPayload(aspImpl);
             AspState aspState = AspState.getState(fsm.getState().getName());
+			String aspName = aspImpl.getAspFactory().getName();
 
             if (aspState == AspState.ACTIVE) {
                 ProtocolData protocolData = payload.getData();
                 Mtp3TransferPrimitive mtp3TransferPrimitive = this.mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(
                         protocolData.getSI(), protocolData.getNI(), protocolData.getMP(), protocolData.getOpc(),
                         protocolData.getDpc(), protocolData.getSLS(), protocolData.getData());
+
+				mtp3TransferPrimitive.setAspID(aspName);
                 ((AsImpl) aspImpl.getAs()).getM3UAManagement().sendTransferMessageToLocalUser(mtp3TransferPrimitive,
                         payload.getData().getSLS(), super.dummyCallback);
             } else

@@ -46,6 +46,7 @@ public abstract class DialogIndicationImpl implements DialogIndication {
     private Byte qos;
     private EventType type;
     private ByteBuf originalBuffer;
+	private String aspName;
     
     protected DialogIndicationImpl(EventType type,ByteBuf originalBuffer) {
         super();
@@ -56,7 +57,8 @@ public abstract class DialogIndicationImpl implements DialogIndication {
     /**
      * @return the components
      */
-    public List<BaseComponent> getComponents() {
+    @Override
+	public List<BaseComponent> getComponents() {
     	if(components==null)
     		return null;
     	
@@ -70,7 +72,8 @@ public abstract class DialogIndicationImpl implements DialogIndication {
     /**
      * @param components the components to set
      */
-    public void setComponents(List<BaseComponent> components) {
+    @Override
+	public void setComponents(List<BaseComponent> components) {
     	if(components==null) {
     		this.components=null;
     		return;
@@ -97,7 +100,8 @@ public abstract class DialogIndicationImpl implements DialogIndication {
     /**
      * @return the dialog
      */
-    public Dialog getDialog() {
+    @Override
+	public Dialog getDialog() {
         return dialog;
     }
 
@@ -111,14 +115,16 @@ public abstract class DialogIndicationImpl implements DialogIndication {
     /**
      * @return the type
      */
-    public EventType getType() {
+    @Override
+	public EventType getType() {
         return type;
     }
 
     /**
      * @return the qos
      */
-    public Byte getQos() {
+    @Override
+	public Byte getQos() {
         return qos;
     }
 
@@ -129,7 +135,18 @@ public abstract class DialogIndicationImpl implements DialogIndication {
         this.qos = qos;
     }
     
-    public ByteBuf getOriginalBuffer() {
+    @Override
+	public ByteBuf getOriginalBuffer() {
     	return originalBuffer;
     }
+
+	@Override
+	public String getAspName() {
+		return aspName;
+	}
+
+	@Override
+	public void setAspName(String aspName) {
+		this.aspName = aspName;
+	}
 }

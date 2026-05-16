@@ -46,6 +46,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -331,7 +332,7 @@ public abstract class EventTestHarness implements ISUPListener {
 		}
 
 		@Override
-		public void sendMessage(Mtp3TransferPrimitive mtpMsg, TaskCallback<Exception> callback) {
+		public void sendMessage(Mtp3TransferPrimitive mtpMsg, MessageCallback<Exception> callback) {
 
 			// here we have to parse ISUPMsg and store in receivedRemote
 			long tstamp = System.currentTimeMillis();

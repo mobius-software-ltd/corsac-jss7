@@ -124,6 +124,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
+
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
@@ -2469,7 +2471,7 @@ public class INAPFunctionalTest extends SccpHarness {
 		SccpDataMessage message = sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
 				Unpooled.wrappedBuffer(getMessageBadTag()), 0, 0, false, null, null);
 
-		sccpProvider1.send(message, dummyCallback);
+		sccpProvider1.send(message, MessageCallback.EMPTY);
 
 		// 2. TC-ABORT UnrecognizedMessageType
 		client.awaitReceived(EventType.DialogProviderAbort);

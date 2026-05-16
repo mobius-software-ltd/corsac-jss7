@@ -20,6 +20,10 @@
 		<dependency>
 			<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
 			<artifactId>mtp-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.common</groupId>
+			<artifactId>common</artifactId>
 		</dependency>		
 		<dependency>
 			<groupId>junit</groupId>
@@ -35,7 +39,7 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 			<scope>provided</scope>
-		</dependency>	
+		</dependency>
 	</dependencies>
 
 	<build>

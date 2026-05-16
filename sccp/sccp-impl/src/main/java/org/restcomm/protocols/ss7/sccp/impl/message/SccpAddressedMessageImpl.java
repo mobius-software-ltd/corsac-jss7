@@ -38,6 +38,8 @@ public abstract class SccpAddressedMessageImpl extends SccpMessageImpl implement
     protected SccpAddress callingParty;
     protected HopCounterImpl hopCounter;
 
+	private String aspName;
+
     protected SccpAddressedMessageImpl(int maxDataLen, int type, int outgoingSls, int localSsn,
             SccpAddress calledParty, SccpAddress callingParty, HopCounter hopCounter) {
         super(maxDataLen, type, outgoingSls, localSsn);
@@ -51,36 +53,51 @@ public abstract class SccpAddressedMessageImpl extends SccpMessageImpl implement
         super(maxDataLen,type, incomingOpc, incomingDpc, incomingSls, networkId);
     }
 
-    public SccpAddress getCalledPartyAddress() {
+    @Override
+	public SccpAddress getCalledPartyAddress() {
         return calledParty;
     }
 
-    public void setCalledPartyAddress(SccpAddress calledParty) {
+    @Override
+	public void setCalledPartyAddress(SccpAddress calledParty) {
         this.calledParty = calledParty;
     }
 
-    public SccpAddress getCallingPartyAddress() {
+    @Override
+	public SccpAddress getCallingPartyAddress() {
         return callingParty;
     }
 
-    public void setCallingPartyAddress(SccpAddress callingParty) {
+    @Override
+	public void setCallingPartyAddress(SccpAddress callingParty) {
         this.callingParty = callingParty;
     }
 
-    public HopCounter getHopCounter() {
+    @Override
+	public HopCounter getHopCounter() {
         return hopCounter;
     }
 
-    public void setHopCounter(HopCounter hopCounter) {
+    @Override
+	public void setHopCounter(HopCounter hopCounter) {
         this.hopCounter = (HopCounterImpl) hopCounter;
     }
 
-    public boolean reduceHopCounter() {
+	@Override
+	public String getAspName() {
+		return aspName;
+	}
+
+	public void setAspName(String aspName) {
+		this.aspName = aspName;
+	}
+
+	@Override
+	public boolean reduceHopCounter() {
         if (this.hopCounter != null) {
             int val = this.hopCounter.getValue();
-            if (--val <= 0) {
-                val = 0;
-            }
+            if (--val <= 0)
+				val = 0;
             this.hopCounter.setValue(val);
             if (val == 0)
                 return false;

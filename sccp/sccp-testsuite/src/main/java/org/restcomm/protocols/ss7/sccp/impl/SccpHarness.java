@@ -40,6 +40,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 
@@ -134,10 +135,10 @@ public class SccpHarness {
 			this.tearDownStack2();
 	}
 
-	protected TaskCallback<Exception> getTaskCallback(int messages) {
-		return new TaskCallback<Exception>() {
+	protected MessageCallback<Exception> getCallback(int messages) {
+		return new MessageCallback<Exception>() {
 			@Override
-			public void onSuccess() {
+			public void onSuccess(String aspName) {
 				SccpHarness.this.sentMessages.incrementAndGet();
 				if (SccpHarness.this.sentMessages.get() == messages)
 					SccpHarness.this.sendSemaphore.release();
@@ -276,7 +277,7 @@ public class SccpHarness {
 	public void sendTransferMessageToLocalUser(Mtp3UserPartImpl mtp3UserPart, int opc, int dpc, ByteBuf data)
 			throws InterruptedException {
 		this.sentMessages.set(0);
-		mtp3UserPart.sendTransferMessageToLocalUser(opc, dpc, data, this.getTaskCallback(1));
+		mtp3UserPart.sendTransferMessageToLocalUser(opc, dpc, data, this.getCallback(1));
 		this.sendSemaphore.acquire();
 
 		Thread.sleep(PROCESSING_TIMEOUT);

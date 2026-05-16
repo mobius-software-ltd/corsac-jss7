@@ -53,7 +53,8 @@ public class RejectImpl implements Reject {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#getInvokeId()
      */
-    public Integer getInvokeId() {
+    @Override
+	public Integer getInvokeId() {
     	if(this.invokeId==null)
     		return null;
     	
@@ -65,7 +66,8 @@ public class RejectImpl implements Reject {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#getProblem()
      */
-    public Problem getProblem() {
+    @Override
+	public Problem getProblem() {
 
         return this.problem;
     }
@@ -75,10 +77,10 @@ public class RejectImpl implements Reject {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setInvokeId(java.lang .Long)
      */
-    public void setInvokeId(Integer i) {
-        if (i != null && (i < -128 || i > 127)) {
-            throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
-        }
+    @Override
+	public void setInvokeId(Integer i) {
+        if (i != null && (i < -128 || i > 127))
+			throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
             
         if(i==null) {
         	this.invokeId=null;
@@ -94,7 +96,8 @@ public class RejectImpl implements Reject {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(GeneralProblemType)
      */
-    public void setProblem(GeneralProblemType generalProblemType) {
+    @Override
+	public void setProblem(GeneralProblemType generalProblemType) {
     	if(generalProblemType==null)
     		this.problem=null;
     	else {
@@ -108,7 +111,8 @@ public class RejectImpl implements Reject {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(InvokeProblemType)
      */
-    public void setProblem(InvokeProblemType invokeProblemType) {
+    @Override
+	public void setProblem(InvokeProblemType invokeProblemType) {
     	if(invokeProblemType==null)
     		this.problem=null;
     	else {
@@ -122,7 +126,8 @@ public class RejectImpl implements Reject {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(ReturnErrorProblemType)
      */
-    public void setProblem(ReturnErrorProblemType returnErrorProblemType) {
+    @Override
+	public void setProblem(ReturnErrorProblemType returnErrorProblemType) {
     	if(returnErrorProblemType==null)
     		this.problem=null;
     	else {
@@ -136,7 +141,8 @@ public class RejectImpl implements Reject {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setProblem(ReturnResultProblemType)
      */
-    public void setProblem(ReturnResultProblemType returnResultProblemType) {
+    @Override
+	public void setProblem(ReturnResultProblemType returnResultProblemType) {
     	if(returnResultProblemType==null)
     		this.problem=null;
     	else {
@@ -145,20 +151,23 @@ public class RejectImpl implements Reject {
     	}
     }
 
-    public ComponentType getType() {
+	public ComponentType getType() {
 
         return ComponentType.Reject;
     }
 
-    public boolean isLocalOriginated() {
+    @Override
+	public boolean isLocalOriginated() {
         return localOriginated;
     }
 
-    public void setLocalOriginated(boolean p) {
+    @Override
+	public void setLocalOriginated(boolean p) {
         localOriginated = p;
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return "Reject[invokeId=" + invokeId + (this.isLocalOriginated() ? ", localOriginated" : ", remoteOriginated")
                 + ", problem=" + problem + "]";
     }

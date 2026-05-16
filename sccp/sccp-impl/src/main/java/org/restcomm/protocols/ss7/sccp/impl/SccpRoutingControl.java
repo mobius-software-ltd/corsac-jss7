@@ -88,6 +88,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -169,7 +170,7 @@ public class SccpRoutingControl {
 							"Received SccpMessage=%s from MTP but the SSN is not available for local routing", msg));
 
 				this.sendSccpError(msg, ReturnCauseValue.SUBSYSTEM_FAILURE, RefusalCauseValue.SUBSYSTEM_FAILURE,
-						dummyCallback);
+						MessageCallback.EMPTY);
 				return;
 			}
 
@@ -195,7 +196,7 @@ public class SccpRoutingControl {
 			}
 			break;
 		case ROUTING_BASED_ON_GLOBAL_TITLE:
-			this.translationFunction(msg, dummyCallback);
+			this.translationFunction(msg, MessageCallback.EMPTY);
 			break;
 		default:
 			// This can never happen
@@ -231,7 +232,7 @@ public class SccpRoutingControl {
 		this.processCoMessages(msg, conn, listener);
 	}
 
-	protected void routeMssgFromSccpUser(SccpAddressedMessageImpl msg, TaskCallback<Exception> callback) {
+	protected void routeMssgFromSccpUser(SccpAddressedMessageImpl msg, MessageCallback<Exception> callback) {
 		if (msg instanceof SccpAddressedMessageImpl)
 			this.routeAddressed(msg, callback);
 		else
@@ -239,21 +240,21 @@ public class SccpRoutingControl {
 			this.routeConn((SccpConnMessage) msg, callback);
 	}
 
-	protected void routeMssgFromSccpUserConn(SccpConnMessage msg, TaskCallback<Exception> callback) {
+	protected void routeMssgFromSccpUserConn(SccpConnMessage msg, MessageCallback<Exception> callback) {
 		if (msg instanceof SccpAddressedMessageImpl)
 			this.routeAddressed((SccpAddressedMessageImpl) msg, callback);
 		else
 			this.routeConn(msg, callback);
 	}
 
-	protected void send(SccpAddressedMessageImpl message, TaskCallback<Exception> callback) {
-
+	protected void send(SccpAddressedMessageImpl message, MessageCallback<Exception> callback) {
 		int dpc = message.getOutgoingDpc();
 		int sls = message.getSls();
 
 		// outgoing congestion control
 		Mtp3ServiceAccessPoint sap = this.sccpStackImpl.router.findMtp3ServiceAccessPoint(dpc, sls,
 				message.getNetworkId());
+
 		if (sap == null) {
 
 			if (logger.isWarnEnabled())
@@ -298,11 +299,11 @@ public class SccpRoutingControl {
 			} else {
 				AtomicInteger segmentsLeft = new AtomicInteger(erd.getSegementedData().size());
 
-				TaskCallback<Exception> segmentedCallback = new TaskCallback<Exception>() {
+				MessageCallback<Exception> segmentedCallback = new MessageCallback<Exception>() {
 					@Override
-					public void onSuccess() {
+					public void onSuccess(String aspName) {
 						if (segmentsLeft.decrementAndGet() == 0)
-							callback.onSuccess();
+							callback.onSuccess(aspName);
 					}
 
 					@Override
@@ -333,7 +334,7 @@ public class SccpRoutingControl {
 		}
 	}
 
-	protected ReleaseCauseValue sendConn(SccpConnMessage connMessage, TaskCallback<Exception> callback) {
+	protected ReleaseCauseValue sendConn(SccpConnMessage connMessage, MessageCallback<Exception> callback) {
 		SccpMessageImpl message = (SccpMessageImpl) connMessage;
 		int dpc = message.getOutgoingDpc();
 		int sls = message.getSls();
@@ -433,7 +434,7 @@ public class SccpRoutingControl {
 				// nonsegmented data
 				Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3UserPartBaseImpl._SI_SERVICE_SCCP,
 						sap.getNi(), 0, sap.getOpc(), dpc, 0, erd.getSolidData());
-				sccpStackImpl.sendMessageToMTP(message, mup, msg, dummyCallback);
+				sccpStackImpl.sendMessageToMTP(message, mup, msg, MessageCallback.EMPTY);
 			} else {
 				// segmented data - not possible for a management message
 				if (logger.isWarnEnabled())
@@ -555,7 +556,7 @@ public class SccpRoutingControl {
 		return TranslationAddressCheckingResult.destinationAvailable;
 	}
 
-	private void translationFunction(SccpAddressedMessageImpl msg, TaskCallback<Exception> callback) {
+	private void translationFunction(SccpAddressedMessageImpl msg, MessageCallback<Exception> callback) {
 
 		// checking for hop counter
 		if (!msg.reduceHopCounter()) {
@@ -816,7 +817,7 @@ public class SccpRoutingControl {
 			return true;
 	}
 
-	protected void routeAddressed(SccpAddressedMessageImpl msg, TaskCallback<Exception> callback) {
+	protected void routeAddressed(SccpAddressedMessageImpl msg, MessageCallback<Exception> callback) {
 		SccpAddress calledPartyAddress = msg.getCalledPartyAddress();
 
 		int dpc = calledPartyAddress.getSignalingPointCode();
@@ -1033,7 +1034,7 @@ public class SccpRoutingControl {
 		}
 	}
 
-	private void routeConn(SccpConnMessage msg, TaskCallback<Exception> callback) {
+	private void routeConn(SccpConnMessage msg, MessageCallback<Exception> callback) {
 		// we have only local originated message here
 		LocalReference ref = getSln(msg);
 
@@ -1216,7 +1217,7 @@ public class SccpRoutingControl {
 		}
 	}
 
-	protected void sendMessageToMtp(SccpAddressedMessageImpl msg, TaskCallback<Exception> callback) {
+	protected void sendMessageToMtp(SccpAddressedMessageImpl msg, MessageCallback<Exception> callback) {
 		msg.setOutgoingDpc(msg.getCalledPartyAddress().getSignalingPointCode());
 
 		// if (msg.getSccpCreatesSls()) {
@@ -1226,7 +1227,7 @@ public class SccpRoutingControl {
 		this.send(msg, callback);
 	}
 
-	protected void sendMessageToMtpConn(SccpConnMessage message, TaskCallback<Exception> callback) {
+	protected void sendMessageToMtpConn(SccpConnMessage message, MessageCallback<Exception> callback) {
 		if (message instanceof SccpConnCrMessageImpl) {
 			callback.onError(new IllegalArgumentException(
 					"Message for send via MTP connection must have type Sccp Conn Cr message"));
@@ -1250,7 +1251,7 @@ public class SccpRoutingControl {
 	}
 
 	protected void sendSccpError(SccpAddressedMessageImpl msg, ReturnCauseValue returnCauseInt,
-			RefusalCauseValue refusalCauseInt, TaskCallback<Exception> callback) {
+			RefusalCauseValue refusalCauseInt, MessageCallback<Exception> callback) {
 		SccpMessage ans = null;
 		String errorMessage = "An error occured in SCCP routing with return cause " + returnCauseInt
 				+ " and refusal cause " + refusalCauseInt;
@@ -1344,7 +1345,7 @@ public class SccpRoutingControl {
 		LocalReference ref = (!msg.getIsIncoming()) ? getSln(msg) : getDln(msg);
 
 		SccpConnectionImpl conn = sccpStackImpl.getConnection(ref);
-		conn.disconnect(new ReleaseCauseImpl(cause), Unpooled.buffer(), callback);
+		conn.disconnect(new ReleaseCauseImpl(cause), Unpooled.buffer(), MessageCallback.EMPTY);
 		// conn.setState(CLOSED);
 	}
 
@@ -1368,7 +1369,7 @@ public class SccpRoutingControl {
 
 			} else if (msg instanceof SccpConnRlsdMessageImpl) {
 				if (!checkSourceLocalReferenceNumber(msg, conn)) {
-					conn.sendErr(new ErrorCauseImpl(LRN_MISMATCH_INCONSISTENT_SOURCE_LRN), dummyCallback);
+					conn.sendErr(new ErrorCauseImpl(LRN_MISMATCH_INCONSISTENT_SOURCE_LRN), MessageCallback.EMPTY);
 					return;
 				}
 				SccpConnRlsdMessageImpl rlsd = (SccpConnRlsdMessageImpl) msg;
@@ -1409,7 +1410,7 @@ public class SccpRoutingControl {
 
 			} else if (msg instanceof SccpConnRsrMessageImpl) {
 				if (!checkSourceLocalReferenceNumber(msg, conn)) {
-					conn.sendErr(new ErrorCauseImpl(LRN_MISMATCH_INCONSISTENT_SOURCE_LRN), dummyCallback);
+					conn.sendErr(new ErrorCauseImpl(LRN_MISMATCH_INCONSISTENT_SOURCE_LRN), MessageCallback.EMPTY);
 					return;
 				}
 				if (!conn.isCouplingEnabled()) {
@@ -1421,7 +1422,7 @@ public class SccpRoutingControl {
 
 			} else if (msg instanceof SccpConnRscMessageImpl) {
 				if (!checkSourceLocalReferenceNumber(msg, conn)) {
-					conn.sendErr(new ErrorCauseImpl(LRN_MISMATCH_INCONSISTENT_SOURCE_LRN), dummyCallback);
+					conn.sendErr(new ErrorCauseImpl(LRN_MISMATCH_INCONSISTENT_SOURCE_LRN), MessageCallback.EMPTY);
 					return;
 				}
 				if (!conn.isCouplingEnabled()) {
@@ -1438,7 +1439,7 @@ public class SccpRoutingControl {
 				conn.receiveMessage(msg);
 			else if (msg instanceof SccpConnItMessageImpl) {
 				if (!checkSourceLocalReferenceNumber(msg, conn)) {
-					conn.sendErr(new ErrorCauseImpl(LRN_MISMATCH_INCONSISTENT_SOURCE_LRN), dummyCallback);
+					conn.sendErr(new ErrorCauseImpl(LRN_MISMATCH_INCONSISTENT_SOURCE_LRN), MessageCallback.EMPTY);
 					return;
 				}
 				conn.receiveMessage(msg);
@@ -1449,7 +1450,7 @@ public class SccpRoutingControl {
 					if (err.getErrorCause().getValue() != null
 							&& err.getErrorCause().getValue() == SERVICE_CLASS_MISMATCH) {
 						listener.onDisconnectIndication(conn, err.getErrorCause());
-						conn.disconnect(new ReleaseCauseImpl(SCCP_FAILURE), Unpooled.buffer(), dummyCallback);
+						conn.disconnect(new ReleaseCauseImpl(SCCP_FAILURE), Unpooled.buffer(), MessageCallback.EMPTY);
 					} else {
 						listener.onDisconnectIndication(conn, err.getErrorCause());
 						sccpStackImpl.removeConnection(conn.getLocalReference());

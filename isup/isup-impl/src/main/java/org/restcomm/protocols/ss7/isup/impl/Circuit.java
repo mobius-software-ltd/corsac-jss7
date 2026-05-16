@@ -58,6 +58,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -270,7 +271,7 @@ class Circuit {
 				break;
 			}
 			// send
-			provider.send(message, msg, dummyCallback);
+			provider.send(message, msg, MessageCallback.EMPTY);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -800,7 +801,7 @@ class Circuit {
 				if (provider.isAutomaticTimerMessages())
 					try {
 						// TODO: CI required ?
-						provider.send(t1t5REL, t1t5encodedREL, dummyCallback);
+						provider.send(t1t5REL, t1t5encodedREL, MessageCallback.EMPTY);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -882,7 +883,7 @@ class Circuit {
 			startT12();
 			// send
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t12t13BLO, t12t13encodedBLO, dummyCallback);
+				provider.send(t12t13BLO, t12t13encodedBLO, MessageCallback.EMPTY);
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t12t13BLO, ISUPTimeoutEvent.T12, dpc);
 			provider.deliver(timeoutEvent);
@@ -903,7 +904,7 @@ class Circuit {
 			startT13();
 			// send
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t12t13BLO, t12t13encodedBLO, dummyCallback);
+				provider.send(t12t13BLO, t12t13encodedBLO, MessageCallback.EMPTY);
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t12t13BLO, ISUPTimeoutEvent.T13, dpc);
 			provider.deliver(timeoutEvent);
@@ -922,7 +923,7 @@ class Circuit {
 			startT14();
 			// send
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t14t15UBL, t14t15encodedUBL, dummyCallback);
+				provider.send(t14t15UBL, t14t15encodedUBL, MessageCallback.EMPTY);
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t14t15UBL, ISUPTimeoutEvent.T14, dpc);
 			provider.deliver(timeoutEvent);
@@ -943,7 +944,7 @@ class Circuit {
 			startT15();
 			// send
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t14t15UBL, t14t15encodedUBL, dummyCallback);
+				provider.send(t14t15UBL, t14t15encodedUBL, MessageCallback.EMPTY);
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t14t15UBL, ISUPTimeoutEvent.T15, dpc);
 			provider.deliver(timeoutEvent);
@@ -962,7 +963,7 @@ class Circuit {
 			startT16();
 			// send
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t16t17RSC, t16t17encodedRSC, dummyCallback);
+				provider.send(t16t17RSC, t16t17encodedRSC, MessageCallback.EMPTY);
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t16t17RSC, ISUPTimeoutEvent.T16, dpc);
 			provider.deliver(timeoutEvent);
@@ -983,7 +984,7 @@ class Circuit {
 			startT17();
 			// send
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t16t17RSC, t16t17encodedRSC, dummyCallback);
+				provider.send(t16t17RSC, t16t17encodedRSC, MessageCallback.EMPTY);
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t16t17RSC, ISUPTimeoutEvent.T17, dpc);
 			provider.deliver(timeoutEvent);
@@ -1003,7 +1004,7 @@ class Circuit {
 			// send
 
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t18t19CGB, t18t19encodedCGB, dummyCallback);
+				provider.send(t18t19CGB, t18t19encodedCGB, MessageCallback.EMPTY);
 
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t18t19CGB, ISUPTimeoutEvent.T18, dpc);
@@ -1025,7 +1026,7 @@ class Circuit {
 			startT19();
 			// send
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t18t19CGB, t18t19encodedCGB, dummyCallback);
+				provider.send(t18t19CGB, t18t19encodedCGB, MessageCallback.EMPTY);
 
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t18t19CGB, ISUPTimeoutEvent.T19, dpc);
@@ -1045,7 +1046,7 @@ class Circuit {
 			startT20();
 			// send
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t20t21CGU, t20t21encodedCGU, dummyCallback);
+				provider.send(t20t21CGU, t20t21encodedCGU, MessageCallback.EMPTY);
 
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t20t21CGU, ISUPTimeoutEvent.T20, dpc);
@@ -1067,7 +1068,7 @@ class Circuit {
 			startT21();
 			// send
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t20t21CGU, t20t21encodedCGU, dummyCallback);
+				provider.send(t20t21CGU, t20t21encodedCGU, MessageCallback.EMPTY);
 
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t20t21CGU, ISUPTimeoutEvent.T21, dpc);
@@ -1087,7 +1088,7 @@ class Circuit {
 			startT22();
 			// send
 			if (provider.isAutomaticTimerMessages())
-				provider.send(t22t23GRS, t22t23encodedGRS, dummyCallback);
+				provider.send(t22t23GRS, t22t23encodedGRS, MessageCallback.EMPTY);
 
 			// notify user
 			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t22t23GRS, ISUPTimeoutEvent.T22, dpc);
@@ -1111,7 +1112,7 @@ class Circuit {
 			// send
 			if (provider.isAutomaticTimerMessages())
 				try {
-					provider.send(t22t23GRS, t22t23encodedGRS, dummyCallback);
+					provider.send(t22t23GRS, t22t23encodedGRS, MessageCallback.EMPTY);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

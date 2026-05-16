@@ -43,6 +43,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 /*
  * Is inherited by both protocol class 2 and 3 implementations. Skips execution when connection isn't coupled
@@ -67,7 +68,7 @@ public abstract class SccpConnectionWithCouplingImpl extends SccpConnectionWithS
         if (couplingEnabled)
 			if (message instanceof SccpConnCcMessageImpl) {
                 SccpConnCcMessageImpl cc = (SccpConnCcMessageImpl) message;
-                nextConn.confirm(cc.getCalledPartyAddress(), cc.getCredit(), cc.getUserData(), dummyCallback);
+				nextConn.confirm(cc.getCalledPartyAddress(), cc.getCredit(), cc.getUserData(), MessageCallback.EMPTY);
 
             } else if (message instanceof SccpConnCrefMessageImpl) {
                 SccpConnCrefMessageImpl cref = (SccpConnCrefMessageImpl) message;
@@ -82,12 +83,12 @@ public abstract class SccpConnectionWithCouplingImpl extends SccpConnectionWithS
                 copy.setCalledPartyAddress(cref.getCalledPartyAddress());
 
                 stack.removeConnection(getLocalReference());
-                nextConn.sendMessage(copy, dummyCallback);
+				nextConn.sendMessage(copy, MessageCallback.EMPTY);
                 stack.removeConnection(nextConn.getLocalReference());
 
             } else if (message instanceof SccpConnRlsdMessageImpl) {
                 SccpConnRlsdMessageImpl rlsd = (SccpConnRlsdMessageImpl) message;
-                nextConn.disconnect(rlsd.getReleaseCause(), rlsd.getUserData(), dummyCallback);
+				nextConn.disconnect(rlsd.getReleaseCause(), rlsd.getUserData(), MessageCallback.EMPTY);
 
             } else if (message instanceof SccpConnRlcMessageImpl) {
                 SccpConnRlcMessageImpl copy = new SccpConnRlcMessageImpl(nextConn.getSls(), nextConn.getLocalSsn());
@@ -96,12 +97,12 @@ public abstract class SccpConnectionWithCouplingImpl extends SccpConnectionWithS
                 copy.setOutgoingDpc(nextConn.getRemoteDpc());
 
                 stack.removeConnection(getLocalReference());
-                nextConn.sendMessage(copy, dummyCallback);
+				nextConn.sendMessage(copy, MessageCallback.EMPTY);
                 stack.removeConnection(nextConn.getLocalReference());
             } else if (message instanceof SccpConnRsrMessageImpl) {
                 SccpConnRsrMessageImpl rsr = (SccpConnRsrMessageImpl) message;
                 setState(RSR_RECEIVED_WILL_PROPAGATE);
-                nextConn.reset(rsr.getResetCause(), dummyCallback);
+				nextConn.reset(rsr.getResetCause(), MessageCallback.EMPTY);
                 setState(RSR_PROPAGATED_VIA_COUPLED);
 
             } else if (message instanceof SccpConnRscMessageImpl) {
@@ -110,11 +111,11 @@ public abstract class SccpConnectionWithCouplingImpl extends SccpConnectionWithS
                 copy.setDestinationLocalReferenceNumber(nextConn.getRemoteReference());
                 copy.setOutgoingDpc(nextConn.getRemoteDpc());
 
-                nextConn.sendMessage(copy, dummyCallback);
+				nextConn.sendMessage(copy, MessageCallback.EMPTY);
                 setState(ESTABLISHED);
                 nextConn.setState(ESTABLISHED);
             } else if (message instanceof SccpConnErrMessageImpl)
-				nextConn.sendErr(((SccpConnErrMessageImpl) message).getErrorCause(), dummyCallback);
+				nextConn.sendErr(((SccpConnErrMessageImpl) message).getErrorCause(), MessageCallback.EMPTY);
     }
 
     @Override
@@ -128,7 +129,7 @@ public abstract class SccpConnectionWithCouplingImpl extends SccpConnectionWithS
                 copy.setOutgoingDpc(nextConn.getRemoteDpc());
                 copy.setUserData(msg.getUserData());
 
-                nextConn.sendMessage(copy, dummyCallback);
+				nextConn.sendMessage(copy, MessageCallback.EMPTY);
 
             } else if (msg instanceof SccpConnDt2MessageImpl) {
                 SccpConnDt2MessageImpl copy = new SccpConnDt2MessageImpl(255, nextConn.getSls(), nextConn.getLocalSsn());
@@ -138,7 +139,7 @@ public abstract class SccpConnectionWithCouplingImpl extends SccpConnectionWithS
                 copy.setOutgoingDpc(nextConn.getRemoteDpc());
                 copy.setUserData(msg.getUserData());
 
-                nextConn.sendMessage(copy, dummyCallback);
+				nextConn.sendMessage(copy, MessageCallback.EMPTY);
             }
         } else
 			super.receiveDataMessage(msg);

@@ -81,4 +81,8 @@ public interface TCUserAbortIndication extends DialogIndication {
     void setResultSourceDiagnostic(ResultSourceDiagnostic resultSourceDiagnostic);
     
     void setOriginatingAddress(SccpAddress dest);
+
+	String getAspName();
+
+	void setAspName(String aspName);
 }
