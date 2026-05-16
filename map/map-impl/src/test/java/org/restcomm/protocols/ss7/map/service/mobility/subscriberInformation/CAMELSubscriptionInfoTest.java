@@ -30,7 +30,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
@@ -148,7 +148,7 @@ public class CAMELSubscriptionInfoTest {
         assertEquals(oBcsmCamelTDPData.getDefaultCallHandling(), DefaultCallHandling.releaseCall);
         assertNull(oBcsmCamelTDPData.getExtensionContainer());
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(gsmSCFAddress.getAddress(), "1234567890");
 
         // check o-BcsmCamelTDP-CriteriaList
@@ -181,10 +181,10 @@ public class CAMELSubscriptionInfoTest {
         assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 2);
         assertNull(dpAnalysedInfoCriterium.getExtensionContainer());
         assertEquals(dialedNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(dialedNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(dialedNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(dialedNumber.getAddress(), "123456789");
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(gsmSCFAddress.getAddress(), "1234567890");
 
         // check t-CSI
@@ -205,7 +205,7 @@ public class CAMELSubscriptionInfoTest {
         assertEquals(tBcsmCamelTDPData.getDefaultCallHandling(), DefaultCallHandling.releaseCall);
         assertNull(tBcsmCamelTDPData.getExtensionContainer());
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(gsmSCFAddress.getAddress(), "1234567890");
 
         // check gprs-CSI
@@ -226,7 +226,7 @@ public class CAMELSubscriptionInfoTest {
         assertEquals(gprsCamelTDPData.getDefaultSessionHandling(), DefaultGPRSHandling.continueTransaction);
         assertNull(gprsCamelTDPData.getExtensionContainer());
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(gsmSCFAddress.getAddress(), "1234567890");
 
         // check mo-sms-CSI
@@ -247,7 +247,7 @@ public class CAMELSubscriptionInfoTest {
         assertEquals(smsCamelTdpData.getDefaultSMSHandling(), DefaultSMSHandling.continueTransaction);
         assertNull(smsCamelTdpData.getExtensionContainer());
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(gsmSCFAddress.getAddress(), "1234567890");
 
         // check ss-CSI
@@ -265,7 +265,7 @@ public class CAMELSubscriptionInfoTest {
         assertEquals(ssCamelData.getSsEventList().size(), 1);
         assertNull(ssCamelData.getExtensionContainer());
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(gsmSCFAddress.getAddress(), "1234567890");
 
         SSCode ssCode = ssCamelData.getSsEventList().get(0);
@@ -283,7 +283,7 @@ public class CAMELSubscriptionInfoTest {
         assertFalse(mcsi.getNotificationToCSE());
         assertFalse(mcsi.getCsiActive());
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(gsmSCFAddress.getAddress(), "1234567890");
 
         MMCode mmCode = mcsi.getMobilityTriggers().get(0);
@@ -456,7 +456,7 @@ public class CAMELSubscriptionInfoTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CAMELSubscriptionInfoImpl.class);
     	        
-    	ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1234567890");
+    	ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1234567890");
         final OBcsmCamelTDPDataImpl oBcsmCamelTDPData = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
         
@@ -467,7 +467,7 @@ public class CAMELSubscriptionInfoTest {
         final OBcsmCamelTdpCriteriaImpl oBcsmCamelTdpCriteria = new OBcsmCamelTdpCriteriaImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, null, null,
                 CallTypeCriteria.forwarded, null, null);
 
-        ISDNAddressStringImpl dialedNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "123456789");
+        ISDNAddressStringImpl dialedNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "123456789");
         final DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialedNumber, 2, gsmSCFAddress,
                 DefaultCallHandling.continueCall, null);
         
@@ -542,7 +542,7 @@ public class CAMELSubscriptionInfoTest {
         List<TBcsmCamelTdpCriteria> tBcsmCamelTdpCriteriaList = new ArrayList<TBcsmCamelTdpCriteria>();
         tBcsmCamelTdpCriteriaList.add(tBcsmCamelTdpCriteria);
 
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1234567890");
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1234567890");
         final TBcsmCamelTDPDataImpl tBcsmCamelTDPData = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.tBusy, 5, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
         
@@ -577,7 +577,7 @@ public class CAMELSubscriptionInfoTest {
         final OBcsmCamelTdpCriteriaImpl oBcsmCamelTdpCriteria = new OBcsmCamelTdpCriteriaImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, null, null,
                 CallTypeCriteria.forwarded, null, null);
 
-        ISDNAddressStringImpl dialedNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "123456789");
+        ISDNAddressStringImpl dialedNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "123456789");
         final DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialedNumber, 2, gsmSCFAddress,
                 DefaultCallHandling.continueCall, null);
         

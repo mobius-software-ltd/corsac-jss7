@@ -28,7 +28,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.junit.Test;
@@ -64,12 +64,12 @@ public class AlertServiceCentreRequestTest {
         
         ISDNAddressString msisdn = asc.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "29113123311");
 
         AddressString sca = asc.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.international_number);
-        assertEquals(sca.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(sca.getAddress(), "49883700292");
     }
 
@@ -78,8 +78,8 @@ public class AlertServiceCentreRequestTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AlertServiceCentreRequestImpl.class);
 
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "29113123311");
-        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "49883700292");
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "29113123311");
+        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "49883700292");
         AlertServiceCentreRequestImpl asc = new AlertServiceCentreRequestImpl(msisdn, sca);
         ByteBuf buffer=parser.encode(asc);
         byte[] encodedData = new byte[buffer.readableBytes()];

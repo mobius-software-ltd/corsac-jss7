@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NumberPortabilityStatus;
@@ -67,7 +67,7 @@ public class MNPInfoResTest {
         assertTrue(impl.getIMSI().getData().equals("25033012345"));
         assertTrue(impl.getMSISDN().getAddress().equals("11223344"));
         assertEquals(impl.getMSISDN().getAddressNature(), AddressNature.international_number);
-        assertEquals(impl.getMSISDN().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(impl.getMSISDN().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(impl.getNumberPortabilityStatus(), NumberPortabilityStatus.foreignNumberPortedIn);
         assertNull(impl.getExtensionContainer());
 
@@ -80,7 +80,7 @@ public class MNPInfoResTest {
         
         RouteingNumberImpl rn = new RouteingNumberImpl("09876");
         IMSIImpl imsi = new IMSIImpl("25033012345");
-        ISDNAddressStringImpl isdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl isdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "11223344");
 
         MNPInfoResImpl impl = new MNPInfoResImpl(rn, imsi, isdn, NumberPortabilityStatus.foreignNumberPortedIn, null);

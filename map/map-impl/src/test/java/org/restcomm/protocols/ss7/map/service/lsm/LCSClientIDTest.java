@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
@@ -160,9 +160,9 @@ public class LCSClientIDTest {
 
         data = getDataFull();
 
-        ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,"44332211");
+        ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,"44332211");
         LCSClientExternalIDImpl extId = new LCSClientExternalIDImpl(externalAddress, null);
-        AddressStringImpl clientDialedByMS = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,"5544332211");
+        AddressStringImpl clientDialedByMS = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,"5544332211");
         APNImpl apn = new APNImpl(new String(getDataAPN()));
         LCSRequestorIDImpl reqId = new LCSRequestorIDImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
         lcsClientID = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, extId, LCSClientInternalID.broadcastService,lcsClientName, clientDialedByMS, apn, reqId);

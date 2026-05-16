@@ -37,7 +37,7 @@ import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ProvideRoamingNumberResponse;
@@ -108,14 +108,14 @@ public class ProvideRoamingNumberResponseTest {
 
 		assertNotNull(roamingNumber);
 		assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-		assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
+		assertEquals(roamingNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 		assertEquals(roamingNumber.getAddress(), "49883700292");
 
 		assertNotNull(extensionContainer);
 		assertFalse(releaseResourcesSupported);
 		assertNotNull(vmscAddress);
 		assertEquals(vmscAddress.getAddressNature(), AddressNature.international_number);
-		assertEquals(vmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
+		assertEquals(vmscAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 		assertEquals(vmscAddress.getAddress(), "29113123311");
 
 		data = this.getEncodedDataFull();
@@ -131,14 +131,14 @@ public class ProvideRoamingNumberResponseTest {
 
 		assertNotNull(roamingNumber);
 		assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-		assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
+		assertEquals(roamingNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 		assertEquals(roamingNumber.getAddress(), "49883700292");
 
 		assertNotNull(extensionContainer);
 		assertTrue(releaseResourcesSupported);
 		assertNotNull(vmscAddress);
 		assertEquals(vmscAddress.getAddressNature(), AddressNature.international_number);
-		assertEquals(vmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
+		assertEquals(vmscAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 		assertEquals(vmscAddress.getAddress(), "29113123311");
 
 		data = this.getEncodedData1();
@@ -154,7 +154,7 @@ public class ProvideRoamingNumberResponseTest {
 
 		assertNotNull(roamingNumber);
 		assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-		assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
+		assertEquals(roamingNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 		assertEquals(roamingNumber.getAddress(), "49883700292");
 
 		assertNull(extensionContainer);
@@ -169,11 +169,11 @@ public class ProvideRoamingNumberResponseTest {
 		parser.replaceClass(ProvideRoamingNumberResponseImplV3.class);
 
 		ISDNAddressStringImpl roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-				NumberingPlan.ISDN, "49883700292");
+				NumberingPlanIndicator.ISDN, "49883700292");
 		MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 		boolean releaseResourcesSupported = false;
 		ISDNAddressStringImpl vmscAddress = new ISDNAddressStringImpl(AddressNature.international_number,
-				NumberingPlan.ISDN, "29113123311");
+				NumberingPlanIndicator.ISDN, "29113123311");
 
 		ProvideRoamingNumberResponse prn = new ProvideRoamingNumberResponseImplV3(roamingNumber, extensionContainer,
 				releaseResourcesSupported, vmscAddress);

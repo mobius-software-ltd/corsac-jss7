@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
@@ -73,7 +73,7 @@ public class MSISDNBSTest {
 
         ISDNAddressString msisdn = msisdnbs.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "111222333");
     }
 
@@ -83,7 +83,7 @@ public class MSISDNBSTest {
     	parser.replaceClass(MSISDNBSImpl.class);
     	        
     	ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "111222333");
+                NumberingPlanIndicator.ISDN, "111222333");
         final ExtBasicServiceCodeImpl extBasicServiceCode = new ExtBasicServiceCodeImpl(
                 new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allFacsimileTransmissionServices));
         

@@ -31,7 +31,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCode;
@@ -84,7 +84,7 @@ public class MCSITest {
         ISDNAddressString gsmSCFAddress = prim.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22235"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         assertNotNull(prim.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
@@ -100,7 +100,7 @@ public class MCSITest {
     	
         List<MMCode> mobilityTriggers = new ArrayList<MMCode>();
         Integer serviceKey = 3;
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22235");
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         boolean notificationToCSE = false;
         boolean csiActive = true;

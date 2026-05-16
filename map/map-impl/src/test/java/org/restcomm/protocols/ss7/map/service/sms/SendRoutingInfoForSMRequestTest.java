@@ -29,7 +29,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
@@ -106,12 +106,12 @@ public class SendRoutingInfoForSMRequestTest {
         
         ISDNAddressString msisdn = ind.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "13457745551");
         assertEquals((boolean) ind.getSm_RP_PRI(), false);
         AddressString sca = ind.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.international_number);
-        assertEquals(sca.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(sca.getAddress(), "9821113333");
         assertNull(ind.getTeleservice());
 
@@ -123,12 +123,12 @@ public class SendRoutingInfoForSMRequestTest {
 
         msisdn = ind.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "13457745551");
         assertEquals((boolean) ind.getSm_RP_PRI(), false);
         sca = ind.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.international_number);
-        assertEquals(sca.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(sca.getAddress(), "9821113333");
         assertEquals((boolean) ind.getGprsSupportIndicator(), true);
         
@@ -147,12 +147,12 @@ public class SendRoutingInfoForSMRequestTest {
 
         msisdn = ind.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "111222333");
         assertEquals((boolean) ind.getSm_RP_PRI(), true);
         sca = ind.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
-        assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
+        assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.national);
         assertEquals(sca.getAddress(), "4444");
         assertEquals((boolean) ind.getGprsSupportIndicator(), true);
         
@@ -173,12 +173,12 @@ public class SendRoutingInfoForSMRequestTest {
 
         msisdn = ind.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "11111111");
         assertEquals((boolean) ind.getSm_RP_PRI(), false);
         sca = ind.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.international_number);
-        assertEquals(sca.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(sca.getAddress(), "22222222");
         assertEquals(ind.getGprsSupportIndicator(), false);
         assertNull(ind.getSM_RP_SMEA());
@@ -229,9 +229,9 @@ public class SendRoutingInfoForSMRequestTest {
     	parser.replaceClass(SendRoutingInfoForSMRequestImpl.class);
 
         //msisdn + sca
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "13457745551");
-        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "9821113333");
+        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "9821113333");
         SendRoutingInfoForSMRequestImpl ind = new SendRoutingInfoForSMRequestImpl(msisdn, false, sca, null, false, null, null,
                 null, false, null, false, false, null, null);
 
@@ -243,8 +243,8 @@ public class SendRoutingInfoForSMRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         // msisdn + sca + sm_rp_smea
-        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "13457745551");
-        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "9821113333");
+        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "13457745551");
+        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "9821113333");
         SM_RP_SMEAImpl sm_rp_smea = new SM_RP_SMEAImpl(AddressFieldImpl.createMessage(Unpooled.wrappedBuffer(new byte[] { 11, -111, 39, 34, -125, 72, 35, -15 })));
         ind = new SendRoutingInfoForSMRequestImpl(msisdn, false, sca, null, true, null, sm_rp_smea, null, false, null, false, false, null, null);
 
@@ -256,8 +256,8 @@ public class SendRoutingInfoForSMRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         //msisdn + sca + sm_rp_smea + extContainer + SM_RP_MTI
-        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "111222333");
-        sca = new AddressStringImpl(AddressNature.network_specific_number, NumberingPlan.national, "4444");
+        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "111222333");
+        sca = new AddressStringImpl(AddressNature.network_specific_number, NumberingPlanIndicator.national, "4444");
         sm_rp_smea = new SM_RP_SMEAImpl(AddressFieldImpl.createMessage(Unpooled.wrappedBuffer(new byte[] { 11, -111, 39, 34, -125, 72, 35, -15 })));
         ind = new SendRoutingInfoForSMRequestImpl(msisdn, true, sca, MAPExtensionContainerTest.GetTestExtensionContainer(),
                 true, SM_RP_MTI.SMS_Status_Report, sm_rp_smea, null, false, null, false, false, null, null);
@@ -270,8 +270,8 @@ public class SendRoutingInfoForSMRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         //msisdn + sca + tc
-        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "11111111");
-        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22222222");
+        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "11111111");
+        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22222222");
         TeleserviceCodeImpl tc = new TeleserviceCodeImpl(TeleserviceCodeValue.shortMessageMT_PP);
         ind = new SendRoutingInfoForSMRequestImpl(msisdn, false, sca, null, false, null, null, null, false, null, false, false, tc, null);
 
@@ -283,8 +283,8 @@ public class SendRoutingInfoForSMRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         //msisdn + sca + sm_RP_PRI + gprsSupportIndicator + ipSmGwGuidanceIndicator + t4TriggerIndicator + this.singleAttemptDelivery
-        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "11111111");
-        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22222222");
+        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "11111111");
+        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22222222");
         ind = new SendRoutingInfoForSMRequestImpl(msisdn, true, sca, null, true, null, null, null, true, null, true, true, null, null);
 
         buffer=parser.encode(ind);
@@ -296,8 +296,8 @@ public class SendRoutingInfoForSMRequestTest {
 
 
         //msisdn + sca + smDeliveryNotIntended
-        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "11111111");
-        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22222222");
+        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "11111111");
+        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22222222");
         SMDeliveryNotIntended smDeliveryNotIntended = SMDeliveryNotIntended.onlyIMSIRequested;
         ind = new SendRoutingInfoForSMRequestImpl(msisdn, false, sca, null, false, null, null, smDeliveryNotIntended, false, null, false, false, null, null);
 
@@ -309,8 +309,8 @@ public class SendRoutingInfoForSMRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         //msisdn + sca + imsi + correlationID
-        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "11111111");
-        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22222222");
+        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "11111111");
+        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22222222");
         IMSIImpl imsi = new IMSIImpl("154154154154");
         IMSIImpl hlrId = new IMSIImpl("1111122222");
         CorrelationIDImpl corrId = new CorrelationIDImpl(hlrId, null, null);

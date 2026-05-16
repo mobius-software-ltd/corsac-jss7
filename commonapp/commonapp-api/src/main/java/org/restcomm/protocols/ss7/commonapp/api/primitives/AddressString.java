@@ -75,7 +75,7 @@ public interface AddressString {
 
     AddressNature getAddressNature();
 
-    NumberingPlan getNumberingPlan();
+    NumberingPlanIndicator getNumberingPlan();
 
     String getAddress();
 

@@ -25,7 +25,7 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AlertingPatternWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
@@ -74,7 +74,7 @@ public class CollectInformationRequestImpl extends CircuitSwitchedCallMessageImp
 	public CollectInformationRequestImpl() {
 	}
 
-	public CollectInformationRequestImpl(AlertingPattern alertingPattern, NumberingPlan numberingPlan, OriginalCalledPartyIDIsup originalCalledPartyID,
+	public CollectInformationRequestImpl(AlertingPattern alertingPattern, NumberingPlanIndicator numberingPlan, OriginalCalledPartyIDIsup originalCalledPartyID,
 			LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions, CallingPartyNumberIsup callingPartyNumber, CalledPartyNumberIsup dialedDigits) {
 	    	
 		if(alertingPattern!=null)
@@ -107,7 +107,7 @@ public class CollectInformationRequestImpl extends CircuitSwitchedCallMessageImp
 		return alertingPattern.getAlertingPattern();
 	}
 
-	public NumberingPlan getNumberingPlan() {
+	public NumberingPlanIndicator getNumberingPlan() {
 		if(numberingPlan==null)
 			return null;
 		

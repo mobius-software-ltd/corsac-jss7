@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
@@ -85,9 +85,9 @@ public class RegisterSSRequestTest {
     	SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.clir);
         BearerServiceCodeImpl bearerService = new BearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_1200_75bps);
         BasicServiceCodeImpl basicService = new BasicServiceCodeImpl(bearerService);
-        AddressStringImpl forwardedToNumber = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1110001");
-        ISDNAddressStringImpl forwardedToSubaddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1110002");
-        ISDNAddressStringImpl longFTNSupported = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1110003");;
+        AddressStringImpl forwardedToNumber = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1110001");
+        ISDNAddressStringImpl forwardedToSubaddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1110002");
+        ISDNAddressStringImpl longFTNSupported = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1110003");;
 
         RegisterSSRequestImpl impl = new RegisterSSRequestImpl(ssCode, basicService, forwardedToNumber, forwardedToSubaddress, 1, EMLPPPriority.priorityLevelA, 2, longFTNSupported);
         ByteBuf buffer=parser.encode(impl);

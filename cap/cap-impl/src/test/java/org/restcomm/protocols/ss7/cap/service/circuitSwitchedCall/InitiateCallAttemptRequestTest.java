@@ -32,7 +32,7 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
@@ -147,7 +147,7 @@ public class InitiateCallAttemptRequestTest {
 //        int numberIncompleteIndicator, int addressRepresentationREstrictedIndicator, int screeningIndicator
         CallingPartyNumberIsupImpl callingPartyNumber = new CallingPartyNumberIsupImpl(cpn2);
         CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(Unpooled.wrappedBuffer(getDataCallReferenceNumber()));
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "88448");
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "88448");
         elem = new InitiateCallAttemptRequestImpl(destinationRoutingAddress, CAPExtensionsTest.createTestCAPExtensions(), legToBeCreated, 15,
                 callingPartyNumber, callReferenceNumber, gsmSCFAddress, true);
 

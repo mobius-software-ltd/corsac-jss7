@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.junit.Test;
 
@@ -67,7 +67,7 @@ public class SendImsiRequestTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SendImsiRequestImpl.class);
     	
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "2323871462");
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "2323871462");
         SendImsiRequestImpl asc = new SendImsiRequestImpl(msisdn);
 
         ByteBuf buffer=parser.encode(asc);

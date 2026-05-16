@@ -28,7 +28,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
@@ -69,12 +69,12 @@ public class DPAnalysedInfoCriteriumTest {
         ISDNAddressString dialledNumber = prim.getDialledNumber();
         assertTrue(dialledNumber.getAddress().equals("22234"));
         assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(dialledNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(prim.getServiceKey(), 7);
         ISDNAddressString gsmSCFAddress = prim.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22235"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(prim.getDefaultCallHandling(), DefaultCallHandling.continueCall);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
     }
@@ -86,9 +86,9 @@ public class DPAnalysedInfoCriteriumTest {
     	                
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
-        ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22234");
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22235");
 
         DPAnalysedInfoCriteriumImpl prim = new DPAnalysedInfoCriteriumImpl(dialledNumber, 7, gsmSCFAddress,

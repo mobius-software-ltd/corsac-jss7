@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateLocationResponse;
@@ -74,7 +74,7 @@ public class UpdateLocationResponseTest {
         ISDNAddressString mscNumber = asc.getHlrNumber();
         assertTrue(mscNumber.getAddress().equals("09876"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         assertNull(asc.getExtensionContainer());
         assertFalse(asc.getAddCapability());
@@ -89,7 +89,7 @@ public class UpdateLocationResponseTest {
         mscNumber = asc.getHlrNumber();
         assertTrue(mscNumber.getAddress().equals("09876"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(asc.getExtensionContainer()));
         assertTrue(asc.getAddCapability());
@@ -104,7 +104,7 @@ public class UpdateLocationResponseTest {
         mscNumber = asc.getHlrNumber();
         assertTrue(mscNumber.getAddress().equals("09876"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         assertNull(asc.getExtensionContainer());
         assertFalse(asc.getAddCapability());
@@ -117,7 +117,7 @@ public class UpdateLocationResponseTest {
     	parser.replaceClass(UpdateLocationResponseImplV2.class);
     	parser.replaceClass(UpdateLocationResponseImplV1.class);
     	
-        ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "09876");
         UpdateLocationResponse asc = new UpdateLocationResponseImplV2(hlrNumber, null, false, false);
         

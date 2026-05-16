@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingCategory;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
@@ -153,10 +153,10 @@ public class SendRoutingInformationRequestTest {
         assertNotNull(type);
         assertNotNull(gmsc);
         assertTrue(msisdn.getAddressNature() == AddressNature.international_number);
-        assertTrue(msisdn.getNumberingPlan() == NumberingPlan.ISDN);
+        assertTrue(msisdn.getNumberingPlan() == NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "29113123311");
         assertTrue(gmsc.getAddressNature() == AddressNature.international_number);
-        assertTrue(gmsc.getNumberingPlan() == NumberingPlan.ISDN);
+        assertTrue(gmsc.getNumberingPlan() == NumberingPlanIndicator.ISDN);
         assertEquals(gmsc.getAddress(), "49883700292");
         assertEquals(type, InterrogationType.forwarding);
 
@@ -277,7 +277,7 @@ public class SendRoutingInformationRequestTest {
         assertNull(prim.getGmscOrGsmSCFAddress());
         assertNotNull(msisdn);
         assertTrue(msisdn.getAddressNature() == AddressNature.international_number);
-        assertTrue(msisdn.getNumberingPlan() == NumberingPlan.ISDN);
+        assertTrue(msisdn.getNumberingPlan() == NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "29113123311");
         // cugCheckInfo
         cugCheckInfo = prim.getCUGCheckInfo();
@@ -350,7 +350,7 @@ public class SendRoutingInformationRequestTest {
         assertNull(prim.getGmscOrGsmSCFAddress());
         assertNotNull(msisdn);
         assertTrue(msisdn.getAddressNature() == AddressNature.international_number);
-        assertTrue(msisdn.getNumberingPlan() == NumberingPlan.ISDN);
+        assertTrue(msisdn.getNumberingPlan() == NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "29113123311");
         // cugCheckInfo
         assertNull(prim.getCUGCheckInfo());
@@ -415,7 +415,7 @@ public class SendRoutingInformationRequestTest {
 
         // MAP V 3 Message Testing Starts
         // msisdn
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "29113123311");
 
         // cugCheckInfo
@@ -436,7 +436,7 @@ public class SendRoutingInformationRequestTest {
         Integer orCapability = 5;
 
         // gmscAddress
-        ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "49883700292");
 
         // callReferenceNumber

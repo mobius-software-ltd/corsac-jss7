@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
@@ -100,8 +100,8 @@ public class CCBSFeatureTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ISDNAddressStringImpl bSubscriberNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "333301");
-        ISDNAddressStringImpl bSubscriberSubaddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "333302");
+        ISDNAddressStringImpl bSubscriberNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "333301");
+        ISDNAddressStringImpl bSubscriberSubaddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "333302");
         TeleserviceCodeImpl teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.allTeleservices);
         BasicServiceCodeImpl basicServiceCode = new BasicServiceCodeImpl(teleservice);
         impl = new CCBSFeatureImpl(1, bSubscriberNumber, bSubscriberSubaddress, basicServiceCode);

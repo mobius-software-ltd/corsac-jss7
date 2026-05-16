@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
@@ -115,10 +115,10 @@ public class CancelLocationRequestTest {
 		assertFalse(mtrfSupportedAndNotAuthorized);
 		assertTrue(newMSCNumber.getAddress().equals("22228"));
 		assertEquals(newMSCNumber.getAddressNature(), AddressNature.international_number);
-		assertEquals(newMSCNumber.getNumberingPlan(), NumberingPlan.ISDN);
+		assertEquals(newMSCNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 		assertTrue(newVLRNumber.getAddress().equals("22229"));
 		assertEquals(newVLRNumber.getAddressNature(), AddressNature.international_number);
-		assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlan.ISDN);
+		assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 		assertTrue(ByteBufUtil.equals(newLmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
 		
 		// encode data 1
@@ -152,10 +152,10 @@ public class CancelLocationRequestTest {
 		assertTrue(mtrfSupportedAndNotAuthorized);
 		assertTrue(newMSCNumber.getAddress().equals("22228"));
 		assertEquals(newMSCNumber.getAddressNature(), AddressNature.international_number);
-		assertEquals(newMSCNumber.getNumberingPlan(), NumberingPlan.ISDN);
+		assertEquals(newMSCNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 		assertTrue(newVLRNumber.getAddress().equals("22229"));
 		assertEquals(newVLRNumber.getAddressNature(), AddressNature.international_number);
-		assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlan.ISDN);
+		assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 		assertTrue(ByteBufUtil.equals(newLmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
 		
 		// encode data 2
@@ -235,9 +235,9 @@ public class CancelLocationRequestTest {
 		boolean mtrfSupportedAndAuthorized = false;
 		boolean mtrfSupportedAndNotAuthorized = false;
 		ISDNAddressStringImpl newMSCNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-				NumberingPlan.ISDN, "22228");
+				NumberingPlanIndicator.ISDN, "22228");
 		ISDNAddressStringImpl newVLRNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-				NumberingPlan.ISDN, "22229");
+				NumberingPlanIndicator.ISDN, "22229");
 		LMSIImpl newLmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
 		
 		CancelLocationRequest asc = new CancelLocationRequestImplV3(imsi, null, cancellationType, extensionContainer,

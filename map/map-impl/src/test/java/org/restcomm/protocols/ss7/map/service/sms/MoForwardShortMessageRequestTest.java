@@ -29,7 +29,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
@@ -97,10 +97,10 @@ public class MoForwardShortMessageRequestTest {
         SM_RP_OA oa = ind.getSM_RP_OA();
         SmsSignalInfo ui = ind.getSM_RP_UI();
         assertEquals(da.getServiceCentreAddressDA().getAddressNature(), AddressNature.international_number);
-        assertEquals(da.getServiceCentreAddressDA().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(da.getServiceCentreAddressDA().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(da.getServiceCentreAddressDA().getAddress(), "223334990223");
         assertEquals(oa.getMsisdn().getAddressNature(), AddressNature.international_number);
-        assertEquals(oa.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(oa.getMsisdn().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(oa.getMsisdn().getAddress(), "2311231234334");
         
         ByteBuf buffer=Unpooled.buffer();
@@ -120,10 +120,10 @@ public class MoForwardShortMessageRequestTest {
         ui = ind.getSM_RP_UI();
         IMSI imsi = ind.getIMSI();
         assertEquals(da.getServiceCentreAddressDA().getAddressNature(), AddressNature.international_number);
-        assertEquals(da.getServiceCentreAddressDA().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(da.getServiceCentreAddressDA().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(da.getServiceCentreAddressDA().getAddress(), "2311231234334");
         assertEquals(oa.getMsisdn().getAddressNature(), AddressNature.international_number);
-        assertEquals(oa.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(oa.getMsisdn().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(oa.getMsisdn().getAddress(), "223334990223");
         
         buffer=Unpooled.buffer();
@@ -166,7 +166,7 @@ public class MoForwardShortMessageRequestTest {
         imsi = ind.getIMSI();
         assertEquals(da.getIMSI().getData(), "201011234567890");
         assertEquals(oa.getServiceCentreAddressOA().getAddressNature(), AddressNature.network_specific_number);
-        assertEquals(oa.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlan.land_mobile);
+        assertEquals(oa.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlanIndicator.land_mobile);
         assertEquals(oa.getServiceCentreAddressOA().getAddress(), "0123456789");
         
         buffer=Unpooled.buffer();
@@ -183,9 +183,9 @@ public class MoForwardShortMessageRequestTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(MoForwardShortMessageRequestImpl.class);
                 
-        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "223334990223");
+        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "223334990223");
         SM_RP_DAImpl sm_RP_DA = new SM_RP_DAImpl(sca);
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "2311231234334");
         SM_RP_OAImpl sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setMsisdn(msisdn);
@@ -201,9 +201,9 @@ public class MoForwardShortMessageRequestTest {
         byte[] rawData = getEncodedDataSimple();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "2311231234334");
+        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "2311231234334");
         sm_RP_DA = new SM_RP_DAImpl(sca);
-        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "223334990223");
+        msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "223334990223");
         sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setMsisdn(msisdn);
         sm_RP_UI = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] {81, 83, 11, -111, -103, -119, -120, 119, 7, -16, 0, 0, -83, 41, 5, 0, 3, -17, 2, 1, -112, 101, 54,
@@ -235,7 +235,7 @@ public class MoForwardShortMessageRequestTest {
 
         IMSIImpl imsi0 = new IMSIImpl("201011234567890");
         sm_RP_DA = new SM_RP_DAImpl(imsi0);
-        msisdn = new ISDNAddressStringImpl(AddressNature.network_specific_number, NumberingPlan.land_mobile, "0123456789");
+        msisdn = new ISDNAddressStringImpl(AddressNature.network_specific_number, NumberingPlanIndicator.land_mobile, "0123456789");
         sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setServiceCentreAddressOA(msisdn);
         sm_RP_UI = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] {81, 83, 11, -111, -103, -119, -120, 119, 7, -16, 0, 0, -83, 41, 5, 0, 3, -17, 2, 1, -112, 101, 54,

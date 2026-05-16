@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -61,7 +61,7 @@ public class ISDNAddressStringTest {
         
         assertFalse(addStr.isExtension());
         assertEquals(addStr.getAddressNature(), AddressNature.international_number);
-        assertEquals(addStr.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(addStr.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(addStr.getAddress(), "79273605819");
     }
 
@@ -70,7 +70,7 @@ public class ISDNAddressStringTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ISDNAddressStringImpl.class);
     	
-        ISDNAddressStringImpl addStr = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79273605819");
+        ISDNAddressStringImpl addStr = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "79273605819");
         ByteBuf buffer=parser.encode(addStr);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);

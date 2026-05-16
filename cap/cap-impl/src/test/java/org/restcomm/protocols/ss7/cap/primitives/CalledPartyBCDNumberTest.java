@@ -27,7 +27,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CalledPartyBCDNumberImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -65,7 +65,7 @@ public class CalledPartyBCDNumberTest {
         
         CalledPartyBCDNumberImpl elem = (CalledPartyBCDNumberImpl)result.getResult();
         assertEquals(elem.getAddressNature(), AddressNature.international_number);
-        assertEquals(elem.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(elem.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(elem.getAddress().equals("41788005047"));
         assertFalse(elem.isExtension());
 
@@ -77,7 +77,7 @@ public class CalledPartyBCDNumberTest {
         
         elem = (CalledPartyBCDNumberImpl)result.getResult();
         assertEquals(elem.getAddressNature(), AddressNature.international_number);
-        assertEquals(elem.getNumberingPlan(), NumberingPlan.spare_5);
+        assertEquals(elem.getNumberingPlan(), NumberingPlanIndicator.spare_5);
         assertTrue(elem.getAddress().equals("hello"));
         assertFalse(elem.isExtension());
     }
@@ -87,7 +87,7 @@ public class CalledPartyBCDNumberTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CalledPartyBCDNumberImpl.class);
     	
-        CalledPartyBCDNumberImpl elem = new CalledPartyBCDNumberImpl(AddressNature.international_number, NumberingPlan.ISDN, "41788005047");
+        CalledPartyBCDNumberImpl elem = new CalledPartyBCDNumberImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "41788005047");
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -95,7 +95,7 @@ public class CalledPartyBCDNumberTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         // GSM 7-bit default alphabet definition and the SMS packing rules
-        elem = new CalledPartyBCDNumberImpl(AddressNature.international_number, NumberingPlan.spare_5, "hello");
+        elem = new CalledPartyBCDNumberImpl(AddressNature.international_number, NumberingPlanIndicator.spare_5, "hello");
         rawData = this.getData2();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];

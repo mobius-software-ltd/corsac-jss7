@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
@@ -76,7 +76,7 @@ public class AnyTimeSubscriptionInterrogationRequestTest {
 
         ISDNAddressString subscriberMsisdn = request.getSubscriberIdentity().getMSISDN();
         assertEquals(subscriberMsisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(subscriberMsisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(subscriberMsisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(subscriberMsisdn.getAddress(), "79201234567");
 
         RequestedSubscriptionInfo subscriptionInfo = request.getRequestedSubscriptionInfo();
@@ -102,7 +102,7 @@ public class AnyTimeSubscriptionInterrogationRequestTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AnyTimeSubscriptionInterrogationRequestImpl.class);
     	
-        ISDNAddressStringImpl subscriberMsisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79201234567");
+        ISDNAddressStringImpl subscriberMsisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "79201234567");
         SubscriberIdentityImpl subscriberIdentity = new SubscriberIdentityImpl(subscriberMsisdn);
 
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allChargingSS);
@@ -112,7 +112,7 @@ public class AnyTimeSubscriptionInterrogationRequestTest {
                 true, false, null, AdditionalRequestedCAMELSubscriptionInfo.oImCSI, true, false, true,
                 false, true, false, true);
 
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79207654321");
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "79207654321");
 
         AnyTimeSubscriptionInterrogationRequestImpl request = new AnyTimeSubscriptionInterrogationRequestImpl(subscriberIdentity, requestedSubscriptionInfo,
                 gsmSCFAddress, MAPExtensionContainerTest.GetTestExtensionContainer(), true);

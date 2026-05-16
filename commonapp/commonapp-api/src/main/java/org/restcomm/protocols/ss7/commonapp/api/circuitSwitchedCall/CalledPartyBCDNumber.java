@@ -21,7 +21,7 @@ package org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -51,7 +51,7 @@ public interface CalledPartyBCDNumber extends AddressString {
 
     AddressNature getAddressNature();
 
-    NumberingPlan getNumberingPlan();
+    NumberingPlanIndicator getNumberingPlan();
 
     String getAddress();
 

@@ -23,7 +23,7 @@ import java.nio.charset.CharacterCodingException;
 
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharset;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecoder;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecodingData;
@@ -47,7 +47,7 @@ public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddres
 	public SMSAddressStringImpl() {
     }
 
-    public SMSAddressStringImpl(AddressNature addressNature, NumberingPlan numberingPlan, String address) {
+    public SMSAddressStringImpl(AddressNature addressNature, NumberingPlanIndicator numberingPlan, String address) {
         super(addressNature, numberingPlan, address);
     }
 
@@ -74,7 +74,7 @@ public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddres
             int natureOfAddInd = ((nature & NATURE_OF_ADD_IND_MASK) >> 4);
             this.addressNature = AddressNature.getInstance(natureOfAddInd);
             int numbPlanInd = (nature & NUMBERING_PLAN_IND_MASK);
-            this.numberingPlan = NumberingPlan.getInstance(numbPlanInd);
+            this.numberingPlan = NumberingPlanIndicator.getInstance(numbPlanInd);
 
             GSMCharset cs = new GSMCharset();
             GSMCharsetDecoder decoder = (GSMCharsetDecoder) cs.newDecoder();

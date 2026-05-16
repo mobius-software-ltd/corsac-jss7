@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TypeOfShape;
 import org.restcomm.protocols.ss7.commonapp.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
@@ -213,7 +213,7 @@ public class ProvideSubscriberLocationResponseTest {
 		UtranGANSSpositioningDataImpl utranGANSSpositioningData = new UtranGANSSpositioningDataImpl(
 				Unpooled.wrappedBuffer(getUtranGANSSpositioningData()));
 		ISDNAddressStringImpl isdnNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-				NumberingPlan.ISDN, "444666888");
+				NumberingPlanIndicator.ISDN, "444666888");
 		ServingNodeAddressImpl targetServingNodeForHandover = new ServingNodeAddressImpl(isdnNumber, true);
 
 		reqInd = new ProvideSubscriberLocationResponseImpl(egeo, geranPositioningData, utranPositioningData, 15,

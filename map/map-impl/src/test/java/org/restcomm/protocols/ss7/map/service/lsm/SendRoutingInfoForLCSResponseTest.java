@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
@@ -129,7 +129,7 @@ public class SendRoutingInfoForLCSResponseTest {
         assertNull(imsi);
 
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(msisdn.getAddress().equals("556182180007"));
 
         LCSLocationInfo lcsLocInfo = impl.getLCSLocationInfo();
@@ -138,7 +138,7 @@ public class SendRoutingInfoForLCSResponseTest {
         ISDNAddressString networkNodeNumber = lcsLocInfo.getNetworkNodeNumber();
         assertNotNull(networkNodeNumber);
         assertEquals(networkNodeNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(networkNodeNumber.getAddress().equals("55619000"));
 
         assertNull(impl.getExtensionContainer());
@@ -163,7 +163,7 @@ public class SendRoutingInfoForLCSResponseTest {
         assertNull(imsi);
 
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(msisdn.getAddress().equals("556182180007"));
 
         lcsLocInfo = impl.getLCSLocationInfo();
@@ -172,7 +172,7 @@ public class SendRoutingInfoForLCSResponseTest {
         networkNodeNumber = lcsLocInfo.getNetworkNodeNumber();
         assertNotNull(networkNodeNumber);
         assertEquals(networkNodeNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(networkNodeNumber.getAddress().equals("55619000"));
 
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(impl.getExtensionContainer()));
@@ -192,11 +192,11 @@ public class SendRoutingInfoForLCSResponseTest {
     	parser.replaceClass(SendRoutingInfoForLCSResponseImpl.class);
     	
         ISDNAddressString msisdn = this.MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
-                NumberingPlan.ISDN, "556182180007");
+                NumberingPlanIndicator.ISDN, "556182180007");
         SubscriberIdentityImpl subsIdent = new SubscriberIdentityImpl(msisdn);
 
         ISDNAddressString networkNodeNumber = this.MAPParameterFactory.createISDNAddressString(
-                AddressNature.international_number, NumberingPlan.ISDN, "55619000");
+                AddressNature.international_number, NumberingPlanIndicator.ISDN, "55619000");
 
         LCSLocationInfoImpl lcsLocInfo = new LCSLocationInfoImpl(networkNodeNumber, null, null, false, null, null, null, null, null);
 

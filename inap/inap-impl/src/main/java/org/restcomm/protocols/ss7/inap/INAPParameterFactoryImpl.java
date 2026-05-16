@@ -110,7 +110,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoDpAssignment;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeodeticInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
@@ -512,7 +512,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public CalledPartyBCDNumber createCalledPartyBCDNumber(AddressNature addressNature, NumberingPlan numberingPlan,
+	public CalledPartyBCDNumber createCalledPartyBCDNumber(AddressNature addressNature, NumberingPlanIndicator numberingPlan,
 			String address) throws INAPException {
 		try {
 			return new CalledPartyBCDNumberImpl(addressNature, numberingPlan, address);
@@ -1159,12 +1159,12 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public ISDNAddressString createISDNAddressString(AddressNature addNature, NumberingPlan numPlan, String address) {
+	public ISDNAddressString createISDNAddressString(AddressNature addNature, NumberingPlanIndicator numPlan, String address) {
 		return new ISDNAddressStringImpl(addNature, numPlan, address);
 	}
 
 	@Override
-	public ISDNAddressString createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan,
+	public ISDNAddressString createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlanIndicator numPlan,
 			String address) {
 		return new ISDNAddressStringImpl(extension, addNature, numPlan, address);
 	}

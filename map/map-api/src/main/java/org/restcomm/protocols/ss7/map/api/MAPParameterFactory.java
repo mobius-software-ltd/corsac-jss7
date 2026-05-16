@@ -43,7 +43,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPPrivateExtension;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationPlanValue;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationTypeValue;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.EUtranCgi;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSChargingID;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSMSClass;
@@ -369,11 +369,11 @@ public interface MAPParameterFactory {
      * Creates a new instance of {@link AddressString}
      *
      * @param addNature The nature of this AddressString. See {@link AddressNature}.
-     * @param numPlan The {@link NumberingPlan} of this AddressString
+     * @param numPlan The {@link NumberingPlanIndicator} of this AddressString
      * @param address The actual address (number)
      * @return new instance of {@link AddressString}
      */
-    AddressString createAddressString(AddressNature addNature, NumberingPlan numPlan, String address);
+    AddressString createAddressString(AddressNature addNature, NumberingPlanIndicator numPlan, String address);
 
     /**
      * Creates a new instance of {@link AddressString}
@@ -381,16 +381,16 @@ public interface MAPParameterFactory {
      * @param extension
      * @param addNature The nature of this AddressString. See
      * {@link AddressNature}.
-     * @param numPlan The {@link NumberingPlan} of this AddressString
+     * @param numPlan The {@link NumberingPlanIndicator} of this AddressString
      * @param address The actual address (number)
      * @return new instance of {@link AddressString}
      */
-    AddressString createAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address);
+    AddressString createAddressString(boolean extension, AddressNature addNature, NumberingPlanIndicator numPlan, String address);
 
-    ISDNAddressString createISDNAddressString(AddressNature addNature, NumberingPlan numPlan, String address);
-    ISDNAddressString createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address);
+    ISDNAddressString createISDNAddressString(AddressNature addNature, NumberingPlanIndicator numPlan, String address);
+    ISDNAddressString createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlanIndicator numPlan, String address);
 
-    FTNAddressString createFTNAddressString(AddressNature addNature, NumberingPlan numPlan, String address);
+    FTNAddressString createFTNAddressString(AddressNature addNature, NumberingPlanIndicator numPlan, String address);
 
     /**
      * Creates a new instance of {@link IMSI}

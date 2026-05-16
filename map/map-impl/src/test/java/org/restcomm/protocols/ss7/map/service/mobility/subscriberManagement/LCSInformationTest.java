@@ -31,7 +31,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalID;
@@ -137,7 +137,7 @@ public class LCSInformationTest {
         ISDNAddressString isdnAddressString = gmlcList.get(0);
         assertTrue(isdnAddressString.getAddress().equals("22235"));
         assertEquals(isdnAddressString.getAddressNature(), AddressNature.international_number);
-        assertEquals(isdnAddressString.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(isdnAddressString.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         // end gmlcList
 
         // start lcsPrivacyExceptionList
@@ -163,7 +163,7 @@ public class LCSInformationTest {
         ISDNAddressString externalAddress = clientIdentity.getExternalAddress();
         assertTrue(externalAddress.getAddress().equals("22228"));
         assertEquals(externalAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(externalAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(externalAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertNotNull(clientIdentity.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(clientIdentity.getExtensionContainer()));
         assertEquals(externalClient.getGMLCRestriction(), GMLCRestriction.gmlcList);
@@ -185,7 +185,7 @@ public class LCSInformationTest {
         externalAddress = clientIdentity.getExternalAddress();
         assertTrue(externalAddress.getAddress().equals("22228"));
         assertEquals(externalAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(externalAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(externalAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertNotNull(clientIdentity.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(clientIdentity.getExtensionContainer()));
         assertEquals(externalClient.getGMLCRestriction(), GMLCRestriction.gmlcList);
@@ -244,7 +244,7 @@ public class LCSInformationTest {
         externalAddress = clientIdentity.getExternalAddress();
         assertTrue(externalAddress.getAddress().equals("22228"));
         assertEquals(externalAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(externalAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(externalAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertNotNull(clientIdentity.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(clientIdentity.getExtensionContainer()));
         assertEquals(externalClient.getGMLCRestriction(), GMLCRestriction.gmlcList);
@@ -266,7 +266,7 @@ public class LCSInformationTest {
         externalAddress = clientIdentity.getExternalAddress();
         assertTrue(externalAddress.getAddress().equals("22228"));
         assertEquals(externalAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(externalAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(externalAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertNotNull(clientIdentity.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(clientIdentity.getExtensionContainer()));
         assertEquals(externalClient.getGMLCRestriction(), GMLCRestriction.gmlcList);
@@ -295,7 +295,7 @@ public class LCSInformationTest {
     	parser.replaceClass(LCSInformationImpl.class);
     	
         List<ISDNAddressString> gmlcList = new ArrayList<ISDNAddressString>();
-        ISDNAddressStringImpl isdnAddressString = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl isdnAddressString = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22235");
         gmlcList.add(isdnAddressString);
 
@@ -306,7 +306,7 @@ public class LCSInformationTest {
         List<ExternalClient> externalClientList = new ArrayList<ExternalClient>();
 
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22228");
         LCSClientExternalIDImpl clientIdentity = new LCSClientExternalIDImpl(externalAddress, extensionContainer);
         GMLCRestriction gmlcRestriction = GMLCRestriction.gmlcList;

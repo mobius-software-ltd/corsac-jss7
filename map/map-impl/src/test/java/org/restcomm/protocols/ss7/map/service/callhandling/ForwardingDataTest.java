@@ -30,7 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
@@ -89,7 +89,7 @@ public class ForwardingDataTest {
 
         assertNotNull(isdnAdd);
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
-        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(isdnAdd.getAddress(), "79273605819");
         assertNotNull(forwardingOptions);
         assertTrue(!forwardingOptions.isNotificationToForwardingParty());
@@ -103,7 +103,7 @@ public class ForwardingDataTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ForwardingDataImpl.class);
 
-    	ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+    	ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
         ForwardingOptionsImpl forwardingOptions = new ForwardingOptionsImpl(false, false, true, ForwardingReason.busy);
         ForwardingDataImpl forwardingData = new ForwardingDataImpl(isdnAdd, null, forwardingOptions, null, null);

@@ -160,7 +160,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CAI_GSM0224Impl;
@@ -2832,7 +2832,7 @@ public class CAPFunctionalTest extends SccpHarness {
 					GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
 
 			ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number,
-					NumberingPlan.ISDN, "654321");
+					NumberingPlanIndicator.ISDN, "654321");
 			LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 91, 92, 93 }));
 
 			GeodeticInformationImpl gdi = null;
@@ -3173,7 +3173,7 @@ public class CAPFunctionalTest extends SccpHarness {
 			}
 
 			ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number,
-					NumberingPlan.ISDN, "654321");
+					NumberingPlanIndicator.ISDN, "654321");
 			LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 91, 92, 93 }));
 
 			GeodeticInformationImpl gdi = null;
@@ -3484,7 +3484,7 @@ public class CAPFunctionalTest extends SccpHarness {
 
 			assertEquals(ind.getServiceKey(), 15);
 			assertEquals(ind.getDestinationSubscriberNumber().getAddress(), "123678");
-			assertEquals(ind.getDestinationSubscriberNumber().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(ind.getDestinationSubscriberNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(ind.getDestinationSubscriberNumber().getAddressNature(), AddressNature.international_number);
 			assertEquals(ind.getCallingPartyNumber().getAddress(), "123999");
 			assertEquals(ind.getImsi().getData(), "12345678901234");
@@ -3613,11 +3613,11 @@ public class CAPFunctionalTest extends SccpHarness {
 		// 5. <- connectSMS (TC-END)
 		{
 			SMSAddressString callingPartysNumber = server.capParameterFactory
-					.createSMSAddressString(AddressNature.reserved, NumberingPlan.ISDN, "Drosd");
+					.createSMSAddressString(AddressNature.reserved, NumberingPlanIndicator.ISDN, "Drosd");
 			CalledPartyBCDNumber destinationSubscriberNumber = server.capParameterFactory
-					.createCalledPartyBCDNumber(AddressNature.international_number, NumberingPlan.ISDN, "1111144444");
+					.createCalledPartyBCDNumber(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1111144444");
 			ISDNAddressString smscAddress = server.capParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "1111155555");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1111155555");
 			serverDlg.addConnectSMSRequest(callingPartysNumber, destinationSubscriberNumber, smscAddress, null);
 			server.handleSent(EventType.ConnectSMSRequest, null);
 
@@ -3631,7 +3631,7 @@ public class CAPFunctionalTest extends SccpHarness {
 			ConnectSMSRequest ind = (ConnectSMSRequest) event.getEvent();
 
 			assertEquals(ind.getCallingPartysNumber().getAddressNature(), AddressNature.reserved);
-			assertEquals(ind.getCallingPartysNumber().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(ind.getCallingPartysNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(ind.getCallingPartysNumber().getAddress(), "Drosd");
 			assertEquals(ind.getDestinationSubscriberNumber().getAddress(), "1111144444");
 			assertEquals(ind.getSMSCAddress().getAddress(), "1111155555");
@@ -3695,7 +3695,7 @@ public class CAPFunctionalTest extends SccpHarness {
 
 			assertEquals(ind.getServiceKey(), 15);
 			assertEquals(ind.getDestinationSubscriberNumber().getAddress(), "123678");
-			assertEquals(ind.getDestinationSubscriberNumber().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(ind.getDestinationSubscriberNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(ind.getDestinationSubscriberNumber().getAddressNature(), AddressNature.international_number);
 			assertEquals(ind.getCallingPartyNumber().getAddress(), "123999");
 			assertEquals(ind.getImsi().getData(), "12345678901234");
@@ -3772,7 +3772,7 @@ public class CAPFunctionalTest extends SccpHarness {
 
 			assertEquals(ind.getServiceKey(), 15);
 			assertEquals(ind.getDestinationSubscriberNumber().getAddress(), "123678");
-			assertEquals(ind.getDestinationSubscriberNumber().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(ind.getDestinationSubscriberNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(ind.getDestinationSubscriberNumber().getAddressNature(), AddressNature.international_number);
 			assertEquals(ind.getCallingPartyNumber().getAddress(), "123999");
 			assertEquals(ind.getImsi().getData(), "12345678901234");

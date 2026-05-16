@@ -43,7 +43,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPPrivateExtension;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationPlanValue;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationTypeValue;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.EUtranCgi;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSChargingID;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSMSClass;
@@ -658,23 +658,23 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new USSDStringImpl(ussdString, null);
     }
 
-    public AddressString createAddressString(AddressNature addNature, NumberingPlan numPlan, String address) {
+    public AddressString createAddressString(AddressNature addNature, NumberingPlanIndicator numPlan, String address) {
         return new AddressStringImpl(addNature, numPlan, address);
     }
 
-    public AddressString createAddressString(boolean isExtension, AddressNature addNature, NumberingPlan numPlan, String address) {
+    public AddressString createAddressString(boolean isExtension, AddressNature addNature, NumberingPlanIndicator numPlan, String address) {
         return new AddressStringImpl(addNature, numPlan, address);
     }
 
-    public ISDNAddressString createISDNAddressString(AddressNature addNature, NumberingPlan numPlan, String address) {
+    public ISDNAddressString createISDNAddressString(AddressNature addNature, NumberingPlanIndicator numPlan, String address) {
         return new ISDNAddressStringImpl(addNature, numPlan, address);
     }
 
-    public ISDNAddressString createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address) {
+    public ISDNAddressString createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlanIndicator numPlan, String address) {
         return new ISDNAddressStringImpl(extension, addNature, numPlan, address);
     }
 
-    public FTNAddressString createFTNAddressString(AddressNature addNature, NumberingPlan numPlan, String address) {
+    public FTNAddressString createFTNAddressString(AddressNature addNature, NumberingPlanIndicator numPlan, String address) {
         return new FTNAddressStringImpl(addNature, numPlan, address);
     }
 

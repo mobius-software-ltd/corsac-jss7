@@ -29,7 +29,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.sms.MWStatus;
@@ -91,7 +91,7 @@ public class InformServiceCentreRequestTest {
 
         assertNotNull(storedMSISDN);
         assertEquals(AddressNature.international_number, storedMSISDN.getAddressNature());
-        assertEquals(NumberingPlan.ISDN, storedMSISDN.getNumberingPlan());
+        assertEquals(NumberingPlanIndicator.ISDN, storedMSISDN.getNumberingPlan());
         assertEquals("111222333", storedMSISDN.getAddress());
         assertNotNull(mwStatus);
         assertFalse(mwStatus.getScAddressNotIncluded());
@@ -120,7 +120,7 @@ public class InformServiceCentreRequestTest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ISDNAddressStringImpl storedMSISDN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl storedMSISDN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "111222333");
         mwStatus = new MWStatusImpl(false, true, false, true);
         Integer absentSubscriberDiagnosticSM = 555;

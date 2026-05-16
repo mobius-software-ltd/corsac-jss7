@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
@@ -87,7 +87,7 @@ public class CamelRoutingInfoTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CamelRoutingInfoImpl.class);
 
-        ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "11111222");
         ForwardingDataImpl forwardingData = new ForwardingDataImpl(forwardedToNumber, null, null, null, null);
         List<TBcsmCamelTDPData> lst = new ArrayList<TBcsmCamelTDPData>();

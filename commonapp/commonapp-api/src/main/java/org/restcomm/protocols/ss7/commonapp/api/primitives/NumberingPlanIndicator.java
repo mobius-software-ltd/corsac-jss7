@@ -30,14 +30,14 @@ package org.restcomm.protocols.ss7.commonapp.api.primitives;
  * @author yulianoifa
  *
  */
-public enum NumberingPlan {
+public enum NumberingPlanIndicator {
 
     unknown(0), ISDN(1), spare_2(2), data(3), telex(4), spare_5(5), land_mobile(6), spare_7(7), national(8), private_plan(9), reserved(
             15);
 
     private int indicator;
 
-    private NumberingPlan(int indicator) {
+    private NumberingPlanIndicator(int indicator) {
         this.indicator = indicator;
     }
 
@@ -45,7 +45,7 @@ public enum NumberingPlan {
         return indicator;
     }
 
-    public static NumberingPlan getInstance(int indication) {
+    public static NumberingPlanIndicator getInstance(int indication) {
         switch (indication) {
             case 0:
                 return unknown;

@@ -25,7 +25,7 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 
 /**
  *
@@ -69,7 +69,7 @@ CollectInformationArg ::= SEQUENCE {
 public interface CollectInformationRequest extends CircuitSwitchedCallMessage {
 	AlertingPattern getAlertingPattern();
 	
-	NumberingPlan getNumberingPlan();
+	NumberingPlanIndicator getNumberingPlan();
 	
 	OriginalCalledPartyIDIsup getOriginalCalledPartyID();
 	

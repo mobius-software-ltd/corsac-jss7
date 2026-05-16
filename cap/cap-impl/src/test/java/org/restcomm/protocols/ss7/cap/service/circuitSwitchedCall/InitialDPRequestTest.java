@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountere
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.HoldTreatmentIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberStateChoice;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
@@ -204,7 +204,7 @@ public class InitialDPRequestTest {
         assertEquals(elem.getExtBasicServiceCode().getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.telephony);
         assertTrue(ByteBufUtil.equals(elem.getCallReferenceNumber().getValue(),Unpooled.wrappedBuffer(getCallReferenceNumber())));
         assertEquals(elem.getMscAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(elem.getMscAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(elem.getMscAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(elem.getMscAddress().getAddress().equals("2207750007"));
         assertEquals(elem.getTimeAndTimezone().getYear(), 2005);
         assertEquals(elem.getTimeAndTimezone().getMonth(), 11);
@@ -214,7 +214,7 @@ public class InitialDPRequestTest {
         assertEquals(elem.getTimeAndTimezone().getSecond(), 56);
         assertEquals(elem.getTimeAndTimezone().getTimeZone(), 0);
         assertEquals(elem.getInitialDPArgExtension().getGmscAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(elem.getInitialDPArgExtension().getGmscAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(elem.getInitialDPArgExtension().getGmscAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(elem.getInitialDPArgExtension().getGmscAddress().getAddress().equals("2207750007"));
         assertFalse(elem.getCallForwardingSSPending());
         assertNull(elem.getCGEncountered());
@@ -250,7 +250,7 @@ public class InitialDPRequestTest {
         assertEquals(elem.getExtBasicServiceCode().getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.telephony);
         assertTrue(ByteBufUtil.equals(elem.getCallReferenceNumber().getValue(), Unpooled.wrappedBuffer(getCallReferenceNumber())));
         assertEquals(elem.getMscAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(elem.getMscAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(elem.getMscAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(elem.getMscAddress().getAddress().equals("2207750007"));
         assertEquals(elem.getTimeAndTimezone().getYear(), 2005);
         assertEquals(elem.getTimeAndTimezone().getMonth(), 11);
@@ -260,7 +260,7 @@ public class InitialDPRequestTest {
         assertEquals(elem.getTimeAndTimezone().getSecond(), 56);
         assertEquals(elem.getTimeAndTimezone().getTimeZone(), 0);
         assertEquals(elem.getInitialDPArgExtension().getGmscAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(elem.getInitialDPArgExtension().getGmscAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(elem.getInitialDPArgExtension().getGmscAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(elem.getInitialDPArgExtension().getGmscAddress().getAddress().equals("2207750007"));
 
         assertTrue(elem.getIPSSPCapabilities().getIPRoutingAddressSupported());
@@ -363,10 +363,10 @@ public class InitialDPRequestTest {
         ExtTeleserviceCodeImpl extTeleservice = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.telephony);
         ExtBasicServiceCodeImpl extBasicServiceCode = new ExtBasicServiceCodeImpl(extTeleservice);
         CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(Unpooled.wrappedBuffer(getCallReferenceNumber()));
-        ISDNAddressStringImpl mscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl mscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "2207750007");
         TimeAndTimezoneImpl timeAndTimezone = new TimeAndTimezoneImpl(2005, 11, 24, 13, 10, 56, 0);
-        ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "2207750007");
         InitialDPArgExtensionV1Impl initialDPArgExtension = new InitialDPArgExtensionV1Impl(null, gmscAddress);
 

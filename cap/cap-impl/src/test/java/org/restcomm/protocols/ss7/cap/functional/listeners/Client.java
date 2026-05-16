@@ -74,7 +74,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
@@ -707,7 +707,7 @@ public class Client extends CAPTestHarness {
 	public InitialDpGprsRequest getTestInitialDpGprsRequest() {
 		int serviceKey = 2;
 		GPRSEventType gprsEventType = GPRSEventType.attachChangeOfPosition;
-		ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+		ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
 				"22234");
 		IMSIImpl imsi = new IMSIImpl("1111122222");
 		TimeAndTimezoneImpl timeAndTimezone = new TimeAndTimezoneImpl(2005, 11, 24, 13, 10, 56, 0);
@@ -729,7 +729,7 @@ public class Client extends CAPTestHarness {
 			return false;
 		if (ind.getMsisdn().getAddressNature() != AddressNature.international_number)
 			return false;
-		if (ind.getMsisdn().getNumberingPlan() != NumberingPlan.ISDN)
+		if (ind.getMsisdn().getNumberingPlan() != NumberingPlanIndicator.ISDN)
 			return false;
 		if (!ind.getImsi().getData().equals("1111122222"))
 			return false;
@@ -809,7 +809,7 @@ public class Client extends CAPTestHarness {
 			throw new CAPException(e.getMessage(), e);
 		}
 
-		ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+		ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
 				"654321");
 		LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 91, 92, 93 }));
 
@@ -854,9 +854,9 @@ public class Client extends CAPTestHarness {
 				this.remoteAddress, 0);
 
 		CalledPartyBCDNumber destinationSubscriberNumber = this.capParameterFactory
-				.createCalledPartyBCDNumber(AddressNature.international_number, NumberingPlan.ISDN, "123678");
+				.createCalledPartyBCDNumber(AddressNature.international_number, NumberingPlanIndicator.ISDN, "123678");
 		SMSAddressString callingPartyNumber = this.capParameterFactory
-				.createSMSAddressString(AddressNature.international_number, NumberingPlan.ISDN, "123999");
+				.createSMSAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "123999");
 		IMSI imsi = this.capParameterFactory.createIMSI("12345678901234");
 		clientSmsDialog.addInitialDPSMSRequest(15, destinationSubscriberNumber, callingPartyNumber,
 				EventTypeSMS.smsDeliveryRequested, imsi, null, null, null, null, null, null, null, null, null, null,

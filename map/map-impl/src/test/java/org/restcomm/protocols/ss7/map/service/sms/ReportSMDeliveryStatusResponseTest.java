@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.sms.ReportSMDeliveryStatusResponse;
@@ -70,7 +70,7 @@ public class ReportSMDeliveryStatusResponseTest {
         ReportSMDeliveryStatusResponse ind = (ReportSMDeliveryStatusResponse)result.getResult();  
         
         assertEquals(ind.getStoredMSISDN().getAddressNature(), AddressNature.international_number);
-        assertEquals(ind.getStoredMSISDN().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(ind.getStoredMSISDN().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(ind.getStoredMSISDN().getAddress(), "888777666");
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
 
@@ -81,7 +81,7 @@ public class ReportSMDeliveryStatusResponseTest {
         ind = (ReportSMDeliveryStatusResponse)result.getResult();  
         
         assertEquals(ind.getStoredMSISDN().getAddressNature(), AddressNature.international_number);
-        assertEquals(ind.getStoredMSISDN().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(ind.getStoredMSISDN().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(ind.getStoredMSISDN().getAddress(), "888777666");
         assertNull(ind.getExtensionContainer());
     }
@@ -92,7 +92,7 @@ public class ReportSMDeliveryStatusResponseTest {
     	parser.replaceClass(ReportSMDeliveryStatusResponseImplV3.class);
     	parser.replaceClass(ReportSMDeliveryStatusResponseImplV1.class);
     	
-        ISDNAddressStringImpl storedMSISDN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl storedMSISDN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "888777666");
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         ReportSMDeliveryStatusResponse ind = new ReportSMDeliveryStatusResponseImplV3(storedMSISDN, extensionContainer);

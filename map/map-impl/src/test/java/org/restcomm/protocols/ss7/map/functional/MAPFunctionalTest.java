@@ -44,7 +44,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.IMEI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationGPRS;
@@ -1806,7 +1806,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			MAPParameterFactory paramFactory = server.mapParameterFactory;
 
 			ISDNAddressString msisdn = paramFactory.createISDNAddressString(AddressNature.international_number,
-					NumberingPlan.ISDN, "11223344");
+					NumberingPlanIndicator.ISDN, "11223344");
 
 			IMSI imsi = paramFactory.createIMSI("777222");
 			LocationInfoWithLMSI locationInfoWithLMSI = paramFactory.createLocationInfoWithLMSI(msisdn, null, null,
@@ -2242,11 +2242,11 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertNotNull(msisdn);
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(msisdn.getAddress(), "111222333");
 			assertNotNull(sca);
 			assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
-			assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
+			assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.national);
 			assertEquals(sca.getAddress(), "999000");
 			assertNull(sMDeliveryOutcome);
 			assertNull(absentSubscriberDiagnosticSM);
@@ -2322,11 +2322,11 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertNotNull(msisdn);
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(msisdn.getAddress(), "111222333");
 			assertNotNull(serviceCentreAddress);
 			assertEquals(serviceCentreAddress.getAddressNature(), AddressNature.subscriber_number);
-			assertEquals(serviceCentreAddress.getNumberingPlan(), NumberingPlan.national);
+			assertEquals(serviceCentreAddress.getNumberingPlan(), NumberingPlanIndicator.national);
 			assertEquals(serviceCentreAddress.getAddress(), "0011");
 
 			if (d.getApplicationContext().getApplicationContextVersion() == MAPApplicationContextVersion.version1)
@@ -2486,7 +2486,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertNotNull(sm_RP_OA);
 			assertNotNull(sm_RP_OA.getMsisdn());
 			assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
-			assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
 			assertNotNull(sm_RP_UI);
 			ByteBuf translatedValue = Unpooled.buffer();
@@ -2574,11 +2574,11 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertNotNull(msisdn);
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(msisdn.getAddress(), "111222333");
 			assertNotNull(serviceCentreAddress);
 			assertEquals(serviceCentreAddress.getAddressNature(), AddressNature.subscriber_number);
-			assertEquals(serviceCentreAddress.getNumberingPlan(), NumberingPlan.national);
+			assertEquals(serviceCentreAddress.getNumberingPlan(), NumberingPlanIndicator.national);
 			assertEquals(serviceCentreAddress.getAddress(), "0011");
 
 			d.addAlertServiceCentreResponse(alertServiceCentreInd.getInvokeId());
@@ -2650,7 +2650,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertNotNull(sm_RP_OA);
 			assertNotNull(sm_RP_OA.getMsisdn());
 			assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
-			assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
 			assertNotNull(sm_RP_UI);
 
@@ -2733,7 +2733,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertNotNull(sm_RP_OA);
 			assertNotNull(sm_RP_OA.getMsisdn());
 			assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
-			assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
 			assertNotNull(sm_RP_UI);
 
@@ -2851,7 +2851,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertNotNull(sm_RP_OA);
 			assertNotNull(sm_RP_OA.getServiceCentreAddressOA());
 			assertEquals(sm_RP_OA.getServiceCentreAddressOA().getAddressNature(), AddressNature.international_number);
-			assertEquals(sm_RP_OA.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(sm_RP_OA.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(sm_RP_OA.getServiceCentreAddressOA().getAddress(), "111222333");
 			assertNotNull(sm_RP_UI);
 
@@ -2960,11 +2960,11 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertNotNull(msisdn);
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(msisdn.getAddress(), "111222333");
 			assertNotNull(sca);
 			assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
-			assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
+			assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.national);
 			assertEquals(sca.getAddress(), "999000");
 			assertEquals(sMDeliveryOutcome, SMDeliveryOutcome.absentSubscriber);
 			assertNotNull(absentSubscriberDiagnosticSM);
@@ -2977,7 +2977,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 
 			ISDNAddressString storedMSISDN = server.mapParameterFactory.createISDNAddressString(
-					AddressNature.network_specific_number, NumberingPlan.national, "111000111");
+					AddressNature.network_specific_number, NumberingPlanIndicator.national, "111000111");
 
 			d.addReportSMDeliveryStatusResponse(request.getInvokeId(), storedMSISDN,
 					MAPExtensionContainerTest.GetTestExtensionContainer());
@@ -3005,7 +3005,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertNotNull(storedMSISDN);
 			assertEquals(storedMSISDN.getAddressNature(), AddressNature.network_specific_number);
-			assertEquals(storedMSISDN.getNumberingPlan(), NumberingPlan.national);
+			assertEquals(storedMSISDN.getNumberingPlan(), NumberingPlanIndicator.national);
 			assertEquals(storedMSISDN.getAddress(), "111000111");
 			assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 		}
@@ -3065,11 +3065,11 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertNotNull(msisdn);
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(msisdn.getAddress(), "111222333");
 			assertNotNull(sca);
 			assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
-			assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
+			assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.national);
 			assertEquals(sca.getAddress(), "999000");
 			assertEquals(sMDeliveryOutcome, SMDeliveryOutcome.absentSubscriber);
 			assertNull(absentSubscriberDiagnosticSM);
@@ -3080,7 +3080,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertNull(extensionContainer);
 
 			ISDNAddressString storedMSISDN = server.mapParameterFactory.createISDNAddressString(
-					AddressNature.network_specific_number, NumberingPlan.national, "111000111");
+					AddressNature.network_specific_number, NumberingPlanIndicator.national, "111000111");
 
 			d.addReportSMDeliveryStatusResponse(request.getInvokeId(), storedMSISDN);
 		}
@@ -3107,7 +3107,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertNotNull(storedMSISDN);
 			assertEquals(storedMSISDN.getAddressNature(), AddressNature.network_specific_number);
-			assertEquals(storedMSISDN.getNumberingPlan(), NumberingPlan.national);
+			assertEquals(storedMSISDN.getNumberingPlan(), NumberingPlanIndicator.national);
 			assertEquals(storedMSISDN.getAddress(), "111000111");
 			assertNull(extensionContainer);
 		}
@@ -3163,12 +3163,12 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertNotNull(msisdn);
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(msisdn.getAddress(), "111222333");
 			assertFalse(sm_RP_PRI);
 			assertNotNull(sca);
 			assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
-			assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
+			assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.national);
 			assertEquals(sca.getAddress(), "999000");
 			assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 			assertTrue(gprsSupportIndicator);
@@ -3186,10 +3186,10 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			IMSI imsi = server.mapParameterFactory.createIMSI("25099777000");
 			ISDNAddressString networkNodeNumber = server.mapParameterFactory.createISDNAddressString(
-					AddressNature.network_specific_number, NumberingPlan.national, "111000111");
+					AddressNature.network_specific_number, NumberingPlanIndicator.national, "111000111");
 			LMSI lmsi = server.mapParameterFactory.createLMSI(Unpooled.wrappedBuffer(new byte[] { 75, 74, 73, 72 }));
 			ISDNAddressString sgsnAdditionalNumber = server.mapParameterFactory
-					.createISDNAddressString(AddressNature.subscriber_number, NumberingPlan.private_plan, "000111000");
+					.createISDNAddressString(AddressNature.subscriber_number, NumberingPlanIndicator.private_plan, "000111000");
 			AdditionalNumber additionalNumber = server.mapParameterFactory
 					.createAdditionalNumberSgsnNumber(sgsnAdditionalNumber);
 			LocationInfoWithLMSI locationInfoWithLMSI = server.mapParameterFactory.createLocationInfoWithLMSI(
@@ -3197,7 +3197,7 @@ public class MAPFunctionalTest extends SccpHarness {
 					additionalNumber);
 
 			ISDNAddressString storedMSISDN = server.mapParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "111222333");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "111222333");
 			MWStatus mwStatus = server.mapParameterFactory.createMWStatus(false, true, false, true);
 			Integer absentSubscriberDiagnosticSM = 555;
 			Integer additionalAbsentSubscriberDiagnosticSM = 444;
@@ -3236,7 +3236,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(imsi.getData(), "25099777000");
 			assertNotNull(networkNodeNumber);
 			assertEquals(networkNodeNumber.getAddressNature(), AddressNature.network_specific_number);
-			assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.national);
+			assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlanIndicator.national);
 			assertEquals(networkNodeNumber.getAddress(), "111000111");
 			assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer2));
 			assertTrue(locationInfoWithLMSI.getGprsNodeIndicator());
@@ -3244,7 +3244,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertTrue(ByteBufUtil.equals(lmsi.getValue(), Unpooled.wrappedBuffer(new byte[] { 75, 74, 73, 72 })));
 			assertNotNull(additionalNumber);
 			assertEquals(additionalNumber.getSGSNNumber().getAddressNature(), AddressNature.subscriber_number);
-			assertEquals(additionalNumber.getSGSNNumber().getNumberingPlan(), NumberingPlan.private_plan);
+			assertEquals(additionalNumber.getSGSNNumber().getNumberingPlan(), NumberingPlanIndicator.private_plan);
 			assertEquals(additionalNumber.getSGSNNumber().getAddress(), "000111000");
 			assertNull(extensionContainer);
 		}
@@ -3482,9 +3482,9 @@ public class MAPFunctionalTest extends SccpHarness {
 			appCnt = MAPApplicationContext.getInstance(MAPApplicationContextName.shortMsgMORelayContext,
 					MAPApplicationContextVersion.version3);
 			AddressString orgiReference = this.mapParameterFactory
-					.createAddressString(AddressNature.international_number, NumberingPlan.ISDN, "31628968300");
+					.createAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "31628968300");
 			AddressString destReference = this.mapParameterFactory.createAddressString(
-					AddressNature.international_number, NumberingPlan.land_mobile, "204208300008002");
+					AddressNature.international_number, NumberingPlanIndicator.land_mobile, "204208300008002");
 
 			clientDialogSms = super.mapProvider.getMAPServiceSms().createNewDialog(appCnt, super.thisAddress,
 					orgiReference, super.remoteAddress, destReference, 0);
@@ -3502,7 +3502,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			IMSI imsi1 = this.mapParameterFactory.createIMSI("250991357999");
 			SM_RP_DA sm_RP_DA = this.mapParameterFactory.createSM_RP_DA(imsi1);
 			ISDNAddressString msisdn1 = this.mapParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "111222333");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "111222333");
 			SM_RP_OA sm_RP_OA = this.mapParameterFactory.createSM_RP_OA_Msisdn(msisdn1);
 			IMSI imsi2 = this.mapParameterFactory.createIMSI("25007123456789");
 
@@ -3562,7 +3562,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertNotNull(sm_RP_OA);
 			assertNotNull(sm_RP_OA.getMsisdn());
 			assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
-			assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
 			assertNotNull(sm_RP_UI);
 
@@ -3793,11 +3793,11 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertTrue(imsi.getData().equals("45670000"));
 			assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertTrue(mscNumber.getAddress().equals("8222333444"));
 			assertNull(request.getRoamingNumber());
 			assertEquals(vlrNumber.getAddressNature(), AddressNature.network_specific_number);
-			assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(vlrNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertTrue(vlrNumber.getAddress().equals("700000111"));
 			assertTrue(ByteBufUtil.equals(lmsi.getValue(), Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 })));
 			assertNull(request.getExtensionContainer());
@@ -3811,7 +3811,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertTrue(request.getRestorationIndicator());
 
 			ISDNAddressString hlrNumber = server.mapParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "765765765");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "765765765");
 
 			d.addUpdateLocationResponse(request.getInvokeId(), hlrNumber, null, true, false);
 		}
@@ -3836,7 +3836,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			ISDNAddressString hlrNumber = response.getHlrNumber();
 
 			assertEquals(hlrNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(hlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(hlrNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertTrue(hlrNumber.getAddress().equals("765765765"));
 			assertNull(response.getExtensionContainer());
 			assertTrue(response.getAddCapability());
@@ -3896,7 +3896,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			ISDNAddressString gsmSCFAddress = request.getGsmSCFAddress();
 			assertTrue(gsmSCFAddress.getAddress().equals("11112222"));
 			assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-			assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
 			MAPParameterFactory mapParameterFactory = server.mapParameterFactory;
 
@@ -4005,7 +4005,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertFalse(requestedSubscriptionInfo.getEctInfo());
 
 			ISDNAddressString gsmSCFAddress = server.mapProvider.getMAPParameterFactory()
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "123456789");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "123456789");
 			final OBcsmCamelTDPData data = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3,
 					gsmSCFAddress, DefaultCallHandling.continueCall, null);
 
@@ -4054,7 +4054,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			ISDNAddressString gsmSCFAddress = tdpData.getGsmSCFAddress();
 			assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-			assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(gsmSCFAddress.getAddress(), "123456789");
 
 			SupportedCamelPhases supportedCamelPhasesVlr = response.getsupportedVlrCamelPhases();
@@ -4294,7 +4294,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(request.getLCSLocationInfo().getNetworkNodeNumber().getAddress(), "11113333");
 
 			ISDNAddressString naEsrd = server.mapParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "11114444");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "11114444");
 
 			d.addSubscriberLocationReportResponse(request.getInvokeId(), naEsrd, null, null);
 		}
@@ -4368,7 +4368,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			IMSI imsi = mapParameterFactory.createIMSI("6666644444");
 			SubscriberIdentity targetMS = mapParameterFactory.createSubscriberIdentity(imsi);
 			ISDNAddressString networkNodeNumber = mapParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "11114444");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "11114444");
 			LCSLocationInfo lcsLocationInfo = mapParameterFactory.createLCSLocationInfo(networkNodeNumber, null, null,
 					false, null, null, null, null, null);
 
@@ -4680,11 +4680,11 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogRequest(mapDialog, destReference, origReference, extensionContainer);
 
 				assertEquals(origReference.getAddressNature(), AddressNature.international_number);
-				assertEquals(origReference.getNumberingPlan(), NumberingPlan.ISDN);
+				assertEquals(origReference.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 				assertTrue(origReference.getAddress().equals("11335577"));
 
 				assertEquals(destReference.getAddressNature(), AddressNature.international_number);
-				assertEquals(destReference.getNumberingPlan(), NumberingPlan.ISDN);
+				assertEquals(destReference.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 				assertTrue(destReference.getAddress().equals("22446688"));
 
 				assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
@@ -4724,11 +4724,11 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(d.getTCAPMessageType(), MessageType.Begin);
 
 			assertEquals(d.getReceivedOrigReference().getAddressNature(), AddressNature.international_number);
-			assertEquals(d.getReceivedOrigReference().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(d.getReceivedOrigReference().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertTrue(d.getReceivedOrigReference().getAddress().equals("11335577"));
 
 			assertEquals(d.getReceivedDestReference().getAddressNature(), AddressNature.international_number);
-			assertEquals(d.getReceivedDestReference().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(d.getReceivedDestReference().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertTrue(d.getReceivedDestReference().getAddress().equals("22446688"));
 
 			d.addCheckImeiResponse(ind.getInvokeId(), EquipmentStatus.blackListed);
@@ -4747,11 +4747,11 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(d.getTCAPMessageType(), MessageType.Begin);
 
 			assertEquals(d.getReceivedOrigReference().getAddressNature(), AddressNature.international_number);
-			assertEquals(d.getReceivedOrigReference().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(d.getReceivedOrigReference().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertTrue(d.getReceivedOrigReference().getAddress().equals("11335577"));
 
 			assertEquals(d.getReceivedDestReference().getAddressNature(), AddressNature.international_number);
-			assertEquals(d.getReceivedDestReference().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(d.getReceivedDestReference().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertTrue(d.getReceivedDestReference().getAddress().equals("22446688"));
 
 			d.addCheckImeiResponse(ind.getInvokeId(), EquipmentStatus.blackListed);
@@ -4972,10 +4972,10 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertFalse(mtrfSupportedAndNotAuthorized);
 			assertEquals(newMSCNumber.getAddress(), "22228");
 			assertEquals(newMSCNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(newMSCNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(newMSCNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(newVLRNumber.getAddress(), "22229");
 			assertEquals(newVLRNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertTrue(ByteBufUtil.equals(newLmsi.getValue(), Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 39 })));
 
 			d.addCancelLocationResponse(request.getInvokeId(), extensionContainer);
@@ -5161,11 +5161,11 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(imsi.getData(), "011220200198227");
 			assertNotNull(mscNumber);
 			assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(mscNumber.getAddress(), "22228");
 			assertNotNull(msisdn);
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(msisdn.getAddress(), "22227");
 			assertNotNull(lmsi);
 			assertNotNull(gsmBearerCapability);
@@ -5173,15 +5173,15 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertFalse(suppressionOfAnnouncement);
 			assertNotNull(gmscAddress);
 			assertEquals(gmscAddress.getAddressNature(), AddressNature.international_number);
-			assertEquals(gmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(gmscAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(gmscAddress.getAddress(), "22226");
 			MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer);
 
 			ISDNAddressString roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-					NumberingPlan.ISDN, "49883700292");
+					NumberingPlanIndicator.ISDN, "49883700292");
 			boolean releaseResourcesSupported = false;
 			ISDNAddressStringImpl vmscAddress = new ISDNAddressStringImpl(AddressNature.international_number,
-					NumberingPlan.ISDN, "29113123311");
+					NumberingPlanIndicator.ISDN, "29113123311");
 
 			d.addProvideRoamingNumberResponse(request.getInvokeId(), roamingNumber, extensionContainer,
 					releaseResourcesSupported, vmscAddress);
@@ -5211,7 +5211,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertNotNull(roamingNumber);
 			assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(roamingNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(roamingNumber.getAddress(), "49883700292");
 			MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer);
 		}
@@ -5290,7 +5290,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(imsi.getData(), "011220200198227");
 			assertNotNull(mscNumber);
 			assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(mscNumber.getAddress(), "22228");
 			assertNull(msisdn);
 			assertNull(lmsi);
@@ -5299,7 +5299,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertNull(extensionContainer);
 
 			ISDNAddressString roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-					NumberingPlan.ISDN, "49883700292");
+					NumberingPlanIndicator.ISDN, "49883700292");
 
 			d.addProvideRoamingNumberResponse(request.getInvokeId(), roamingNumber);
 		}
@@ -5328,7 +5328,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertNotNull(roamingNumber);
 			assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(roamingNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(roamingNumber.getAddress(), "49883700292");
 			assertFalse(releaseResourcesSupported);
 			assertNull(extensionContainer);
@@ -5486,7 +5486,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			ISDNAddressString msisdn = request.getMsisdn();
 			assertEquals(msisdn.getAddress(), "22234");
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
 			Category category = request.getCategory();
 			assertEquals(category.getData(), 5);
@@ -5512,7 +5512,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertNotNull(sgsnNumber);
 			assertEquals(sgsnNumber.getAddress(), "22228");
 			assertEquals(sgsnNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(sgsnNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(sgsnNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
 			ArrayList<SSCode> ssList = null;
 			ODBGeneralData odbGeneralData = null;
@@ -5636,7 +5636,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			ISDNAddressString msisdn = request.getMsisdn();
 			assertEquals(msisdn.getAddress(), "22234");
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
 			Category category = request.getCategory();
 			assertEquals(category.getData(), 5);
@@ -5898,10 +5898,10 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertNotNull(type);
 			assertNotNull(gmsc);
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(msisdn.getAddress(), "29113123311");
 			assertEquals(gmsc.getAddressNature(), AddressNature.international_number);
-			assertEquals(gmsc.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(gmsc.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(gmsc.getAddress(), "49883700292");
 			assertEquals(type, InterrogationType.forwarding);
 
@@ -5909,7 +5909,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			IMSI imsi = mapParameterFactory.createIMSI("011220200198227");
 			ISDNAddressString roamingNumber = mapParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "79273605819");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "79273605819");
 			RoutingInfo routingInfo = mapParameterFactory.createRoutingInfo(roamingNumber);
 			ExtendedRoutingInfo extRoutingInfo = mapParameterFactory.createExtendedRoutingInfo(routingInfo);
 
@@ -5953,7 +5953,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(imsi.getData(), "011220200198227");
 			assertNotNull(roamingNumber);
 			assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(roamingNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(roamingNumber.getAddress(), "79273605819");
 		}
 		client.awaitReceived(EventType.DialogClose);
@@ -6014,10 +6014,10 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertNotNull(type);
 			assertNotNull(gmsc);
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertTrue(msisdn.getAddress().equals("29113123311"));
 			assertEquals(gmsc.getAddressNature(), AddressNature.international_number);
-			assertEquals(gmsc.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(gmsc.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertTrue(gmsc.getAddress().equals("49883700292"));
 			assertEquals(type, InterrogationType.forwarding);
 		}
@@ -6033,7 +6033,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			IMSI imsi = paramFactory.createIMSI("011220200198227");
 
 			ISDNAddressString roamingNumber = paramFactory.createISDNAddressString(AddressNature.international_number,
-					NumberingPlan.ISDN, "79273605819");
+					NumberingPlanIndicator.ISDN, "79273605819");
 			RoutingInfo routingInfo = paramFactory.createRoutingInfo(roamingNumber);
 			ExtendedRoutingInfo extRoutingInfo = paramFactory.createExtendedRoutingInfo(routingInfo);
 
@@ -6093,7 +6093,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(imsi.getData(), "011220200198227");
 			assertNotNull(roamingNumber);
 			assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-			assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(roamingNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(roamingNumber.getAddress(), "79273605819");
 
 			assertNull(ind.getVmscAddress());
@@ -6118,7 +6118,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			server.handleSent(EventType.SendRoutingInformationResp, null);
 
 			ISDNAddressString vmscAddress = server.mapParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "22233300");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22233300");
 			d.addSendRoutingInformationResponse(invokeId, null, null, null, false, null, null, null, false, vmscAddress,
 					null, null, null, null, null, null, null, null, null, null, null, null, null, false, null);
 
@@ -6191,14 +6191,14 @@ public class MAPFunctionalTest extends SccpHarness {
 			ISDNAddressString msisdn = request.getMsisdn();
 			assertNotNull(msisdn);
 			assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-			assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(msisdn.getAddress(), "29113123311");
 
 			MAPParameterFactory mapParameterFactory = server.mapParameterFactory;
 
 			IMSI imsi = mapParameterFactory.createIMSI("011220200198227");
 			ISDNAddressString roamingNumber = mapParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "79273605819");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "79273605819");
 			RoutingInfoImpl routingInfo = new RoutingInfoImpl(roamingNumber);
 
 			d.addSendRoutingInformationResponse(request.getInvokeId(), imsi, null, routingInfo);
@@ -6412,7 +6412,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals("111222", request.getImsi().getData());
 			assertEquals("22228", request.getSgsnNumber().getAddress());
 			assertEquals(AddressNature.international_number, request.getSgsnNumber().getAddressNature());
-			assertEquals(NumberingPlan.ISDN, request.getSgsnNumber().getNumberingPlan());
+			assertEquals(NumberingPlanIndicator.ISDN, request.getSgsnNumber().getNumberingPlan());
 			assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(request.getExtensionContainer()));
 			assertTrue(request.getSGSNCapability().getSolsaSupportIndicator());
 			assertTrue(request.getInformPreviousNetworkEntity());
@@ -6430,7 +6430,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(UESRVCCCapability.ueSrvccSupported, request.getUESRVCCCapability());
 
 			ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-					NumberingPlan.ISDN, "22228");
+					NumberingPlanIndicator.ISDN, "22228");
 			d.addUpdateGprsLocationResponse(((UpdateGprsLocationRequestImpl) request).getInvokeId(), hlrNumber, null,
 					true, true);
 		}
@@ -6454,7 +6454,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			assertEquals("22228", response.getHlrNumber().getAddress());
 			assertEquals(AddressNature.international_number, response.getHlrNumber().getAddressNature());
-			assertEquals(NumberingPlan.ISDN, response.getHlrNumber().getNumberingPlan());
+			assertEquals(NumberingPlanIndicator.ISDN, response.getHlrNumber().getNumberingPlan());
 			assertTrue(response.getAddCapability());
 			assertTrue(response.getSgsnMmeSeparationSupported());
 		}
@@ -6723,7 +6723,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(request.getImsi().getData(), "00000222229999");
 
 			ISDNAddressString hlrNumber = server.mapParameterFactory
-					.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "9992222");
+					.createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "9992222");
 			d.addRestoreDataResponse(((RestoreDataRequestImpl) request).getInvokeId(), hlrNumber, false, null);
 		}
 		server.awaitReceived(EventType.DialogDelimiter);
@@ -6861,10 +6861,10 @@ public class MAPFunctionalTest extends SccpHarness {
 			assertEquals(request.getBasicService().getBearerService().getBearerServiceCodeValue(),
 					BearerServiceCodeValue.padAccessCA_9600bps);
 
-			assertEquals(request.getMAPDialog().getReceivedOrigReference().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(request.getMAPDialog().getReceivedOrigReference().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(request.getMAPDialog().getReceivedOrigReference().getAddress(), "31628968300");
 			assertEquals(request.getMAPDialog().getReceivedDestReference().getNumberingPlan(),
-					NumberingPlan.land_mobile);
+					NumberingPlanIndicator.land_mobile);
 			assertEquals(request.getMAPDialog().getReceivedDestReference().getAddress(), "204208300008002");
 
 			SSCode ssCode = server.mapParameterFactory.createSSCode(SupplementaryCodeValue.cfu);
@@ -6941,10 +6941,10 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			MAPDialogSupplementary d = request.getMAPDialog();
 
-			assertEquals(request.getMAPDialog().getReceivedOrigReference().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(request.getMAPDialog().getReceivedOrigReference().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(request.getMAPDialog().getReceivedOrigReference().getAddress(), "31628968300");
 			assertEquals(request.getMAPDialog().getReceivedDestReference().getNumberingPlan(),
-					NumberingPlan.land_mobile);
+					NumberingPlanIndicator.land_mobile);
 			assertEquals(request.getMAPDialog().getReceivedDestReference().getAddress(), "204208300008002");
 
 			assertEquals(request.getSsForBSCode().getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);
@@ -7014,10 +7014,10 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			MAPDialogSupplementary d = request.getMAPDialog();
 
-			assertEquals(request.getMAPDialog().getReceivedOrigReference().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(request.getMAPDialog().getReceivedOrigReference().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(request.getMAPDialog().getReceivedOrigReference().getAddress(), "31628968300");
 			assertEquals(request.getMAPDialog().getReceivedDestReference().getNumberingPlan(),
-					NumberingPlan.land_mobile);
+					NumberingPlanIndicator.land_mobile);
 			assertEquals(request.getMAPDialog().getReceivedDestReference().getAddress(), "204208300008002");
 
 			assertEquals(request.getSsForBSCode().getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);
@@ -7098,10 +7098,10 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			MAPDialogSupplementary d = request.getMAPDialog();
 
-			assertEquals(request.getMAPDialog().getReceivedOrigReference().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(request.getMAPDialog().getReceivedOrigReference().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(request.getMAPDialog().getReceivedOrigReference().getAddress(), "31628968300");
 			assertEquals(request.getMAPDialog().getReceivedDestReference().getNumberingPlan(),
-					NumberingPlan.land_mobile);
+					NumberingPlanIndicator.land_mobile);
 			assertEquals(request.getMAPDialog().getReceivedDestReference().getAddress(), "204208300008002");
 
 			assertEquals(request.getSsForBSCode().getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);
@@ -7171,10 +7171,10 @@ public class MAPFunctionalTest extends SccpHarness {
 
 			MAPDialogSupplementary d = request.getMAPDialog();
 
-			assertEquals(request.getMAPDialog().getReceivedOrigReference().getNumberingPlan(), NumberingPlan.ISDN);
+			assertEquals(request.getMAPDialog().getReceivedOrigReference().getNumberingPlan(), NumberingPlanIndicator.ISDN);
 			assertEquals(request.getMAPDialog().getReceivedOrigReference().getAddress(), "31628968300");
 			assertEquals(request.getMAPDialog().getReceivedDestReference().getNumberingPlan(),
-					NumberingPlan.land_mobile);
+					NumberingPlanIndicator.land_mobile);
 			assertEquals(request.getMAPDialog().getReceivedDestReference().getAddress(), "204208300008002");
 
 			assertEquals(request.getSsForBSCode().getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);

@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
@@ -94,7 +94,7 @@ public class Example {
                 .createLocationNumber(locationNumber);
 
         ISDNAddressString vlrNumber = client.getCAPProvider().getCAPParameterFactory()
-                .createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "552000002");
+                .createISDNAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "552000002");
         LocationInformation locationInformation = client
                 .getCAPProvider()
                 .getCAPParameterFactory()

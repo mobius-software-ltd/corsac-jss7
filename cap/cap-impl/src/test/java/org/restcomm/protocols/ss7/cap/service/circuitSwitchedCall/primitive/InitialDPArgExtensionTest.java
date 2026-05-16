@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.callhandling.UUDataImpl;
 import org.restcomm.protocols.ss7.commonapp.callhandling.UUIndicatorImpl;
@@ -107,7 +107,7 @@ public class InitialDPArgExtensionTest {
         
         InitialDPArgExtension elem = (InitialDPArgExtensionV1Impl)result.getResult(); 
         assertEquals(elem.getGmscAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(elem.getGmscAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(elem.getGmscAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(elem.getGmscAddress().getAddress().equals("2207750007"));
         assertNull(elem.getForwardingDestinationNumber());
 
@@ -134,7 +134,7 @@ public class InitialDPArgExtensionTest {
         
         elem = (InitialDPArgExtensionV3Impl)result.getResult(); 
         assertEquals(elem.getGmscAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(elem.getGmscAddress().getNumberingPlan(), NumberingPlan.national);
+        assertEquals(elem.getGmscAddress().getNumberingPlan(), NumberingPlanIndicator.national);
         assertTrue(elem.getGmscAddress().getAddress().equals("111111"));
         CalledPartyNumber cpn = elem.getForwardingDestinationNumber().getCalledPartyNumber();
         assertTrue(cpn.getAddress().equals("2222"));
@@ -189,7 +189,7 @@ public class InitialDPArgExtensionTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(InitialDPArgExtensionV1Impl.class);
     	
-        ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "2207750007");
         InitialDPArgExtension elem = new InitialDPArgExtensionV1Impl(null, gmscAddress);
         byte[] rawData = this.getData1();
@@ -199,7 +199,7 @@ public class InitialDPArgExtensionTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.national, "111111");
+        gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.national, "111111");
         CalledPartyNumberImpl calledPartyNumber = new CalledPartyNumberImpl(1, "2222", 1, 0);
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator
         CalledPartyNumberIsupImpl forwardingDestinationNumber = new CalledPartyNumberIsupImpl(calledPartyNumber);

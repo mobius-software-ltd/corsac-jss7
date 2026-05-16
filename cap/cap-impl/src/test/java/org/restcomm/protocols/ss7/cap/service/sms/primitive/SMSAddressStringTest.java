@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -63,7 +63,7 @@ public class SMSAddressStringTest {
         
         SMSAddressStringImpl prim = (SMSAddressStringImpl)result.getResult();        
         assertEquals(prim.getAddressNature(), AddressNature.international_number);
-        assertEquals(prim.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(prim.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(prim.getAddress(), "1234567891234567");
 
         rawData = this.getData2();
@@ -74,7 +74,7 @@ public class SMSAddressStringTest {
         
         prim = (SMSAddressStringImpl)result.getResult(); 
         assertEquals(prim.getAddressNature(), AddressNature.reserved);
-        assertEquals(prim.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(prim.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(prim.getAddress(), "Perestroika");
 	}
 	
@@ -83,14 +83,14 @@ public class SMSAddressStringTest {
 		ASNParser parser=new ASNParser(true);
     	parser.replaceClass(SMSAddressStringImpl.class);
     	
-    	SMSAddressStringImpl prim = new SMSAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1234567891234567");
+    	SMSAddressStringImpl prim = new SMSAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1234567891234567");
     	byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        prim = new SMSAddressStringImpl(AddressNature.reserved, NumberingPlan.ISDN, "Perestroika");
+        prim = new SMSAddressStringImpl(AddressNature.reserved, NumberingPlanIndicator.ISDN, "Perestroika");
         rawData = this.getData2();
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];

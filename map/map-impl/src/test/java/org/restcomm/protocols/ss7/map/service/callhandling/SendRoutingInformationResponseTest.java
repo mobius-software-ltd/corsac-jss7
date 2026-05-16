@@ -38,7 +38,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationPlanValue;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationTypeValue;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberStateChoice;
@@ -173,7 +173,7 @@ public class SendRoutingInformationResponseTest {
         assertNotNull(roamingNumber);
         // logger.info(":::::::" + roamingNumber.getAddress());
         assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(roamingNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(roamingNumber.getAddress(), "79273605819");
 
         // :::::::::::::::::::::::::::::::::
@@ -194,7 +194,7 @@ public class SendRoutingInformationResponseTest {
         assertNotNull(isdnAdd_);
         assertEquals(imsi_.getData(), "011220200198227");
         assertEquals(isdnAdd_.getAddressNature(), AddressNature.international_number);
-        assertEquals(isdnAdd_.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(isdnAdd_.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(isdnAdd_.getAddress(), "79273605819");
         assertTrue(!forwardingOptions_.isNotificationToForwardingParty());
         assertTrue(!forwardingOptions_.isRedirectingPresentation());
@@ -219,7 +219,7 @@ public class SendRoutingInformationResponseTest {
         ForwardingData forwardingData = routingInfo.getForwardingData();
         ISDNAddressString isdnAdd = forwardingData_.getForwardedToNumber();
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
-        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(isdnAdd.getAddress(), "79273605819");
         ForwardingOptions forwardingOptions = forwardingData.getForwardingOptions();
         assertTrue(!forwardingOptions.isNotificationToForwardingParty());
@@ -242,7 +242,7 @@ public class SendRoutingInformationResponseTest {
         ISDNAddressString vlrN = locInfo.getVlrNumber();
         assertTrue(vlrN.getAddress().equals("79273605819"));
         assertEquals(vlrN.getAddressNature(), AddressNature.international_number);
-        assertEquals(vlrN.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(vlrN.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(locInfo.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getMCC(), 724);
         assertEquals(locInfo.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getMNC(), 34);
         assertEquals(locInfo.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getLac(), 31134);
@@ -251,7 +251,7 @@ public class SendRoutingInformationResponseTest {
         ISDNAddressString mscN = locInfo.getVlrNumber();
         assertTrue(mscN.getAddress().equals("79273605819"));
         assertEquals(mscN.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscN.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscN.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertFalse(locInfo.getCurrentLocationRetrieved());
         assertTrue(locInfo.getSaiPresent());
         SubscriberState subState = prim.getSubscriberInfo().getSubscriberState();
@@ -271,7 +271,7 @@ public class SendRoutingInformationResponseTest {
         ISDNAddressString vmscAddress = prim.getVmscAddress();
         assertTrue(vmscAddress.getAddress().equals("79273605819"));
         assertEquals(vmscAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(vmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(vmscAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         // naeaPreferredCI
         assertTrue(prim.getNaeaPreferredCI().getNaeaPreferredCIC().getCarrierCode().equals("1234"));
         assertEquals(prim.getNaeaPreferredCI().getNaeaPreferredCIC().getNetworkIdentificationPlanValue(), NetworkIdentificationPlanValue.fourDigitCarrierIdentification);
@@ -286,7 +286,7 @@ public class SendRoutingInformationResponseTest {
         ISDNAddressString msisdn = prim.getMsisdn();
         assertTrue(msisdn.getAddress().equals("79273605819"));
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         // nrPortabilityStatus
         assertEquals(prim.getNumberPortabilityStatus(), NumberPortabilityStatus.foreignNumberPortedIn);
         assertEquals(prim.getISTAlertTimer().intValue(), 5);
@@ -309,7 +309,7 @@ public class SendRoutingInformationResponseTest {
         roamingNumber = prim.getRoutingInfo2().getRoamingNumber();
         assertNotNull(roamingNumber);
         assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(roamingNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(roamingNumber.getAddress(), "79273605819");
         // ssList2
         assertNotNull(prim.getSSList2());
@@ -345,7 +345,7 @@ public class SendRoutingInformationResponseTest {
         byte[] data_ = getData2();
 
         IMSIImpl imsi = new IMSIImpl("011220200198227");
-        ISDNAddressStringImpl roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
         RoutingInfoImpl routingInfo = new RoutingInfoImpl(roamingNumber);
         SendRoutingInformationResponse sri = new SendRoutingInformationResponseImplV1(imsi, routingInfo, null);
@@ -357,7 +357,7 @@ public class SendRoutingInformationResponseTest {
 
         // :::::::::::::::::::::::::::::::::
         IMSIImpl imsi_ = new IMSIImpl("011220200198227");
-        ISDNAddressStringImpl isdnAdd_ = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl isdnAdd_ = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
         ForwardingOptionsImpl forwardingOptions_ = new ForwardingOptionsImpl(false, false, true, ForwardingReason.busy);
         ForwardingDataImpl forwardingData_ = new ForwardingDataImpl(isdnAdd_, null, forwardingOptions_, null, null);
@@ -378,9 +378,9 @@ public class SendRoutingInformationResponseTest {
         // cugSubscriptionFlag
         boolean cugSubscriptionFlag = true;
         // subscriberInfo
-        ISDNAddressStringImpl vlrN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl vlrN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
-        ISDNAddressStringImpl mscN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl mscN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
         CellGlobalIdOrServiceAreaIdFixedLengthImpl c0 = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(724, 34, 31134, 10656);
         CellGlobalIdOrServiceAreaIdOrLAIImpl c = new CellGlobalIdOrServiceAreaIdOrLAIImpl(c0);
@@ -401,7 +401,7 @@ public class SendRoutingInformationResponseTest {
         // forwardingInterrogationRequired
         boolean forwardingInterrogationRequired = true;
         // vmscAddress
-        ISDNAddressString vmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressString vmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
         // extensionContainer
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
@@ -413,7 +413,7 @@ public class SendRoutingInformationResponseTest {
         CCBSIndicators ccbsIndicators = new CCBSIndicatorsImpl(true, true,
                 MAPExtensionContainerTest.GetTestExtensionContainer());
         // msisdn
-        ISDNAddressString msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressString msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
         // nrPortabilityStatus
         NumberPortabilityStatus nrPortabilityStatus = NumberPortabilityStatus.foreignNumberPortedIn;
@@ -424,7 +424,7 @@ public class SendRoutingInformationResponseTest {
         // offeredCamel4CSIs
         OfferedCamel4CSIs offeredCamel4CSIs = new OfferedCamel4CSIsImpl(true, true, true, true, true, true, true);
         // routingInfo2
-        ISDNAddressString isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressString isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
         RoutingInfo routingInfo2 = new RoutingInfoImpl(isdnAdd);
         // ssList2

@@ -33,7 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
@@ -108,7 +108,7 @@ public class ExtendedRoutingInfoTest {
 
         assertNotNull(isdnAdd);
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
-        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(isdnAdd.getAddress(), "79273605819");
 
         // Option 2
@@ -135,7 +135,7 @@ public class ExtendedRoutingInfoTest {
 
     	// 4 = 00|0|00100, 7 = length
         // Option 1
-        ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
         RoutingInfoImpl routeInfo = new RoutingInfoImpl(isdnAdd);
         ExtendedRoutingInfoImpl extRouteInfo = new ExtendedRoutingInfoImpl(routeInfo);
@@ -147,7 +147,7 @@ public class ExtendedRoutingInfoTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // Option 2
-        ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "11111222");
         ForwardingDataImpl forwardingData = new ForwardingDataImpl(forwardedToNumber, null, null, null, null);
         List<TBcsmCamelTDPData> lst = new ArrayList<TBcsmCamelTDPData>();

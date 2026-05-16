@@ -31,7 +31,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultSMSHandling;
@@ -81,7 +81,7 @@ public class SMSCSITest {
         ISDNAddressString gsmSCFAddress = one.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22235"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(one.getDefaultSMSHandling(), DefaultSMSHandling.continueTransaction);
         assertNotNull(one.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(one.getExtensionContainer()));
@@ -102,7 +102,7 @@ public class SMSCSITest {
 
         SMSTriggerDetectionPoint smsTriggerDetectionPoint = SMSTriggerDetectionPoint.smsCollectedInfo;
         int serviceKey = 4;
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22235");
         ;
         DefaultSMSHandling defaultSMSHandling = DefaultSMSHandling.continueTransaction;

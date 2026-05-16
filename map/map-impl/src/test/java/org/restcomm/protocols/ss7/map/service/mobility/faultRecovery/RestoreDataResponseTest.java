@@ -27,7 +27,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.junit.Test;
@@ -92,7 +92,7 @@ public class RestoreDataResponseTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(RestoreDataResponseImpl.class);
     	
-        ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1112222");
+        ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1112222");
         RestoreDataResponseImpl prim = new RestoreDataResponseImpl(hlrNumber, false, null);
         
         byte[] data=this.getEncodedData();

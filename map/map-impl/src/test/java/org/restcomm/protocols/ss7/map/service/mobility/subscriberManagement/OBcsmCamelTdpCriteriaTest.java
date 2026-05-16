@@ -31,7 +31,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
@@ -86,12 +86,12 @@ public class OBcsmCamelTdpCriteriaTest {
         assertNotNull(destinationNumberOne);
         assertTrue(destinationNumberOne.getAddress().equals("22234"));
         assertEquals(destinationNumberOne.getAddressNature(), AddressNature.international_number);
-        assertEquals(destinationNumberOne.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(destinationNumberOne.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         ISDNAddressString destinationNumberTwo = destinationNumberList.get(1);
         assertNotNull(destinationNumberTwo);
         assertTrue(destinationNumberTwo.getAddress().equals("22235"));
         assertEquals(destinationNumberTwo.getAddressNature(), AddressNature.international_number);
-        assertEquals(destinationNumberTwo.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(destinationNumberTwo.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(destinationNumberCriteria.getMatchType(), MatchType.enabling);
         List<Integer> destinationNumberLengthList = destinationNumberCriteria.getDestinationNumberLengthList();
         assertNotNull(destinationNumberLengthList);
@@ -124,9 +124,9 @@ public class OBcsmCamelTdpCriteriaTest {
     	
         OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint = OBcsmTriggerDetectionPoint.collectedInfo;
         ISDNAddressStringImpl destinationNumberOne = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "22234");
+                NumberingPlanIndicator.ISDN, "22234");
         ISDNAddressStringImpl destinationNumberTwo = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "22235");
+                NumberingPlanIndicator.ISDN, "22235");
         List<ISDNAddressString> destinationNumberList = new ArrayList<ISDNAddressString>();
         destinationNumberList.add(destinationNumberOne);
         destinationNumberList.add(destinationNumberTwo);

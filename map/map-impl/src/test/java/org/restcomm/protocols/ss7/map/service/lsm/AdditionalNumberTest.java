@@ -29,7 +29,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.junit.AfterClass;
@@ -94,7 +94,7 @@ public class AdditionalNumberTest {
         assertNull(addNum.getSGSNNumber());
         ISDNAddressString isdnAdd = addNum.getMSCNumber();
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
-        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(isdnAdd.getAddress().equals("55619007"));
 
         data = getEncodedSgsnNumber();
@@ -108,7 +108,7 @@ public class AdditionalNumberTest {
         assertNotNull(addNum.getSGSNNumber());
         isdnAdd = addNum.getSGSNNumber();
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
-        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(isdnAdd.getAddress().equals("55619007"));
     }
 
@@ -118,7 +118,7 @@ public class AdditionalNumberTest {
     	parser.replaceClass(AdditionalNumberImpl.class);
     	
         ISDNAddressString isdnAdd = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
-                NumberingPlan.ISDN, "55619007");
+                NumberingPlanIndicator.ISDN, "55619007");
         AdditionalNumberImpl addNum = new AdditionalNumberImpl(isdnAdd, null);
 
         byte[] data = getEncodedMscNumber();

@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
@@ -90,7 +90,7 @@ public class ResetRequestTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ResetRequestImpl.class);
     	
-        ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "12345");
+        ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "12345");
         ResetRequestImpl prim = new ResetRequestImpl(NetworkResource.hlr, hlrNumber, null);
 
         byte[] data=this.getEncodedData();

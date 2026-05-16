@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
@@ -107,12 +107,12 @@ public class UpdateLocationRequestTest {
         ISDNAddressString mscNumber = asc.getMscNumber();
         assertTrue(mscNumber.getAddress().equals("22228"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         ISDNAddressString vlrNumber = asc.getVlrNumber();
         assertTrue(vlrNumber.getAddress().equals("22229"));
         assertEquals(vlrNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         VLRCapability vlrCap = asc.getVlrCapability();
         assertTrue(vlrCap.getSupportedLCSCapabilitySets().getCapabilitySetRelease98_99());
@@ -139,12 +139,12 @@ public class UpdateLocationRequestTest {
         mscNumber = asc.getMscNumber();
         assertTrue(mscNumber.getAddress().equals("22228"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         vlrNumber = asc.getVlrNumber();
         assertTrue(vlrNumber.getAddress().equals("22229"));
         assertEquals(vlrNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         vlrCap = asc.getVlrCapability();
         assertTrue(vlrCap.getSupportedLCSCapabilitySets().getCapabilitySetRelease98_99());
@@ -171,12 +171,12 @@ public class UpdateLocationRequestTest {
         mscNumber = asc.getMscNumber();
         assertTrue(mscNumber.getAddress().equals("22228"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         vlrNumber = asc.getVlrNumber();
         assertTrue(vlrNumber.getAddress().equals("22229"));
         assertEquals(vlrNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         vlrCap = asc.getVlrCapability();
         assertTrue(vlrCap.getSupportedLCSCapabilitySets().getCapabilitySetRelease98_99());
@@ -211,12 +211,12 @@ public class UpdateLocationRequestTest {
         ISDNAddressString roamingNumber = asc.getRoamingNumber();
         assertTrue(roamingNumber.getAddress().equals("22220"));
         assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(roamingNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         vlrNumber = asc.getVlrNumber();
         assertTrue(vlrNumber.getAddress().equals("22221"));
         assertEquals(vlrNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         assertNull(asc.getVlrCapability());
         assertNull(asc.getLmsi());
@@ -233,9 +233,9 @@ public class UpdateLocationRequestTest {
     	parser.replaceClass(UpdateLocationRequestImpl.class);
     	
         IMSIImpl imsi = new IMSIImpl("1111122222");
-        ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22228");
-        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22229");
         SupportedLCSCapabilitySetsImpl supportedLCSCapabilitySets = new SupportedLCSCapabilitySetsImpl(true, false, false, false,
                 false);
@@ -251,8 +251,8 @@ public class UpdateLocationRequestTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         imsi = new IMSIImpl("1111122233");
-        mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22228");
-        vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22229");
+        mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22228");
+        vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22229");
         supportedLCSCapabilitySets = new SupportedLCSCapabilitySetsImpl(true, false, false, false, false);
         vlrCap = new VLRCapabilityImpl(null, null, false, null, null, false, supportedLCSCapabilitySets, null, null, false,
                 false);
@@ -286,8 +286,8 @@ public class UpdateLocationRequestTest {
 
         imsi = new IMSIImpl("1111122233");
         ISDNAddressStringImpl roamingNumberNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "22220");
-        vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22221");
+                NumberingPlanIndicator.ISDN, "22220");
+        vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22221");
         asc = new UpdateLocationRequestImpl(imsi, null, roamingNumberNumber, vlrNumber, null, null, null, false, false,
                 null, null, null, false, false);
 

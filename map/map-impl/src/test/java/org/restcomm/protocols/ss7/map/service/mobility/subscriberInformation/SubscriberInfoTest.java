@@ -29,7 +29,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LAIFixedLength;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberStateChoice;
@@ -94,7 +94,7 @@ public class SubscriberInfoTest {
         ISDNAddressString vlrN = locInfo.getVlrNumber();
         assertTrue(vlrN.getAddress().equals("553496629910"));
         assertEquals(vlrN.getAddressNature(), AddressNature.international_number);
-        assertEquals(vlrN.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(vlrN.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(locInfo.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getMCC(), 724);
         assertEquals(locInfo.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getMNC(), 34);
         assertEquals(locInfo.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getLac(), 31134);
@@ -103,7 +103,7 @@ public class SubscriberInfoTest {
         ISDNAddressString mscN = locInfo.getVlrNumber();
         assertTrue(mscN.getAddress().equals("553496629910"));
         assertEquals(mscN.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscN.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscN.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertFalse(locInfo.getCurrentLocationRetrieved());
         assertTrue(locInfo.getSaiPresent());
 
@@ -137,9 +137,9 @@ public class SubscriberInfoTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SubscriberInfoImpl.class);
         
-        ISDNAddressStringImpl vlrN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl vlrN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "553496629910");
-        ISDNAddressStringImpl mscN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl mscN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "553496629910");
         CellGlobalIdOrServiceAreaIdFixedLengthImpl c0 = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(724, 34, 31134, 10656);
         CellGlobalIdOrServiceAreaIdOrLAIImpl c = new CellGlobalIdOrServiceAreaIdOrLAIImpl(c0);
@@ -158,7 +158,7 @@ public class SubscriberInfoTest {
         byte[] rawData = data;
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        vlrN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "554433221100");
+        vlrN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "554433221100");
         li = new LocationInformationImpl(null, null, vlrN, null, null, null, null, null, null, false, false, null, null);
         ss = new SubscriberStateImpl(SubscriberStateChoice.camelBusy, null);
         LAIFixedLengthImpl laiFixedLength = new LAIFixedLengthImpl(260, 11, 144);

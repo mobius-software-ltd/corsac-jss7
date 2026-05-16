@@ -29,7 +29,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.DiameterIdentity;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.DiameterIdentityImpl;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
@@ -81,7 +81,7 @@ public class ServingNodeAddressTest {
         
         ISDNAddressString isdnAdd = impl.getMscNumber();
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
-        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(isdnAdd.getAddress().equals("13579000"));
         assertNull(impl.getSgsnNumber());
         assertNull(impl.getMmeNumber());
@@ -94,7 +94,7 @@ public class ServingNodeAddressTest {
 
         isdnAdd = impl.getSgsnNumber();
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
-        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(isdnAdd.getAddress().equals("13579000"));
         assertNull(impl.getMscNumber());
         assertNull(impl.getMmeNumber());
@@ -117,7 +117,7 @@ public class ServingNodeAddressTest {
     	parser.replaceClass(ServingNodeAddressImpl.class);
     	
         ISDNAddressString isdnAdd = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
-                NumberingPlan.ISDN, "13579000");
+                NumberingPlanIndicator.ISDN, "13579000");
         ServingNodeAddressImpl impl = new ServingNodeAddressImpl(isdnAdd, true);
 
         byte[] data = getDataMsc();

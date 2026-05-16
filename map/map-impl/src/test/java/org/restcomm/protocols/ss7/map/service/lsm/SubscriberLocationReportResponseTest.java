@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
@@ -97,8 +97,8 @@ public class SubscriberLocationReportResponseTest {
     	
         byte[] data = getEncodedData();
 
-        ISDNAddressStringImpl naEsrd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1111");
-        ISDNAddressStringImpl naEsrk = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "2222");
+        ISDNAddressStringImpl naEsrd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1111");
+        ISDNAddressStringImpl naEsrk = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "2222");
 
         SubscriberLocationReportResponseImpl imp = new SubscriberLocationReportResponseImpl(naEsrd, naEsrk,
                 MAPExtensionContainerTest.GetTestExtensionContainer());

@@ -17,7 +17,7 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 /**
@@ -30,15 +30,15 @@ public class ASNNumberingPlan extends ASNEnumerated {
 		super("NumberingPlan",0,15,false);
 	}
 	
-	public ASNNumberingPlan(NumberingPlan t) {
+	public ASNNumberingPlan(NumberingPlanIndicator t) {
 		super(t.getIndicator(),"NumberingPlan",0,15,false);
 	}
 	
-	public NumberingPlan getType() {
+	public NumberingPlanIndicator getType() {
 		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return NumberingPlan.getInstance(realValue);
+		return NumberingPlanIndicator.getInstance(realValue);
 	}
 }

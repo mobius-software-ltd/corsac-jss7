@@ -43,7 +43,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSMSClass;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
 import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
@@ -235,9 +235,9 @@ public class InitialDPSMSRequestTest {
     	
         int serviceKey = 2;
         CalledPartyBCDNumberImpl destinationSubscriberNumber = new CalledPartyBCDNumberImpl(
-                AddressNature.international_number, NumberingPlan.ISDN, "41788005047");
+                AddressNature.international_number, NumberingPlanIndicator.ISDN, "41788005047");
         SMSAddressStringImpl callingPartyNumber = new SMSAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "1234567891234567");
+                NumberingPlanIndicator.ISDN, "1234567891234567");
         EventTypeSMS eventTypeSMS = EventTypeSMS.oSmsSubmission;
         IMSIImpl imsi = new IMSIImpl("1111122222");
         LocationInformationImpl locationInformationMSC = new LocationInformationImpl(111, null, null, null, null, null,
@@ -251,7 +251,7 @@ public class InitialDPSMSRequestTest {
         ByteBuf geoBuffer=Unpooled.wrappedBuffer(getGeographicalInformation());
         GeographicalInformationImpl ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
         
-        ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "654321");
         LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(this.getEncodedDataLSAIdentity()));
         
@@ -262,7 +262,7 @@ public class InitialDPSMSRequestTest {
                 null, true, gdi, true, 13);
 
         ISDNAddressStringImpl smscCAddress = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "2207750007");
+                NumberingPlanIndicator.ISDN, "2207750007");
         TimeAndTimezoneImpl timeAndTimezone = new TimeAndTimezoneImpl(2005, 11, 24, 13, 10, 56, 0);
         TPShortMessageSpecificInfoImpl tPShortMessageSpecificInfo = new TPShortMessageSpecificInfoImpl(5);
         TPProtocolIdentifierImpl tPProtocolIdentifier = new TPProtocolIdentifierImpl(5);
@@ -271,9 +271,9 @@ public class InitialDPSMSRequestTest {
         CAPINAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
         CallReferenceNumberImpl smsReferenceNumber = new CallReferenceNumberImpl(Unpooled.wrappedBuffer(getCallReferenceNumber()));
         ISDNAddressStringImpl mscAddress = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "2207750008");
+                NumberingPlanIndicator.ISDN, "2207750008");
         ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "2207750009");
+                NumberingPlanIndicator.ISDN, "2207750009");
         MSClassmark2Impl mSClassmark2 = new MSClassmark2Impl(Unpooled.wrappedBuffer(getMSClassmark2()));
 
         // gprsMSClass
@@ -283,7 +283,7 @@ public class InitialDPSMSRequestTest {
 
         IMEIImpl imei = new IMEIImpl("1122334455667788");
         ISDNAddressStringImpl calledPartyNumber = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "2207750010");
+                NumberingPlanIndicator.ISDN, "2207750010");
 
         InitialDPSMSRequestImpl prim = new InitialDPSMSRequestImpl(serviceKey, destinationSubscriberNumber,
                 callingPartyNumber, eventTypeSMS, imsi, locationInformationMSC, locationInformationGPRS, smscCAddress,

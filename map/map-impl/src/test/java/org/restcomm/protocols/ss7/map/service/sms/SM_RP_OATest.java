@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.junit.Test;
@@ -70,7 +70,7 @@ public class SM_RP_OATest {
         
         AddressStringImpl nnm = oa.getServiceCentreAddressOA();
         assertEquals(nnm.getAddressNature(), AddressNature.international_number);
-        assertEquals(nnm.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(nnm.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(nnm.getAddress(), "18017011111");
 
         rawData = getEncodedData_Msisdn();
@@ -81,7 +81,7 @@ public class SM_RP_OATest {
 
         ISDNAddressStringImpl msisdn = oa.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "393385625695");
 
         rawData = getEncodedData_No();
@@ -99,7 +99,7 @@ public class SM_RP_OATest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SM_RP_OAImpl.class);
     	                
-        AddressStringImpl astr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "18017011111");
+        AddressStringImpl astr = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "18017011111");
         SM_RP_OAImpl oa = new SM_RP_OAImpl();
         oa.setServiceCentreAddressOA(astr);
         ByteBuf buffer=parser.encode(oa);
@@ -108,7 +108,7 @@ public class SM_RP_OATest {
         byte[] rawData = getEncodedData_ServiceCentreAddressOA();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ISDNAddressStringImpl isdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl isdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "393385625695");
         oa = new SM_RP_OAImpl();
         oa.setMsisdn(isdn);

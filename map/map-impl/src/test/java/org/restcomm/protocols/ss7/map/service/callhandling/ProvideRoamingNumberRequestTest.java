@@ -38,7 +38,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.AlertingPatternImpl;
@@ -185,11 +185,11 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(imsi.getData(), "011220200198227");
         assertNotNull(mscNumber);
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(mscNumber.getAddress(), "22228");
         assertNotNull(msisdn);
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "22227");
         assertNotNull(lmsi);
         assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
@@ -198,7 +198,7 @@ public class ProvideRoamingNumberRequestTest {
         assertFalse(suppressionOfAnnouncement);
         assertNotNull(gmscAddress);
         assertEquals(gmscAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gmscAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(gmscAddress.getAddress(), "22226");
         assertNotNull(callReferenceNumber);
         assertTrue(ByteBufUtil.equals(callReferenceNumber.getValue(), Unpooled.wrappedBuffer(getCallReferenceNumber())));
@@ -219,7 +219,7 @@ public class ProvideRoamingNumberRequestTest {
         assertFalse(mtrfIndicator);
         assertNotNull(oldMSCNumber);
         assertEquals(oldMSCNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(oldMSCNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(oldMSCNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(oldMSCNumber.getAddress(), "22225");
 
         // 2
@@ -259,11 +259,11 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(imsi.getData(), "011220200198227");
         assertNotNull(mscNumber);
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(mscNumber.getAddress(), "22228");
         assertNotNull(msisdn);
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "22227");
         assertNotNull(lmsi);
         assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
@@ -327,11 +327,11 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(imsi.getData(), "011220200198227");
         assertNotNull(mscNumber);
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mscNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(mscNumber.getAddress(), "22228");
         assertNotNull(msisdn);
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "22227");
         assertNotNull(lmsi);
         assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
@@ -340,7 +340,7 @@ public class ProvideRoamingNumberRequestTest {
         assertTrue(suppressionOfAnnouncement);
         assertNotNull(gmscAddress);
         assertEquals(gmscAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gmscAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(gmscAddress.getAddress(), "22226");
         assertNotNull(callReferenceNumber);
         assertTrue(ByteBufUtil.equals(callReferenceNumber.getValue(), Unpooled.wrappedBuffer(getCallReferenceNumber())));
@@ -361,7 +361,7 @@ public class ProvideRoamingNumberRequestTest {
         assertTrue(mtrfIndicator);
         assertNotNull(oldMSCNumber);
         assertEquals(oldMSCNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(oldMSCNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(oldMSCNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(oldMSCNumber.getAddress(), "22225");
     }
 
@@ -371,8 +371,8 @@ public class ProvideRoamingNumberRequestTest {
     	parser.replaceClass(ProvideRoamingNumberRequestImpl.class);
 
         IMSIImpl imsi = new IMSIImpl("011220200198227");
-        ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22228");
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22227");
+        ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22228");
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22227");
         LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
 
         MAPExtensionContainer extensionContainerForExtSigInfo = MAPExtensionContainerTest.GetTestExtensionContainer();
@@ -385,7 +385,7 @@ public class ProvideRoamingNumberRequestTest {
                 extensionContainerForExtSigInfo);
 
         boolean suppressionOfAnnouncement = false;
-        ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22226");
         CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(Unpooled.wrappedBuffer(getCallReferenceNumber()));
         boolean orInterrogation = false;
@@ -410,7 +410,7 @@ public class ProvideRoamingNumberRequestTest {
         PagingAreaImpl pagingArea = new PagingAreaImpl(locationAreas);
         EMLPPPriority callPriority = EMLPPPriority.getEMLPPPriority(0);
         boolean mtrfIndicator = false;
-        ISDNAddressStringImpl oldMSCNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl oldMSCNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22225");
         ProvideRoamingNumberRequestImpl prn = new ProvideRoamingNumberRequestImpl(imsi, mscNumber, msisdn, lmsi,
                 gsmBearerCapability, networkSignalInfo, suppressionOfAnnouncement, gmscAddress, callReferenceNumber,

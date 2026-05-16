@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharset;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecoder;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecodingData;
@@ -58,7 +58,7 @@ public class AddressStringImpl implements AddressString  {
     protected int NUMBERING_PLAN_IND_MASK = 0x0F;
 
     protected AddressNature addressNature;
-    protected NumberingPlan numberingPlan;
+    protected NumberingPlanIndicator numberingPlan;
     protected String address;
 
     private boolean isExtension;
@@ -72,21 +72,21 @@ public class AddressStringImpl implements AddressString  {
     	this.maxLength=maxLength;
     }
     
-    public AddressStringImpl(AddressNature addressNature, NumberingPlan numberingPlan, String address) {
+    public AddressStringImpl(AddressNature addressNature, NumberingPlanIndicator numberingPlan, String address) {
     	this.maxLength=19;
         this.addressNature = addressNature;
         this.numberingPlan = numberingPlan;
         this.address = address;
     }
 
-    public AddressStringImpl(Integer maxLength,AddressNature addressNature, NumberingPlan numberingPlan, String address) {
+    public AddressStringImpl(Integer maxLength,AddressNature addressNature, NumberingPlanIndicator numberingPlan, String address) {
         this.maxLength=maxLength;
         this.addressNature = addressNature;
         this.numberingPlan = numberingPlan;
         this.address = address;
     }
 
-    public AddressStringImpl(boolean isExtension, AddressNature addressNature, NumberingPlan numberingPlan, String address) {
+    public AddressStringImpl(boolean isExtension, AddressNature addressNature, NumberingPlanIndicator numberingPlan, String address) {
     	this.maxLength=19;
         this.isExtension = isExtension;
         this.addressNature = addressNature;
@@ -94,7 +94,7 @@ public class AddressStringImpl implements AddressString  {
         this.address = address;
     }
     
-    public AddressStringImpl(Integer maxLength,boolean isExtension, AddressNature addressNature, NumberingPlan numberingPlan, String address) {
+    public AddressStringImpl(Integer maxLength,boolean isExtension, AddressNature addressNature, NumberingPlanIndicator numberingPlan, String address) {
     	this.maxLength=maxLength;
         this.isExtension = isExtension;
         this.addressNature = addressNature;
@@ -110,7 +110,7 @@ public class AddressStringImpl implements AddressString  {
         return this.addressNature;
     }
 
-    public NumberingPlan getNumberingPlan() {
+    public NumberingPlanIndicator getNumberingPlan() {
         return this.numberingPlan;
     }
 
@@ -124,7 +124,7 @@ public class AddressStringImpl implements AddressString  {
     }
     
     public Integer getLength() {
-    	if (this.getNumberingPlan() == NumberingPlan.spare_5) {
+    	if (this.getNumberingPlan() == NumberingPlanIndicator.spare_5) {
     		int bits = address.length() * 7;
     		if(bits%8 == 0)
     			return bits/8 + 1;
@@ -154,7 +154,7 @@ public class AddressStringImpl implements AddressString  {
         nature = nature | (this.numberingPlan.getIndicator());
         buffer.writeByte(nature);
         
-        if (numberingPlan == NumberingPlan.spare_5) {
+        if (numberingPlan == NumberingPlanIndicator.spare_5) {
             // -- In the context of the DestinationSubscriberNumber field in ConnectSMSArg or
             // -- InitialDPSMSArg, a CalledPartyBCDNumber may also contain an alphanumeric
             // -- character string. In this case, type-of-number '101'B is used, in accordance
@@ -196,9 +196,9 @@ public class AddressStringImpl implements AddressString  {
         this.addressNature = AddressNature.getInstance(natureOfAddInd);
         
         int numbPlanInd = (nature & NUMBERING_PLAN_IND_MASK);
-        this.numberingPlan = NumberingPlan.getInstance(numbPlanInd);
+        this.numberingPlan = NumberingPlanIndicator.getInstance(numbPlanInd);
         
-        if (this.getNumberingPlan() == NumberingPlan.spare_5) {
+        if (this.getNumberingPlan() == NumberingPlanIndicator.spare_5) {
             // -- In the context of the DestinationSubscriberNumber field in ConnectSMSArg or
             // -- InitialDPSMSArg, a CalledPartyBCDNumber may also contain an alphanumeric
             // -- character string. In this case, type-of-number '101'B is used, in accordance

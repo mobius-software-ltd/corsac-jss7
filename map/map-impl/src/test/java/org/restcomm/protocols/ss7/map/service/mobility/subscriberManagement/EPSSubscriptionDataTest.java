@@ -31,7 +31,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LIPAPermission;
@@ -140,7 +140,7 @@ public class EPSSubscriptionDataTest {
         ISDNAddressString stnSr = prim.getStnSr();
         assertTrue(stnSr.getAddress().equals("22228"));
         assertEquals(stnSr.getAddressNature(), AddressNature.international_number);
-        assertEquals(stnSr.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(stnSr.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         APNConfigurationProfile apnConfigurationProfile = prim.getAPNConfigurationProfile();
 
@@ -289,7 +289,7 @@ public class EPSSubscriptionDataTest {
         APNConfigurationProfileImpl apnConfigurationProfile = new APNConfigurationProfileImpl(defaultContext,
                 completeDataListIncluded, ePSDataList, extensionContainer);
 
-        ISDNAddressStringImpl stnSr = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22228");
+        ISDNAddressStringImpl stnSr = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22228");
         boolean mpsCSPriority = true;
         boolean mpsEPSPriority = true;
 

@@ -28,7 +28,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
@@ -80,7 +80,7 @@ public class UpdateGprsLocationRequestTest {
         assertTrue(prim.getImsi().getData().equals("111222"));
         assertTrue(prim.getSgsnNumber().getAddress().equals("22228"));
         assertEquals(prim.getSgsnNumber().getAddressNature(), AddressNature.international_number);
-        assertEquals(prim.getSgsnNumber().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(prim.getSgsnNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         
         assertEquals(prim.getSgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
         assertTrue(ByteBufUtil.equals(prim.getSgsnAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getGSNAddressData())));
@@ -113,7 +113,7 @@ public class UpdateGprsLocationRequestTest {
     	parser.replaceClass(UpdateGprsLocationRequestImpl.class);
     	
     	IMSIImpl imsi = new IMSIImpl("111222");
-        ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22228");
         GSNAddressImpl sgsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(getGSNAddressData()));
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();

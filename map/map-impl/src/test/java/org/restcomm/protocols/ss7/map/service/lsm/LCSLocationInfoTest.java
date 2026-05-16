@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.DiameterIdentityImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
@@ -109,7 +109,7 @@ public class LCSLocationInfoTest {
         
         ISDNAddressString networkNodeNumber = imp.getNetworkNodeNumber();
         assertEquals(networkNodeNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(networkNodeNumber.getAddress().equals("55619007"));
 
         assertTrue(ByteBufUtil.equals(imp.getLMSI().getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
@@ -143,10 +143,10 @@ public class LCSLocationInfoTest {
         byte[] data = getEncodedData();
 
         ISDNAddressString networkNodeNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
-                NumberingPlan.ISDN, "55619007");
+                NumberingPlanIndicator.ISDN, "55619007");
         LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
         ISDNAddressString mscNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
-                NumberingPlan.ISDN, "2222112222");
+                NumberingPlanIndicator.ISDN, "2222112222");
         AdditionalNumberImpl additionalNumber = new AdditionalNumberImpl(mscNumber, null);
         SupportedLCSCapabilitySetsImpl supportedLCSCapabilitySets = new SupportedLCSCapabilitySetsImpl(true, true, false,
                 false, false);

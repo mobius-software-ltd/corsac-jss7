@@ -32,7 +32,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSI;
@@ -89,12 +89,12 @@ public class DCSITest {
     	ISDNAddressString dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
     	assertTrue(dialledNumber.getAddress().equals("22234"));
     	assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
-    	assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
+    	assertEquals(dialledNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
     	assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
     	ISDNAddressString gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
     	assertTrue(gsmSCFAddress.getAddress().equals("22235"));
     	assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-    	assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+    	assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
     	assertEquals(dpAnalysedInfoCriterium.getDefaultCallHandling(), DefaultCallHandling.continueCall);
     	assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
     	assertEquals(prim.getCamelCapabilityHandling().intValue(), 2);
@@ -116,12 +116,12 @@ public class DCSITest {
     	dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
     	assertTrue(dialledNumber.getAddress().equals("22234"));
     	assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
-    	assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
+    	assertEquals(dialledNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
     	assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
     	gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
     	assertTrue(gsmSCFAddress.getAddress().equals("22235"));
     	assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-    	assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+    	assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
     	assertEquals(dpAnalysedInfoCriterium.getDefaultCallHandling(), DefaultCallHandling.continueCall);
     	assertNull(extensionContainer);
     	assertEquals(prim.getCamelCapabilityHandling().intValue(), 2);
@@ -136,9 +136,9 @@ public class DCSITest {
     	                
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
-        ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22234");
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22235");
 
         DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialledNumber, 7, gsmSCFAddress,

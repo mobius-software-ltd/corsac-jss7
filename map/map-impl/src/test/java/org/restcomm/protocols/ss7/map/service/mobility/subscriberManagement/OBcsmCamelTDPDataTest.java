@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
@@ -72,7 +72,7 @@ public class OBcsmCamelTDPDataTest {
         assertEquals(ind.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.collectedInfo);
         assertEquals(ind.getServiceKey(), 3);
         assertEquals(ind.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(ind.getGsmSCFAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(ind.getGsmSCFAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(ind.getGsmSCFAddress().getAddress().equals("333222111"));
         assertEquals(ind.getDefaultCallHandling(), DefaultCallHandling.releaseCall);
         assertNull(ind.getExtensionContainer());
@@ -86,7 +86,7 @@ public class OBcsmCamelTDPDataTest {
         assertEquals(ind.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.collectedInfo);
         assertEquals(ind.getServiceKey(), 3);
         assertEquals(ind.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(ind.getGsmSCFAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(ind.getGsmSCFAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(ind.getGsmSCFAddress().getAddress().equals("333222111"));
         assertEquals(ind.getDefaultCallHandling(), DefaultCallHandling.releaseCall);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
@@ -98,7 +98,7 @@ public class OBcsmCamelTDPDataTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(OBcsmCamelTDPDataImpl.class);
     	
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "333222111");
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "333222111");
         OBcsmCamelTDPDataImpl ind = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3, gsmSCFAddress, DefaultCallHandling.releaseCall, null);
 
         ByteBuf buffer=parser.encode(ind);

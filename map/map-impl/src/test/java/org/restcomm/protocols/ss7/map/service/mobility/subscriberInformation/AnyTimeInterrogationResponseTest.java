@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberStateChoice;
@@ -90,7 +90,7 @@ public class AnyTimeInterrogationResponseTest {
         assertTrue(ByteBufUtil.equals(locInfo.getGeographicalInformation().getValue(),Unpooled.wrappedBuffer(dataGeoInfo)));
         assertTrue(locInfo.getVlrNumber().getAddress().equals("553496629910"));
         assertEquals(locInfo.getVlrNumber().getAddressNature(), AddressNature.international_number);
-        assertEquals(locInfo.getVlrNumber().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(locInfo.getVlrNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(locInfo.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getMCC(), 724);
         assertEquals(locInfo.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getMNC(), 34);
         assertEquals(locInfo.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getLac(), 31134);
@@ -98,7 +98,7 @@ public class AnyTimeInterrogationResponseTest {
                 .getCellIdOrServiceAreaCode(), 10656);
         assertTrue(locInfo.getMscNumber().getAddress().equals("553496629910"));
         assertEquals(locInfo.getMscNumber().getAddressNature(), AddressNature.international_number);
-        assertEquals(locInfo.getMscNumber().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(locInfo.getMscNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(locInfo.getSaiPresent());
 
         SubscriberState subState = subscriberInfo.getSubscriberState();
@@ -124,9 +124,9 @@ public class AnyTimeInterrogationResponseTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AnyTimeInterrogationResponseImpl.class);
     	
-        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "553496629910");
-        ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "553496629910");
 
         ByteBuf geoBuffer=Unpooled.wrappedBuffer(dataGeoInfo);

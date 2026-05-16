@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
@@ -153,7 +153,7 @@ public class ProvideSubscriberLocationRequestTest {
         ISDNAddressString mlcNumber = reqInd.getMlcNumber();
         assertNotNull(mlcNumber);
         assertEquals(mlcNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mlcNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mlcNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(mlcNumber.getAddress(), "55619007");
 
         LCSClientID lcsClientId = reqInd.getLCSClientID();
@@ -216,7 +216,7 @@ public class ProvideSubscriberLocationRequestTest {
         mlcNumber = reqInd.getMlcNumber();
         assertNotNull(mlcNumber);
         assertEquals(mlcNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(mlcNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(mlcNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(mlcNumber.getAddress(), "55619007");
 
         lcsClientId = reqInd.getLCSClientID();
@@ -292,7 +292,7 @@ public class ProvideSubscriberLocationRequestTest {
     	parser.replaceClass(ProvideSubscriberLocationRequestImpl.class);
     	
         LocationTypeImpl locationType = new LocationTypeImpl(LocationEstimateType.currentLocation, null);
-        ISDNAddressStringImpl mlcNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl mlcNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "55619007");
 
         USSDString nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
@@ -317,7 +317,7 @@ public class ProvideSubscriberLocationRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "765432100");
         LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
         IMEIImpl imei = new IMEIImpl("1234567890123456");

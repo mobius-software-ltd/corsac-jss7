@@ -28,7 +28,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
@@ -77,7 +77,7 @@ public class PurgeMSRequestTest {
         ISDNAddressString vlrNumber = prim.getVlrNumber();
         assertTrue(vlrNumber.getAddress().equals("22234"));
         assertEquals(vlrNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         // version 3
         data = this.getData2();
@@ -91,12 +91,12 @@ public class PurgeMSRequestTest {
         vlrNumber = prim.getVlrNumber();
         assertTrue(vlrNumber.getAddress().equals("22234"));
         assertEquals(vlrNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(vlrNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         ISDNAddressString sgsnNumber = prim.getSgsnNumber();
         assertTrue(sgsnNumber.getAddress().equals("22235"));
         assertEquals(sgsnNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(sgsnNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(sgsnNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
 
@@ -109,7 +109,7 @@ public class PurgeMSRequestTest {
     	parser.replaceClass(PurgeMSRequestImplV3.class);
     	
         // version 2
-        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22234");
+        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22234");
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         IMSIImpl imsi = new IMSIImpl("1111122222");
 
@@ -121,7 +121,7 @@ public class PurgeMSRequestTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // version 3
-        ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
+        ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22235");
         prim = new PurgeMSRequestImplV3(imsi, vlrNumber, sgsnNumber, extensionContainer);
         data=getData2();
         buffer=parser.encode(prim);

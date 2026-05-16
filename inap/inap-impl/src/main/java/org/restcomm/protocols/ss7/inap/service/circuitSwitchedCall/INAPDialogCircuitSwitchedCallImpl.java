@@ -54,7 +54,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.inap.INAPDialogImpl;
@@ -1767,7 +1767,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Integer addCollectInformationRequest(AlertingPattern alertingPattern, NumberingPlan numberingPlan,
+	public Integer addCollectInformationRequest(AlertingPattern alertingPattern, NumberingPlanIndicator numberingPlan,
 			OriginalCalledPartyIDIsup originalCalledPartyID, LocationNumberIsup travellingClassMark,
 			CAPINAPExtensions extensions, CallingPartyNumberIsup сallingPartyNumber,
 			CalledPartyNumberIsup dialledDigits) throws INAPException {
@@ -1777,7 +1777,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 	@Override
 	public Integer addCollectInformationRequest(int customInvokeTimeout, AlertingPattern alertingPattern,
-			NumberingPlan numberingPlan, OriginalCalledPartyIDIsup originalCalledPartyID,
+			NumberingPlanIndicator numberingPlan, OriginalCalledPartyIDIsup originalCalledPartyID,
 			LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions,
 			CallingPartyNumberIsup сallingPartyNumber, CalledPartyNumberIsup dialledDigits) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC

@@ -32,7 +32,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
@@ -134,7 +134,7 @@ public class VlrCamelSubscriptionInfoTest {
         assertEquals(cd.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.routeSelectFailure);
         assertEquals(cd.getServiceKey(), 3);
         assertEquals(cd.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(cd.getGsmSCFAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(cd.getGsmSCFAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(cd.getGsmSCFAddress().getAddress().equals("1122333"));
         assertEquals(cd.getDefaultCallHandling(), DefaultCallHandling.releaseCall);
         assertNull(cd.getExtensionContainer());
@@ -162,7 +162,7 @@ public class VlrCamelSubscriptionInfoTest {
         ISDNAddressString gsmSCFAddress = ssCamelData.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22235"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertNotNull(ssCamelData.getExtensionContainer());
         assertNotNull(ssCsi.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ssCsi.getExtensionContainer()));
@@ -184,12 +184,12 @@ public class VlrCamelSubscriptionInfoTest {
         assertNotNull(destinationNumberOne);
         assertTrue(destinationNumberOne.getAddress().equals("22234"));
         assertEquals(destinationNumberOne.getAddressNature(), AddressNature.international_number);
-        assertEquals(destinationNumberOne.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(destinationNumberOne.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         ISDNAddressString destinationNumberTwo = destinationNumberList.get(1);
         assertNotNull(destinationNumberTwo);
         assertTrue(destinationNumberTwo.getAddress().equals("22235"));
         assertEquals(destinationNumberTwo.getAddressNature(), AddressNature.international_number);
-        assertEquals(destinationNumberTwo.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(destinationNumberTwo.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(destinationNumberCriteria.getMatchType().getCode(), MatchType.enabling.getCode());
         List<Integer> destinationNumberLengthList = destinationNumberCriteria.getDestinationNumberLengthList();
         assertNotNull(destinationNumberLengthList);
@@ -235,7 +235,7 @@ public class VlrCamelSubscriptionInfoTest {
         ISDNAddressString gsmSCFAddressTwo = mCsi.getGsmSCFAddress();
         assertTrue(gsmSCFAddressTwo.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressTwo.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddressTwo.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddressTwo.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertNotNull(mCsi.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(mCsi.getExtensionContainer()));
         assertTrue(mCsi.getCsiActive());
@@ -253,7 +253,7 @@ public class VlrCamelSubscriptionInfoTest {
         ISDNAddressString gsmSCFAddressSmsCAMELTDPData = smsCAMELTDPData.getGsmSCFAddress();
         assertTrue(gsmSCFAddressSmsCAMELTDPData.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressSmsCAMELTDPData.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddressSmsCAMELTDPData.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddressSmsCAMELTDPData.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(smsCAMELTDPData.getDefaultSMSHandling(), DefaultSMSHandling.continueTransaction);
         assertNotNull(smsCAMELTDPData.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(smsCAMELTDPData.getExtensionContainer()));
@@ -269,7 +269,7 @@ public class VlrCamelSubscriptionInfoTest {
         assertEquals(tbcsmCamelTDPData.getTBcsmTriggerDetectionPoint(), TBcsmTriggerDetectionPoint.termAttemptAuthorized);
         assertEquals(tbcsmCamelTDPData.getServiceKey(), 3);
         assertEquals(tbcsmCamelTDPData.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(tbcsmCamelTDPData.getGsmSCFAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(tbcsmCamelTDPData.getGsmSCFAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(tbcsmCamelTDPData.getGsmSCFAddress().getAddress().equals("22235"));
         assertEquals(tbcsmCamelTDPData.getDefaultCallHandling(), DefaultCallHandling.releaseCall);
         assertNull(tbcsmCamelTDPData.getExtensionContainer());
@@ -307,12 +307,12 @@ public class VlrCamelSubscriptionInfoTest {
         ISDNAddressString dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
         assertTrue(dialledNumber.getAddress().equals("22234"));
         assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(dialledNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
         ISDNAddressString gsmSCFAddressDp = dpAnalysedInfoCriterium.getGsmSCFAddress();
         assertTrue(gsmSCFAddressDp.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressDp.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddressDp.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddressDp.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(dpAnalysedInfoCriterium.getDefaultCallHandling(), DefaultCallHandling.continueCall);
         assertNotNull(dCsi.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(dCsi.getExtensionContainer()));
@@ -332,7 +332,7 @@ public class VlrCamelSubscriptionInfoTest {
         ISDNAddressString gsmSCFAddressOfMtSmsCSI = smsCAMELTDPDataOfMtSmsCSI.getGsmSCFAddress();
         assertTrue(gsmSCFAddressOfMtSmsCSI.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressOfMtSmsCSI.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddressOfMtSmsCSI.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddressOfMtSmsCSI.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(smsCAMELTDPDataOfMtSmsCSI.getDefaultSMSHandling(), DefaultSMSHandling.continueTransaction);
         assertNotNull(smsCAMELTDPDataOfMtSmsCSI.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(smsCAMELTDPDataOfMtSmsCSI.getExtensionContainer()));
@@ -380,7 +380,7 @@ public class VlrCamelSubscriptionInfoTest {
         tCauseValueCriteria.add(new CauseValueImpl(6));
 
         ISDNAddressStringImpl gsmSCFAddressOne = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "1122333");
+                NumberingPlanIndicator.ISDN, "1122333");
         OBcsmCamelTDPDataImpl cind = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, 3,
                 gsmSCFAddressOne, DefaultCallHandling.releaseCall, null);
         List<OBcsmCamelTDPData> lst = new ArrayList<OBcsmCamelTDPData>();
@@ -390,7 +390,7 @@ public class VlrCamelSubscriptionInfoTest {
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         List<SSCode> ssEventList = new ArrayList<SSCode>();
         ssEventList.add(new SSCodeImpl(SupplementaryCodeValue.allCommunityOfInterestSS.getCode()));
-        ISDNAddressStringImpl gsmSCFAddressTwo = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gsmSCFAddressTwo = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22235");
         SSCamelDataImpl ssCamelData = new SSCamelDataImpl(ssEventList, gsmSCFAddressTwo, extensionContainer);
         boolean notificationToCSE = false;
@@ -401,9 +401,9 @@ public class VlrCamelSubscriptionInfoTest {
         List<OBcsmCamelTdpCriteria> oBcsmCamelTDPCriteriaList = new ArrayList<OBcsmCamelTdpCriteria>();
         OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint = OBcsmTriggerDetectionPoint.collectedInfo;
         ISDNAddressStringImpl destinationNumberOne = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "22234");
+                NumberingPlanIndicator.ISDN, "22234");
         ISDNAddressStringImpl destinationNumberTwo = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "22235");
+                NumberingPlanIndicator.ISDN, "22235");
         List<ISDNAddressString> destinationNumberList = new ArrayList<ISDNAddressString>();
         destinationNumberList.add(destinationNumberOne);
         destinationNumberList.add(destinationNumberTwo);
@@ -426,7 +426,7 @@ public class VlrCamelSubscriptionInfoTest {
 
         List<MMCode> mobilityTriggers = new ArrayList<MMCode>();
         Integer serviceKey = 3;
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22235");
         ;
         mobilityTriggers.add(new MMCodeImpl(MMCodeValue.GPRSAttach));
@@ -458,7 +458,7 @@ public class VlrCamelSubscriptionInfoTest {
         List<TBcsmCamelTdpCriteria> tBcsmCamelTdpCriteriaList = new ArrayList<TBcsmCamelTdpCriteria>();
         tBcsmCamelTdpCriteriaList.add(tBcsmCamelTdpCriteria);
 
-        ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22234");
 
         DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialledNumber, 7, gsmSCFAddress,

@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
@@ -82,7 +82,7 @@ public class MtForwardShortMessageRequestTest {
         // assertEquals( (long) da.getIMSI().getMNC(),22);
         assertEquals(da.getIMSI().getData(), "011222221128514");
         assertEquals(oa.getServiceCentreAddressOA().getAddressNature(), AddressNature.international_number);
-        assertEquals(oa.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(oa.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(oa.getServiceCentreAddressOA().getAddress(), "18129600096");
         
         ByteBuf buffer=Unpooled.buffer();
@@ -104,7 +104,7 @@ public class MtForwardShortMessageRequestTest {
         // assertEquals( (long) da.getIMSI().getMNC(),88);
         assertEquals(da.getIMSI().getData(), "100883344556677");
         assertEquals(oa.getServiceCentreAddressOA().getAddressNature(), AddressNature.international_number);
-        assertEquals(oa.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(oa.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(oa.getServiceCentreAddressOA().getAddress(), "1111122222");
         
         buffer=Unpooled.buffer();
@@ -123,7 +123,7 @@ public class MtForwardShortMessageRequestTest {
                 
         IMSIImpl imsi = new IMSIImpl("011222221128514");
         SM_RP_DAImpl sm_RP_DA = new SM_RP_DAImpl(imsi);
-        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "18129600096");
+        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "18129600096");
         SM_RP_OAImpl sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setServiceCentreAddressOA(sca);
         SmsSignalInfoImpl sm_RP_UI = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
@@ -138,7 +138,7 @@ public class MtForwardShortMessageRequestTest {
 
         imsi = new IMSIImpl("100883344556677");
         sm_RP_DA = new SM_RP_DAImpl(imsi);
-        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1111122222");
+        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1111122222");
         sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setServiceCentreAddressOA(sca);
         sm_RP_UI = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,

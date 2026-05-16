@@ -29,7 +29,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
@@ -85,13 +85,13 @@ public class MAPOpenInfoTest {
         assertNotNull(destRef);
 
         assertEquals(destRef.getAddressNature(), AddressNature.international_number);
-        assertEquals(destRef.getNumberingPlan(), NumberingPlan.land_mobile);
+        assertEquals(destRef.getNumberingPlan(), NumberingPlanIndicator.land_mobile);
         assertTrue(destRef.getAddress().endsWith("204208300008002"));
 
         assertNotNull(origRef);
 
         assertEquals(origRef.getAddressNature(), AddressNature.international_number);
-        assertEquals(origRef.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(origRef.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(origRef.getAddress().equals("31628968300"));
         assertFalse(mapOpenInfoImpl.getEriStyle());
 
@@ -106,13 +106,13 @@ public class MAPOpenInfoTest {
         assertNotNull(destRef);
 
         assertEquals(destRef.getAddressNature(), AddressNature.international_number);
-        assertEquals(destRef.getNumberingPlan(), NumberingPlan.land_mobile);
+        assertEquals(destRef.getNumberingPlan(), NumberingPlanIndicator.land_mobile);
         assertTrue(destRef.getAddress().equals("204208300008002"));
 
         assertNotNull(origRef);
 
         assertEquals(origRef.getAddressNature(), AddressNature.international_number);
-        assertEquals(origRef.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(origRef.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(origRef.getAddress().equals("31628968300"));
 
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(mapOpenInfoImpl.getExtensionContainer()));
@@ -129,13 +129,13 @@ public class MAPOpenInfoTest {
         assertNotNull(destRef);
 
         assertEquals(destRef.getAddressNature(), AddressNature.international_number);
-        assertEquals(destRef.getNumberingPlan(), NumberingPlan.land_mobile);
+        assertEquals(destRef.getNumberingPlan(), NumberingPlanIndicator.land_mobile);
         assertTrue(destRef.getAddress().equals("204208300008002"));
 
         assertNotNull(origRef);
 
         assertEquals(origRef.getAddressNature(), AddressNature.international_number);
-        assertEquals(origRef.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(origRef.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(origRef.getAddress().equals("31628968300"));
 
         assertNull(mapOpenInfoImpl.getExtensionContainer());
@@ -144,7 +144,7 @@ public class MAPOpenInfoTest {
 
         AddressString eriVlrNo = mapOpenInfoImpl.getEriVlrNo();
         assertEquals(eriVlrNo.getAddressNature(), AddressNature.international_number);
-        assertEquals(eriVlrNo.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(eriVlrNo.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(eriVlrNo.getAddress().equals("0873124"));
 
     }
@@ -158,9 +158,9 @@ public class MAPOpenInfoTest {
 
         MAPOpenInfoImpl mapOpenInfoImpl = new MAPOpenInfoImpl();
         AddressString destReference = servFact.createAddressString(AddressNature.international_number,
-                NumberingPlan.land_mobile, "204208300008002");
+                NumberingPlanIndicator.land_mobile, "204208300008002");
         mapOpenInfoImpl.setDestReference(destReference);
-        AddressString origReference = servFact.createAddressString(AddressNature.international_number, NumberingPlan.ISDN,
+        AddressString origReference = servFact.createAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "31628968300");
         mapOpenInfoImpl.setOrigReference(origReference);
         
@@ -173,10 +173,10 @@ public class MAPOpenInfoTest {
                 (byte) 0x98, (byte) 0x86, 0x03, (byte) 0xf0 }, data));
 
         mapOpenInfoImpl = new MAPOpenInfoImpl();
-        destReference = servFact.createAddressString(AddressNature.international_number, NumberingPlan.land_mobile,
+        destReference = servFact.createAddressString(AddressNature.international_number, NumberingPlanIndicator.land_mobile,
                 "204208300008002");
         mapOpenInfoImpl.setDestReference(destReference);
-        origReference = servFact.createAddressString(AddressNature.international_number, NumberingPlan.ISDN, "31628968300");
+        origReference = servFact.createAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "31628968300");
         mapOpenInfoImpl.setOrigReference(origReference);
         mapOpenInfoImpl.setExtensionContainer(MAPExtensionContainerTest.GetTestExtensionContainer());
 
@@ -188,14 +188,14 @@ public class MAPOpenInfoTest {
 
         // Eri
         mapOpenInfoImpl = new MAPOpenInfoImpl();
-        destReference = servFact.createAddressString(AddressNature.international_number, NumberingPlan.land_mobile,
+        destReference = servFact.createAddressString(AddressNature.international_number, NumberingPlanIndicator.land_mobile,
                 "204208300008002");
         mapOpenInfoImpl.setDestReference(destReference);
-        origReference = servFact.createAddressString(AddressNature.international_number, NumberingPlan.ISDN, "31628968300");
+        origReference = servFact.createAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "31628968300");
         mapOpenInfoImpl.setOrigReference(origReference);
         
-        mapOpenInfoImpl.setEriMsisdn(servFact.createAddressString(AddressNature.international_number, NumberingPlan.ISDN, "111222111222"));
-        mapOpenInfoImpl.setEriVlrNo(servFact.createAddressString(AddressNature.international_number, NumberingPlan.ISDN,
+        mapOpenInfoImpl.setEriMsisdn(servFact.createAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN, "111222111222"));
+        mapOpenInfoImpl.setEriVlrNo(servFact.createAddressString(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "0873124"));
 
         buffer=parser.encode(mapOpenInfoImpl);

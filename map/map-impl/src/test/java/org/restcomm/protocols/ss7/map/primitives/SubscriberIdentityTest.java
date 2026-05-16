@@ -30,7 +30,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
@@ -106,7 +106,7 @@ public class SubscriberIdentityTest {
         assertNotNull(msisdn);
         assertTrue(msisdn.getAddress().equals("22222233333"));
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class SubscriberIdentityTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22222233333");
         subsIdent = new SubscriberIdentityWrapperImpl(new SubscriberIdentityImpl(msisdn));
         buffer=parser.encode(subsIdent);

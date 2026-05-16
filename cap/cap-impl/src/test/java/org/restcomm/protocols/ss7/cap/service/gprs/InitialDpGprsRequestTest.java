@@ -44,7 +44,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSMSClass;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRate;
@@ -195,7 +195,7 @@ public class InitialDpGprsRequestTest {
         ISDNAddressString msisdn = prim.getMsisdn();
         assertTrue(msisdn.getAddress().equals("22234"));
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         // getImsi
         assertTrue(prim.getImsi().getData().equals("1111122222"));
@@ -305,7 +305,7 @@ public class InitialDpGprsRequestTest {
         ISDNAddressString msisdn = prim.getMsisdn();
         assertTrue(msisdn.getAddress().equals("553499739025"));
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         // getImsi
         assertTrue(prim.getImsi().getData().equals("724340100138600"));
@@ -333,7 +333,7 @@ public class InitialDpGprsRequestTest {
     	
         int serviceKey = 2;
         GPRSEventType gprsEventType = GPRSEventType.attachChangeOfPosition;
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22234");
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22234");
         IMSIImpl imsi = new IMSIImpl("1111122222");
         TimeAndTimezoneImpl timeAndTimezone = new TimeAndTimezoneImpl(2005, 11, 24, 13, 10, 56, 0);
 
@@ -377,7 +377,7 @@ public class InitialDpGprsRequestTest {
         ByteBuf geoBuffer=Unpooled.wrappedBuffer(getGeographicalInformation());
         GeographicalInformationImpl ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
         
-        ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "654321");
+        ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "654321");
         LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(this.getEncodedDataLSAIdentity()));
         
         ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(getGeodeticInformation());
@@ -419,7 +419,7 @@ public class InitialDpGprsRequestTest {
     	
         int serviceKey = 23;
         GPRSEventType gprsEventType = GPRSEventType.pdpContextEstablishmentAcknowledgement;
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "553499739025");
         IMSIImpl imsi = new IMSIImpl("724340100138600");
         TimeAndTimezoneImpl timeAndTimezone = new TimeAndTimezoneImpl(2013, 1, 4, 6, 31, 34,-8);                
@@ -490,7 +490,7 @@ public class InitialDpGprsRequestTest {
 
         RAIdentityImpl ra = new RAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 0x27, (byte) 0xf4, 0x43, (byte) 0x81, 0x6e, 0x04 }));
 
-        ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "553496629995");
 
         LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, null, sgsn, null, null,

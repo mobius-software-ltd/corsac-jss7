@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
@@ -120,8 +120,8 @@ public class AuthenticationFailureReportRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "111133");
-        ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "111144");
+        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "111133");
+        ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "111144");
         asc = new AuthenticationFailureReportRequestImpl(imsi, FailureCause.wrongNetworkSignature, MAPExtensionContainerTest.GetTestExtensionContainer(), true,
                 AccessType.locationUpdating, Unpooled.wrappedBuffer(getRandBalue()), vlrNumber, sgsnNumber);
         

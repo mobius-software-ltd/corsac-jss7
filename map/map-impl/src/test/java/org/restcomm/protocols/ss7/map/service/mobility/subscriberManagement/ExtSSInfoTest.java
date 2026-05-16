@@ -32,7 +32,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
@@ -165,7 +165,7 @@ public class ExtSSInfoTest {
         assertNotNull(forwardedToNumber);
         assertTrue(forwardedToNumber.getAddress().equals("22228"));
         assertEquals(forwardedToNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(forwardedToNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(forwardedToNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         assertTrue(ByteBufUtil.equals(extForwFeature.getForwardedToSubaddress().getValue(),Unpooled.wrappedBuffer(this.getISDNSubaddressStringData())));
         assertTrue(extForwFeature.getForwardingOptions().getNotificationToCallingParty());
@@ -179,7 +179,7 @@ public class ExtSSInfoTest {
         assertNotNull(longForwardedToNumber);
         assertTrue(longForwardedToNumber.getAddress().equals("22227"));
         assertEquals(longForwardedToNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(longForwardedToNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(longForwardedToNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         // option 2
         data = this.getData1();
@@ -302,13 +302,13 @@ public class ExtSSInfoTest {
         ExtBasicServiceCodeImpl basicService = new ExtBasicServiceCodeImpl(b);
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         ExtSSStatusImpl ssStatus = new ExtSSStatusImpl(false, false, true, true);
-        ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22228");
         ISDNSubaddressStringImpl forwardedToSubaddress = new ISDNSubaddressStringImpl(Unpooled.wrappedBuffer(this.getISDNSubaddressStringData()));
         ExtForwOptionsImpl forwardingOptions = new ExtForwOptionsImpl(true, false, true, ExtForwOptionsForwardingReason.msBusy);
         Integer noReplyConditionTime = 2;
         FTNAddressStringImpl longForwardedToNumber = new FTNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "22227");
+                NumberingPlanIndicator.ISDN, "22227");
 
         ExtForwFeatureImpl extForwFeature = new ExtForwFeatureImpl(basicService, ssStatus, forwardedToNumber,
                 forwardedToSubaddress, forwardingOptions, noReplyConditionTime, extensionContainer, longForwardedToNumber);

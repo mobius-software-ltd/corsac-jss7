@@ -30,7 +30,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
@@ -93,7 +93,7 @@ public class SendRoutingInfoForSMResponseTest {
         LocationInfoWithLMSI li = ind.getLocationInfoWithLMSI();
         ISDNAddressString nnn = li.getNetworkNodeNumber();
         assertEquals(nnn.getAddressNature(), AddressNature.international_number);
-        assertEquals(nnn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(nnn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(nnn.getAddress(), "12032100295");
         LMSI lmsi = li.getLMSI();
         assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 49 }), lmsi.getValue()));
@@ -110,13 +110,13 @@ public class SendRoutingInfoForSMResponseTest {
         li = ind.getLocationInfoWithLMSI();
         nnn = li.getNetworkNodeNumber();
         assertEquals(nnn.getAddressNature(), AddressNature.subscriber_number);
-        assertEquals(nnn.getNumberingPlan(), NumberingPlan.land_mobile);
+        assertEquals(nnn.getNumberingPlan(), NumberingPlanIndicator.land_mobile);
         assertEquals(nnn.getAddress(), "00001111");
         lmsi = li.getLMSI();
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(li.getExtensionContainer()));
         ISDNAddressString an = li.getAdditionalNumber().getSGSNNumber();
         assertEquals(an.getAddressNature(), AddressNature.national_significant_number);
-        assertEquals(an.getNumberingPlan(), NumberingPlan.land_mobile);
+        assertEquals(an.getNumberingPlan(), NumberingPlanIndicator.land_mobile);
         assertEquals(an.getAddress(), "99999999");
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
         assertNull(ind.getMwdSet());
@@ -132,7 +132,7 @@ public class SendRoutingInfoForSMResponseTest {
         li = ind.getLocationInfoWithLMSI();
         nnn = li.getNetworkNodeNumber();
         assertEquals(nnn.getAddressNature(), AddressNature.international_number);
-        assertEquals(nnn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(nnn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(nnn.getAddress(), "7999911111");
         assertNull(li.getLMSI());
         assertNull(li.getAdditionalNumber());
@@ -150,7 +150,7 @@ public class SendRoutingInfoForSMResponseTest {
         li = ind.getLocationInfoWithLMSI();
         nnn = li.getNetworkNodeNumber();
         assertEquals(nnn.getAddressNature(), AddressNature.international_number);
-        assertEquals(nnn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(nnn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(nnn.getAddress(), "7999911111");
         assertNull(li.getLMSI());
         assertNull(li.getAdditionalNumber());
@@ -167,7 +167,7 @@ public class SendRoutingInfoForSMResponseTest {
     	parser.replaceClass(SendRoutingInfoForSMResponseImpl.class);
                 
         IMSIImpl imsi = new IMSIImpl("200990200111227");
-        ISDNAddressStringImpl nnn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "12032100295");
+        ISDNAddressStringImpl nnn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "12032100295");
         LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 49 }));
 
         LocationInfoWithLMSIImpl li = new LocationInfoWithLMSIImpl(nnn, lmsi, null, false, null);
@@ -181,10 +181,10 @@ public class SendRoutingInfoForSMResponseTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         imsi = new IMSIImpl("11103222333111");
-        nnn = new ISDNAddressStringImpl(AddressNature.subscriber_number, NumberingPlan.land_mobile, "00001111");
+        nnn = new ISDNAddressStringImpl(AddressNature.subscriber_number, NumberingPlanIndicator.land_mobile, "00001111");
         lmsi = new LMSIImpl(Unpooled.wrappedBuffer(new byte[] { 0, 2, 1, 0 }));
         ISDNAddressStringImpl sgsnAdditionalNumber = new ISDNAddressStringImpl(AddressNature.national_significant_number,
-                NumberingPlan.land_mobile, "99999999");
+                NumberingPlanIndicator.land_mobile, "99999999");
         AdditionalNumberImpl additionalNumber = new AdditionalNumberImpl(null, sgsnAdditionalNumber);
         li = new LocationInfoWithLMSIImpl(nnn, lmsi, MAPExtensionContainerTest.GetTestExtensionContainer(), false, additionalNumber);
         ind = new SendRoutingInfoForSMResponseImpl(imsi, li, MAPExtensionContainerTest.GetTestExtensionContainer(), null, null);
@@ -197,7 +197,7 @@ public class SendRoutingInfoForSMResponseTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         imsi = new IMSIImpl("25001111111111");
-        nnn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "7999911111");
+        nnn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "7999911111");
         li = new LocationInfoWithLMSIImpl(nnn, null, null, false, null);
         ind = new SendRoutingInfoForSMResponseImpl(imsi, li, null, false, null);
 
@@ -209,7 +209,7 @@ public class SendRoutingInfoForSMResponseTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         imsi = new IMSIImpl("25001111111111");
-        nnn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "7999911111");
+        nnn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "7999911111");
         li = new LocationInfoWithLMSIImpl(nnn, null, null, false, null);
         IpSmGwGuidanceImpl ipSmGwGuidance = new IpSmGwGuidanceImpl(30, 40, null);
         ind = new SendRoutingInfoForSMResponseImpl(imsi, li, null, false, ipSmGwGuidance);

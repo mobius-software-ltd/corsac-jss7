@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
@@ -101,7 +101,7 @@ public class SendRoutingInfoForGprsRequestTest {
     	parser.replaceClass(SendRoutingInfoForGprsRequestImpl.class);
     	
         IMSIImpl imsi = new IMSIImpl("1111122222333");
-        ISDNAddressStringImpl ggsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "88880000");
+        ISDNAddressStringImpl ggsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "88880000");
         SendRoutingInfoForGprsRequestImpl impl = new SendRoutingInfoForGprsRequestImpl(imsi, null, ggsnNumber, null);
 
         ByteBuf buffer=parser.encode(impl);

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
@@ -92,7 +92,7 @@ public class RoutingInfoTest {
 
         assertNotNull(isdnAdd);
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
-        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(isdnAdd.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(isdnAdd.getAddress(), "79273605819");
 
         // :::::::::::::::::::::::::::::
@@ -107,7 +107,7 @@ public class RoutingInfoTest {
 
         assertNotNull(_isdnAdd);
         assertEquals(_isdnAdd.getAddressNature(), AddressNature.international_number);
-        assertEquals(_isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(_isdnAdd.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(_isdnAdd.getAddress(), "79273605819");
         assertNotNull(_forwardingOptions);
         assertTrue(!_forwardingOptions.isNotificationToForwardingParty());
@@ -123,7 +123,7 @@ public class RoutingInfoTest {
 
         // 4 = 00|0|00100, 7 = length
 
-        ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
         RoutingInfoImpl routeInfo = new RoutingInfoImpl(isdnAdd);
 
@@ -133,7 +133,7 @@ public class RoutingInfoTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // :::::::::::::::::::::::
-        ISDNAddressStringImpl _isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl _isdnAdd = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "79273605819");
         ForwardingDataImpl _forwardingData = null;
         ForwardingOptionsImpl _forwardingOptions = null;

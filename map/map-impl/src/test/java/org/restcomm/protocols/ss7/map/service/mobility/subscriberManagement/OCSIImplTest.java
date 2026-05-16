@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
@@ -78,7 +78,7 @@ public class OCSIImplTest {
         assertEquals(cd.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.routeSelectFailure);
         assertEquals(cd.getServiceKey(), 3);
         assertEquals(cd.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(cd.getGsmSCFAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(cd.getGsmSCFAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(cd.getGsmSCFAddress().getAddress().equals("1122333"));
         assertEquals(cd.getDefaultCallHandling(), DefaultCallHandling.releaseCall);
         assertNull(cd.getExtensionContainer());
@@ -100,7 +100,7 @@ public class OCSIImplTest {
         assertEquals(cd.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.routeSelectFailure);
         assertEquals(cd.getServiceKey(), 3);
         assertEquals(cd.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
-        assertEquals(cd.getGsmSCFAddress().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(cd.getGsmSCFAddress().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(cd.getGsmSCFAddress().getAddress().equals("1122333"));
         assertEquals(cd.getDefaultCallHandling(), DefaultCallHandling.releaseCall);
         assertNull(cd.getExtensionContainer());
@@ -116,7 +116,7 @@ public class OCSIImplTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(OCSIImpl.class);
     	
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "1122333");
         OBcsmCamelTDPDataImpl cind = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, 3, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);

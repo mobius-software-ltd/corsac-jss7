@@ -28,7 +28,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
@@ -78,7 +78,7 @@ public class SM_RP_DATest {
         
         AddressString nnm = da.getServiceCentreAddressDA();
         assertEquals(nnm.getAddressNature(), AddressNature.international_number);
-        assertEquals(nnm.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(nnm.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(nnm.getAddress(), "121359609600");
 
         rawData = getEncodedData_LMSI();
@@ -114,7 +114,7 @@ public class SM_RP_DATest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SM_RP_DAImpl.class);
         
-        AddressStringImpl astr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "121359609600");
+        AddressStringImpl astr = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "121359609600");
         SM_RP_DAImpl da = new SM_RP_DAImpl(astr);
         ByteBuf buffer=parser.encode(da);
         byte[] encodedData = new byte[buffer.readableBytes()];

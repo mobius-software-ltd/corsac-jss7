@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
@@ -140,7 +140,7 @@ public class ActivateTraceModeRequestTest {
         byte[] rawData = getEncodedData();
         assertArrayEquals(rawData, encodedData);
 
-        AddressStringImpl omcId = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1111133333");
+        AddressStringImpl omcId = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "1111133333");
         TraceReference2Impl traceReference2 = new TraceReference2Impl(Unpooled.wrappedBuffer(getTraceReference2Data()));
         TraceDepthListImpl traceDepthList = new TraceDepthListImpl(TraceDepth.maximum, TraceDepth.minimum, null, null, null, null, null, null, null, null);
         TraceNETypeListImpl traceNeTypeList = new TraceNETypeListImpl(false, false, false, true, false, false, false, false, false, false);

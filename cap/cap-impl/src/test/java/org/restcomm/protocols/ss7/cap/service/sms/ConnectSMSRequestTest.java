@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CalledPartyB
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CalledPartyBCDNumberImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.junit.Test;
@@ -92,11 +92,11 @@ public class ConnectSMSRequestTest {
     	parser.replaceClass(ConnectSMSRequestImpl.class);
     	
         SMSAddressStringImpl callingPartysNumber = new SMSAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "1234567891234567");
+                NumberingPlanIndicator.ISDN, "1234567891234567");
         CalledPartyBCDNumberImpl destinationSubscriberNumber = new CalledPartyBCDNumberImpl(
-                AddressNature.international_number, NumberingPlan.ISDN, "41788005047");
+                AddressNature.international_number, NumberingPlanIndicator.ISDN, "41788005047");
         ISDNAddressStringImpl smscAddress = new ISDNAddressStringImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "2207750008");
+                NumberingPlanIndicator.ISDN, "2207750008");
         CAPINAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
 
         ConnectSMSRequestImpl prim = new ConnectSMSRequestImpl(callingPartysNumber, destinationSubscriberNumber,

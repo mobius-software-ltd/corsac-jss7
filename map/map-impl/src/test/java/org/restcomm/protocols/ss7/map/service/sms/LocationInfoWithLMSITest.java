@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
@@ -73,7 +73,7 @@ public class LocationInfoWithLMSITest {
         
         ISDNAddressString nnm = liw.getNetworkNodeNumber();
         assertEquals(nnm.getAddressNature(), AddressNature.international_number);
-        assertEquals(nnm.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(nnm.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(nnm.getAddress(), "79033700222");
         assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 49 }), liw.getLMSI().getValue()));
         assertFalse(liw.getGprsNodeIndicator());
@@ -87,13 +87,13 @@ public class LocationInfoWithLMSITest {
 
         nnm = liw.getNetworkNodeNumber();
         assertEquals(nnm.getAddressNature(), AddressNature.national_significant_number);
-        assertEquals(nnm.getNumberingPlan(), NumberingPlan.national);
+        assertEquals(nnm.getNumberingPlan(), NumberingPlanIndicator.national);
         assertEquals(nnm.getAddress(), "1234567890");
         assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(new byte[] { 4, 3, 2, 1 }), liw.getLMSI().getValue()));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(liw.getExtensionContainer()));
         nnm = liw.getAdditionalNumber().getSGSNNumber();
         assertEquals(nnm.getAddressNature(), AddressNature.network_specific_number);
-        assertEquals(nnm.getNumberingPlan(), NumberingPlan.private_plan);
+        assertEquals(nnm.getNumberingPlan(), NumberingPlanIndicator.private_plan);
         assertEquals(nnm.getAddress(), "987654321");
         assertTrue(liw.getGprsNodeIndicator());
     }
@@ -103,7 +103,7 @@ public class LocationInfoWithLMSITest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LocationInfoWithLMSIImpl.class);
     	                
-        ISDNAddressStringImpl nnm = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79033700222");
+        ISDNAddressStringImpl nnm = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "79033700222");
         LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 49 }));
         LocationInfoWithLMSIImpl liw = new LocationInfoWithLMSIImpl(nnm, lmsi, null, false, null);
 
@@ -113,8 +113,8 @@ public class LocationInfoWithLMSITest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        nnm = new ISDNAddressStringImpl(AddressNature.national_significant_number, NumberingPlan.national, "1234567890");
-        ISDNAddressStringImpl sgsnAn = new ISDNAddressStringImpl(AddressNature.network_specific_number, NumberingPlan.private_plan,
+        nnm = new ISDNAddressStringImpl(AddressNature.national_significant_number, NumberingPlanIndicator.national, "1234567890");
+        ISDNAddressStringImpl sgsnAn = new ISDNAddressStringImpl(AddressNature.network_specific_number, NumberingPlanIndicator.private_plan,
                 "987654321");
         lmsi = new LMSIImpl(Unpooled.wrappedBuffer(new byte[] { 4, 3, 2, 1 }));
         AdditionalNumberImpl an = new AdditionalNumberImpl(null, sgsnAn);

@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressString;
@@ -81,14 +81,14 @@ public class CallForwardingDataTest {
         assertNull(extForwFeature.getExtensionContainer());
         assertEquals(extForwFeature.getNoReplyConditionTime().intValue(), 5);
         assertEquals(forwardedToNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(forwardedToNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(forwardedToNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(forwardedToNumber.getAddress(), "987654321");
         assertFalse(extSSStatus.getBitQ());
         assertTrue(extSSStatus.getBitP());
         assertFalse(extSSStatus.getBitR());
         assertTrue(extSSStatus.getBitA());
         assertEquals(longForwardedToNumber.getAddressNature(), AddressNature.international_number);
-        assertEquals(longForwardedToNumber.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(longForwardedToNumber.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(longForwardedToNumber.getAddress(), "12345");
     }
 
@@ -97,8 +97,8 @@ public class CallForwardingDataTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CallForwardingDataImpl.class);
     	        
-        ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "987654321");
-        FTNAddressStringImpl longForwardedToNumber = new FTNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "12345");
+        ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "987654321");
+        FTNAddressStringImpl longForwardedToNumber = new FTNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "12345");
         final ExtForwFeatureImpl extForwFeature = new ExtForwFeatureImpl(null, new ExtSSStatusImpl(false, true, false, true), forwardedToNumber, null,
                 null, 5, null, longForwardedToNumber);
         

@@ -31,7 +31,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultGPRSHandling;
@@ -103,7 +103,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         ISDNAddressString gsmSCFAddress = gprsCamelTDPData.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22228"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         assertEquals(gprsCamelTDPData.getDefaultSessionHandling(), DefaultGPRSHandling.releaseTransaction);
         assertEquals(gprsCamelTDPData.getGPRSTriggerDetectionPoint(), GPRSTriggerDetectionPoint.attachChangeOfPosition);
@@ -131,7 +131,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         ISDNAddressString gsmSCFAddressMoSmsCsi = one.getGsmSCFAddress();
         assertTrue(gsmSCFAddressMoSmsCsi.getAddress().equals("22228"));
         assertEquals(gsmSCFAddressMoSmsCsi.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddressMoSmsCsi.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddressMoSmsCsi.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(one.getDefaultSMSHandling(), DefaultSMSHandling.continueTransaction);
         assertNotNull(one.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(one.getExtensionContainer()));
@@ -154,7 +154,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         ISDNAddressString gsmSCFAddressmtSmsCsi = one.getGsmSCFAddress();
         assertTrue(gsmSCFAddressmtSmsCsi.getAddress().equals("22228"));
         assertEquals(gsmSCFAddressmtSmsCsi.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddressmtSmsCsi.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddressmtSmsCsi.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(one.getDefaultSMSHandling(), DefaultSMSHandling.continueTransaction);
         assertNotNull(one.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(one.getExtensionContainer()));
@@ -201,7 +201,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         ISDNAddressString gsmSCFAddressMgCsi = mgCsi.getGsmSCFAddress();
         assertTrue(gsmSCFAddressMgCsi.getAddress().equals("22228"));
         assertEquals(gsmSCFAddressMgCsi.getAddressNature(), AddressNature.international_number);
-        assertEquals(gsmSCFAddressMgCsi.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(gsmSCFAddressMgCsi.getNumberingPlan(), NumberingPlanIndicator.ISDN);
 
         assertNotNull(mgCsi.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(mgCsi.getExtensionContainer()));
@@ -224,7 +224,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         // start gprsCsi
         GPRSTriggerDetectionPoint gprsTriggerDetectionPoint = GPRSTriggerDetectionPoint.attachChangeOfPosition;
         int serviceKey = 2;
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "22228");
         DefaultGPRSHandling defaultSessionHandling = DefaultGPRSHandling.releaseTransaction;
 

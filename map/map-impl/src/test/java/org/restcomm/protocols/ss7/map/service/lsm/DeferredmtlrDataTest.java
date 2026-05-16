@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
@@ -100,7 +100,7 @@ public class DeferredmtlrDataTest {
     	parser.replaceClass(DeferredmtlrDataImpl.class);
     	
         DeferredLocationEventTypeImpl deferredLocationEventType = new DeferredLocationEventTypeImpl(false, true, false, true);
-        ISDNAddressStringImpl networkNodeNumber = new ISDNAddressStringImpl(AddressNature.international_number,NumberingPlan.ISDN, "330044005500");
+        ISDNAddressStringImpl networkNodeNumber = new ISDNAddressStringImpl(AddressNature.international_number,NumberingPlanIndicator.ISDN, "330044005500");
         LCSLocationInfoImpl lcsLocationInfo = new LCSLocationInfoImpl(networkNodeNumber, null, null, false, null, null, null,null, null);
         DeferredmtlrDataImpl imp = new DeferredmtlrDataImpl(deferredLocationEventType, TerminationCause.mtlrRestart,lcsLocationInfo);
         

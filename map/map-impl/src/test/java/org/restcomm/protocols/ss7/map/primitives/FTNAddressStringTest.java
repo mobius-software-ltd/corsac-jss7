@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -60,7 +60,7 @@ public class FTNAddressStringTest {
         FTNAddressStringImpl addrStr = (FTNAddressStringImpl)result.getResult();
         
         assertEquals(addrStr.getAddressNature(), AddressNature.network_specific_number);
-        assertEquals(addrStr.getNumberingPlan(), NumberingPlan.national);
+        assertEquals(addrStr.getNumberingPlan(), NumberingPlanIndicator.national);
         assertEquals(addrStr.getAddress(), "1234567890");
     }
 
@@ -69,7 +69,7 @@ public class FTNAddressStringTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FTNAddressStringImpl.class);
         
-        FTNAddressStringImpl addrStr = new FTNAddressStringImpl(AddressNature.network_specific_number, NumberingPlan.national, "1234567890");
+        FTNAddressStringImpl addrStr = new FTNAddressStringImpl(AddressNature.network_specific_number, NumberingPlanIndicator.national, "1234567890");
         ByteBuf buffer=parser.encode(addrStr);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);

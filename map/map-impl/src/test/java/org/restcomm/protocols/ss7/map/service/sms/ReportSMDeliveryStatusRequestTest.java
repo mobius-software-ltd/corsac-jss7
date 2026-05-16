@@ -29,7 +29,7 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
@@ -77,11 +77,11 @@ public class ReportSMDeliveryStatusRequestTest {
         
         ISDNAddressString msisdn = ind.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "7222333111");
         AddressString sca = ind.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.international_number);
-        assertEquals(sca.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(sca.getAddress(), "100937453");
         assertEquals(ind.getSMDeliveryOutcome(), SMDeliveryOutcome.absentSubscriber);
 
@@ -93,11 +93,11 @@ public class ReportSMDeliveryStatusRequestTest {
 
         msisdn = ind.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.network_specific_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.national);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.national);
         assertEquals(msisdn.getAddress(), "111222333");
         sca = ind.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.international_number);
-        assertEquals(sca.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(sca.getAddress(), "333222111");
         assertEquals(ind.getSMDeliveryOutcome(), SMDeliveryOutcome.successfulTransfer);
         assertEquals((int) ind.getAbsentSubscriberDiagnosticSM(), 444);
@@ -115,11 +115,11 @@ public class ReportSMDeliveryStatusRequestTest {
 
         msisdn = ind.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-        assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(msisdn.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(msisdn.getAddress(), "7222333111");
         sca = ind.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.international_number);
-        assertEquals(sca.getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(sca.getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertEquals(sca.getAddress(), "100937453");
         assertNull(ind.getSMDeliveryOutcome());
     }
@@ -129,9 +129,9 @@ public class ReportSMDeliveryStatusRequestTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ReportSMDeliveryStatusRequestImpl.class);
                 
-        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "7222333111");
-        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "100937453");
+        AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "100937453");
         ReportSMDeliveryStatusRequestImpl ind = new ReportSMDeliveryStatusRequestImpl(msisdn, sca,
                 SMDeliveryOutcome.absentSubscriber, null, null, false, false, null, null);
 
@@ -151,8 +151,8 @@ public class ReportSMDeliveryStatusRequestTest {
         rawData = getEncodedData_V1();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        msisdn = new ISDNAddressStringImpl(AddressNature.network_specific_number, NumberingPlan.national, "111222333");
-        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "333222111");
+        msisdn = new ISDNAddressStringImpl(AddressNature.network_specific_number, NumberingPlanIndicator.national, "111222333");
+        sca = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "333222111");
         ind = new ReportSMDeliveryStatusRequestImpl(msisdn, sca, SMDeliveryOutcome.successfulTransfer, 444, MAPExtensionContainerTest.GetTestExtensionContainer(), true, false, SMDeliveryOutcome.memoryCapacityExceeded, 555);
 
         buffer=parser.encode(ind);

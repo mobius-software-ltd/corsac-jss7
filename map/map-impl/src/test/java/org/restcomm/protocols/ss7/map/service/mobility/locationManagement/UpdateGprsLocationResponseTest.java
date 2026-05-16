@@ -27,7 +27,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.junit.Test;
@@ -68,7 +68,7 @@ public class UpdateGprsLocationResponseTest {
         
         assertTrue(prim.getHlrNumber().getAddress().equals("22228"));
         assertEquals(prim.getHlrNumber().getAddressNature(), AddressNature.international_number);
-        assertEquals(prim.getHlrNumber().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(prim.getHlrNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
         assertTrue(prim.getAddCapability());
         assertTrue(prim.getSgsnMmeSeparationSupported());
@@ -80,7 +80,7 @@ public class UpdateGprsLocationResponseTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(UpdateGprsLocationResponseImpl.class);
     	
-    	ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22228");
+    	ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "22228");
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         UpdateGprsLocationResponseImpl prim = new UpdateGprsLocationResponseImpl(hlrNumber, extensionContainer, true, true);

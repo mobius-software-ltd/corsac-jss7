@@ -21,7 +21,7 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 
 /**
 *
@@ -40,11 +40,11 @@ public class ISDNAddressStringImpl extends AddressStringImpl implements ISDNAddr
 		super(9);
     }
 
-	public ISDNAddressStringImpl(AddressNature addressNature, NumberingPlan numberingPlan, String address) {
+	public ISDNAddressStringImpl(AddressNature addressNature, NumberingPlanIndicator numberingPlan, String address) {
         super(9,addressNature, numberingPlan, address);
     }
 
-    public ISDNAddressStringImpl(boolean extension, AddressNature addressNature, NumberingPlan numberingPlan, String address) {
+    public ISDNAddressStringImpl(boolean extension, AddressNature addressNature, NumberingPlanIndicator numberingPlan, String address) {
         super(9,extension, addressNature, numberingPlan, address);
     }
 

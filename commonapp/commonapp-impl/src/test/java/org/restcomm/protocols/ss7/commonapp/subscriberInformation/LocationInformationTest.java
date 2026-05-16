@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CSGId;
 import org.restcomm.protocols.ss7.commonapp.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
@@ -97,7 +97,7 @@ public class LocationInformationTest {
                 .getCellIdOrServiceAreaCode(), 2212);
         assertEquals(impl.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getLac(), 111);
         assertEquals(impl.getVlrNumber().getAddressNature(), AddressNature.international_number);
-        assertEquals(impl.getVlrNumber().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(impl.getVlrNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(impl.getVlrNumber().getAddress().equals("000222111"));
 
         rawData = getEncodedData2();
@@ -113,7 +113,7 @@ public class LocationInformationTest {
                 .getCellIdOrServiceAreaCode(), 2212);
         assertEquals(impl.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength().getLac(), 111);
         assertEquals(impl.getVlrNumber().getAddressNature(), AddressNature.international_number);
-        assertEquals(impl.getVlrNumber().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(impl.getVlrNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(impl.getVlrNumber().getAddress().equals("000222111"));
         LocationNumber ln = impl.getLocationNumber().getLocationNumber();
         assertEquals(ln.getNatureOfAddressIndicator(), 4);
@@ -134,7 +134,7 @@ public class LocationInformationTest {
         assertEquals((int) impl.getAgeOfLocationInformation(), 3);
         assertTrue(ByteBufUtil.equals(impl.getGeographicalInformation().getValue(), Unpooled.wrappedBuffer(getDataGeographicalInformation())));
         assertEquals(impl.getVlrNumber().getAddressNature(), AddressNature.international_number);
-        assertEquals(impl.getVlrNumber().getNumberingPlan(), NumberingPlan.ISDN);
+        assertEquals(impl.getVlrNumber().getNumberingPlan(), NumberingPlanIndicator.ISDN);
         assertTrue(impl.getVlrNumber().getAddress().equals("000222111"));
         ln = impl.getLocationNumber().getLocationNumber();
         assertEquals(ln.getNatureOfAddressIndicator(), 4);
@@ -167,7 +167,7 @@ public class LocationInformationTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LocationInformationImpl.class);
     	        
-        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "000222111");
         CellGlobalIdOrServiceAreaIdFixedLengthImpl cellGlobalIdOrServiceAreaIdFixedLength = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(
                 250, 1, 111, 2212);
@@ -181,7 +181,7 @@ public class LocationInformationTest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "000222111");
+        vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN, "000222111");
         cellGlobalIdOrServiceAreaIdFixedLength = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(250, 1, 111, 2212);
         cellGlobalIdOrServiceAreaIdOrLAI = new CellGlobalIdOrServiceAreaIdOrLAIImpl(cellGlobalIdOrServiceAreaIdFixedLength);
         LocationNumberMapImpl locationNumber = new LocationNumberMapImpl(new LocationNumberImpl(Unpooled.wrappedBuffer(new byte[] { (byte) 132, (byte) 151, 8, 2, (byte) 151,
@@ -198,7 +198,7 @@ public class LocationInformationTest {
         GeographicalInformationImpl ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
         
         LSAIdentityImpl selectedLSAId = new LSAIdentityImpl(Unpooled.wrappedBuffer(getDataLSAIdentity()));
-        ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
+        ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.ISDN,
                 "888222666");
         
         ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(getDataGeodeticInformation());

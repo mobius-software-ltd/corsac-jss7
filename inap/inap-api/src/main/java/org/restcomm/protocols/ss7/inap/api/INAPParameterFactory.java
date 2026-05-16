@@ -109,7 +109,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoDpAssignment;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeodeticInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
@@ -283,7 +283,7 @@ public interface INAPParameterFactory {
     BCSMEvent createBCSMEvent(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegID legID,
             DpSpecificCriteria dpSpecificCriteria, boolean automaticRearm);
 
-    CalledPartyBCDNumber createCalledPartyBCDNumber(AddressNature addressNature, NumberingPlan numberingPlan,
+    CalledPartyBCDNumber createCalledPartyBCDNumber(AddressNature addressNature, NumberingPlanIndicator numberingPlan,
             String address) throws INAPException;
 
     ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructed);
@@ -520,8 +520,8 @@ public interface INAPParameterFactory {
     
     MiscCallInfo createMiscCallInfo(MiscCallInfoMessageType messageType, MiscCallInfoDpAssignment dpAssignment);
     
-    ISDNAddressString createISDNAddressString(AddressNature addNature, NumberingPlan numPlan, String address);
-    ISDNAddressString createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address);
+    ISDNAddressString createISDNAddressString(AddressNature addNature, NumberingPlanIndicator numPlan, String address);
+    ISDNAddressString createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlanIndicator numPlan, String address);
     SupportedCamelPhases createSupportedCamelPhases(boolean phase1, boolean phase2, boolean phase3, boolean phase4);
 
     /**

@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlanIndicator;
 import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -60,7 +60,7 @@ public class AddressStringTest {
         
         assertFalse(addStr.isExtension());
         assertEquals(addStr.getAddressNature(), AddressNature.international_number);
-        assertEquals(addStr.getNumberingPlan(), NumberingPlan.land_mobile);
+        assertEquals(addStr.getNumberingPlan(), NumberingPlanIndicator.land_mobile);
         assertEquals(addStr.getAddress(), "204208300008002");
 
 
@@ -72,13 +72,13 @@ public class AddressStringTest {
         
         assertFalse(addStr.isExtension());
         assertEquals(addStr.getAddressNature(), AddressNature.international_number);
-        assertEquals(addStr.getNumberingPlan(), NumberingPlan.land_mobile);
+        assertEquals(addStr.getNumberingPlan(), NumberingPlanIndicator.land_mobile);
         assertEquals(addStr.getAddress(), "123cc45");
     }
 
     @Test
     public void testEncode() throws Exception {
-        AddressStringImpl addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.land_mobile,
+        AddressStringImpl addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.land_mobile,
                 "204208300008002");
         ASNParser parser=new ASNParser(true);
     	parser.replaceClass(AddressStringImpl.class);
@@ -88,13 +88,13 @@ public class AddressStringTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.land_mobile, "123cc45");
+        addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.land_mobile, "123cc45");
         buffer=parser.encode(addStr);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData2, encodedData));
 
-        addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlan.land_mobile, "123CC45");
+        addStr = new AddressStringImpl(AddressNature.international_number, NumberingPlanIndicator.land_mobile, "123CC45");
         buffer=parser.encode(addStr);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
