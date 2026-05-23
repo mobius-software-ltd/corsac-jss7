@@ -24,6 +24,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapabi
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardCallIndicatorsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
@@ -38,6 +39,7 @@ import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BearerCapability
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CallingPartysCategoryIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.ForwardCallIndicatorsIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.ForwardGVNSIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.HighLayerCompatibilityIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
@@ -64,8 +66,6 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.Gener
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ISDNAccessRelatedInformationImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.RouteListImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceInteractionIndicatorsImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.ForwardCallIndicatorsImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -107,8 +107,8 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
 	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 8,constructed = false,index = -1, defaultImplementation = CUGInterLockCodeImpl.class)
 	private CUGInterLockCode cugInterLockCode;
     
-	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 9,constructed = false,index = -1, defaultImplementation = ForwardCallIndicatorsImpl.class)
-    private ForwardCallIndicators forwardCallIndicators;
+	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 9,constructed = false,index = -1, defaultImplementation = ForwardCallIndicatorsIsupImpl.class)
+    private ForwardCallIndicatorsIsup forwardCallIndicators;
 
     @ASNProperty(asnClass = ASNClass.PRIVATE,tag = 10,constructed = true,index = -1, defaultImplementation = GenericDigitsSetImpl.class)
 	private GenericDigitsSet genericDigitsSet;
@@ -151,7 +151,7 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
 
     public InitiateCallAttemptRequestImpl(OriginalCalledNumberIsup originalCalledPartyID,LegType legToBeCreated,CallingPartysCategoryIsup callingPartysCategory,
     		RedirectingPartyIDIsup redirectingPartyID,RedirectionInformationIsup redirectionInformation,BearerCapability bearerCapability,
-    		CUGCallIndicator cugCallIndicator,CUGInterLockCode cugInterLockCode,ForwardCallIndicators forwardCallIndicators,
+    		CUGCallIndicator cugCallIndicator,CUGInterLockCode cugInterLockCode,ForwardCallIndicatorsIsup forwardCallIndicators,
     		GenericDigitsSet genericDigitsSet,GenericNumbersSet genericNumberSet,HighLayerCompatibilityIsup highLayerCompatibility,
     		ForwardGVNSIsup forwardGVNSIndicator,DestinationRoutingAddress destinationRoutingAddress,AlertingPattern alertingPattern,
     		CAPINAPExtensions extensions, ServiceInteractionIndicators serviceInteractionIndicators, CallingPartyNumberIsup callingPartyNumber, RouteList routeList) {
@@ -249,7 +249,7 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
 	}
 
     @Override
-    public ForwardCallIndicators getForwardCallIndicators() {
+    public ForwardCallIndicatorsIsup getForwardCallIndicators() {
 		return forwardCallIndicators;
 	}
 

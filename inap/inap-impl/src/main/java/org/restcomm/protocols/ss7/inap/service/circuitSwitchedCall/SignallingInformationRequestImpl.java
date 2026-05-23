@@ -19,19 +19,19 @@
 
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
+import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.isup.BackwardGVNSIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.SignallingInformationRequest;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicators;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicatorsImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicatorsmpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.BackwardGVNSImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -55,8 +55,8 @@ public class SignallingInformationRequestImpl extends CircuitSwitchedCallMessage
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1, defaultImplementation = ForwardSuppressionIndicatorsmpl.class)
     private ForwardSuppressionIndicators forwardSuppressionIndicators;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1, defaultImplementation = BackwardGVNSImpl.class)
-	private BackwardGVNS backwardGVNSIndicator;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1, defaultImplementation = BackwardGVNSIsupImpl.class)
+	private BackwardGVNSIsup backwardGVNSIndicator;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1, defaultImplementation = CAPINAPExtensionsImpl.class)
     private CAPINAPExtensions extensions;
@@ -68,7 +68,7 @@ public class SignallingInformationRequestImpl extends CircuitSwitchedCallMessage
     }
 
     public SignallingInformationRequestImpl(BackwardSuppressionIndicators backwardSuppressionIndicators, CalledPartyNumberIsup connectedNumber,
-    		ForwardSuppressionIndicators forwardSuppressionIndicators,BackwardGVNS backwardGVNSIndicator,
+    		ForwardSuppressionIndicators forwardSuppressionIndicators,BackwardGVNSIsup backwardGVNSIndicator,
     		CAPINAPExtensions extensions) {
     	
     	this.backwardSuppressionIndicators=backwardSuppressionIndicators;
@@ -104,7 +104,7 @@ public class SignallingInformationRequestImpl extends CircuitSwitchedCallMessage
 	}
 
     @Override
-    public BackwardGVNS getBackwardGVNSIndicator() {
+    public BackwardGVNSIsup getBackwardGVNSIndicator() {
 		return backwardGVNSIndicator;
 	}
 

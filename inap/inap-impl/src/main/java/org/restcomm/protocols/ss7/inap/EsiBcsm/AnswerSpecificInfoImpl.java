@@ -20,10 +20,10 @@
 package org.restcomm.protocols.ss7.inap.EsiBcsm;
 
 import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardCallIndicatorsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.isup.BackwardCallIndicatorsIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.BackwardGVNSIsupImpl;
 import org.restcomm.protocols.ss7.inap.api.EsiBcsm.AnswerSpecificInfo;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNSIndicator;
-import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.BackwardGVNSIndicatorImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -43,13 +43,13 @@ public class AnswerSpecificInfoImpl implements AnswerSpecificInfo {
 	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 2,constructed = false,index = -1, defaultImplementation = BackwardCallIndicatorsIsupImpl.class)
     private BackwardCallIndicatorsIsup backwardCallIndicators;
     
-	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 3,constructed = false,index = -1, defaultImplementation = BackwardGVNSIndicatorImpl.class)
-    private BackwardGVNSIndicator backwardGVNSIndicator;
+	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 3,constructed = false,index = -1, defaultImplementation = BackwardGVNSIsupImpl.class)
+    private BackwardGVNSIsup backwardGVNSIndicator;
     
     public AnswerSpecificInfoImpl() {
     }
 
-    public AnswerSpecificInfoImpl(Integer timeToAnswer,BackwardCallIndicatorsIsup backwardCallIndicators,BackwardGVNSIndicator backwardGVNSIndicator) {
+    public AnswerSpecificInfoImpl(Integer timeToAnswer,BackwardCallIndicatorsIsup backwardCallIndicators,BackwardGVNSIsup backwardGVNSIndicator) {
     	if(timeToAnswer!=null)
         	this.timeToAnswer = new ASNInteger(timeToAnswer,"TimeToAnswer",0,2047,false);
         	
@@ -61,7 +61,7 @@ public class AnswerSpecificInfoImpl implements AnswerSpecificInfo {
         return backwardCallIndicators;
     }
 
-    public BackwardGVNSIndicator getBackwardGVNSIndicator() {
+    public BackwardGVNSIsup getBackwardGVNSIndicator() {
         return backwardGVNSIndicator;
     }
 

@@ -22,11 +22,13 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardCallIndicatorsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
@@ -38,7 +40,6 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.HandOverRequest;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericDigitsSet;
@@ -48,7 +49,6 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.L
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.RouteOrigin;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.TriggerType;
-import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 
 /**
  *
@@ -77,11 +77,11 @@ public class HandOverRequestImpl extends InitialDPRequestImpl implements
             CGEncountered cgEncountered, IPSSPCapabilities ipsspCapabilities,LocationNumberIsup locationNumber,
             OriginalCalledNumberIsup originalCalledPartyID,CAPINAPExtensions extensions,TriggerType triggerType,
             HighLayerCompatibilityIsup highLayerCompatibility,ServiceInteractionIndicators serviceInteractionIndicators, 
-            DigitsIsup additionalCallingPartyNumber,ForwardCallIndicators forwardCallIndicators,BearerCapability bearerCapability, 
+            DigitsIsup additionalCallingPartyNumber,ForwardCallIndicatorsIsup forwardCallIndicators,BearerCapability bearerCapability, 
             EventTypeBCSM eventTypeBCSM,  RedirectingPartyIDIsup redirectingPartyID,RedirectionInformationIsup redirectionInformation,
             LegIDs legIDs,RouteOrigin routeOrigin,boolean testIndication,CUGCallIndicator cugCallIndicator,
             CUGInterLockCode cugInterLockCode,GenericDigitsSet genericDigitsSet,GenericNumbersSet genericNumberSet,
-            CauseIsup cause,HandOverInfo handOverInfo,ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNS backwardGVNSIndicator) {
+            CauseIsup cause,HandOverInfo handOverInfo,ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNSIsup backwardGVNSIndicator) {
     	super(serviceKey, calledPartyNumber, callingPartyNumber, callingPartysCategory, cgEncountered, ipsspCapabilities, locationNumber, originalCalledPartyID, extensions, triggerType, highLayerCompatibility, serviceInteractionIndicators, additionalCallingPartyNumber, forwardCallIndicators, bearerCapability, eventTypeBCSM, redirectingPartyID, redirectionInformation, legIDs, routeOrigin, testIndication, cugCallIndicator, cugInterLockCode, genericDigitsSet, genericNumberSet, cause, handOverInfo, forwardGVNSIndicator, backwardGVNSIndicator);
     }
     

@@ -69,6 +69,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePart
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartPrice;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartTime;
 import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardCallIndicatorsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.BearerIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
@@ -658,7 +659,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 
 	@Override
 	public AnswerSpecificInfo createAnswerSpecificInfo(Integer timeToAnswer,
-			BackwardCallIndicatorsIsup backwardCallIndicators, BackwardGVNSIndicator backwardGVNSIndicator) {
+			BackwardCallIndicatorsIsup backwardCallIndicators, BackwardGVNSIsup backwardGVNSIndicator) {
 		return new AnswerSpecificInfoImpl(timeToAnswer, backwardCallIndicators, backwardGVNSIndicator);
 	}
 

@@ -22,11 +22,13 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardCallIndicatorsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
@@ -39,11 +41,13 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ASNCGEncountered;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BearerCapabilityWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.BackwardGVNSIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CallingPartysCategoryIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.ForwardCallIndicatorsIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.ForwardGVNSIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.HighLayerCompatibilityIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
@@ -57,7 +61,6 @@ import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.InitialDPRequest;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericDigitsSet;
@@ -85,9 +88,6 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Ca
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.IPAvailableImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceInteractionIndicatorsImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceProfileIdentifierImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.BackwardGVNSImpl;
-import org.restcomm.protocols.ss7.isup.impl.message.parameter.ForwardCallIndicatorsImpl;
-import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -164,8 +164,8 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 25,constructed = false,index = -1, defaultImplementation = DigitsIsupImpl.class)
     private DigitsIsup additionalCallingPartyNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 26,constructed = false,index = -1, defaultImplementation = ForwardCallIndicatorsImpl.class)
-    private ForwardCallIndicators forwardCallIndicators;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 26,constructed = false,index = -1, defaultImplementation = ForwardCallIndicatorsIsupImpl.class)
+    private ForwardCallIndicatorsIsup forwardCallIndicators;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 27,constructed = true,index = -1)
     private BearerCapabilityWrapperImpl bearerCapability;
@@ -209,8 +209,8 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 10,constructed = false,index = -1, defaultImplementation = ForwardGVNSIsupImpl.class)
 	private ForwardGVNSIsup forwardGVNSIndicator;
     
-	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 10,constructed = false,index = -1, defaultImplementation = BackwardGVNSImpl.class)
-	private BackwardGVNS backwardGVNSIndicator;
+	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 10,constructed = false,index = -1, defaultImplementation = BackwardGVNSIsupImpl.class)
+	private BackwardGVNSIsup backwardGVNSIndicator;
     
 	/**
      * This constructor is only for deserialisation purpose
@@ -223,11 +223,11 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             CGEncountered cgEncountered, IPSSPCapabilities ipsspCapabilities,LocationNumberIsup locationNumber,
             OriginalCalledNumberIsup originalCalledPartyID,CAPINAPExtensions extensions,TriggerType triggerType,
             HighLayerCompatibilityIsup highLayerCompatibility,ServiceInteractionIndicators serviceInteractionIndicators, 
-            DigitsIsup additionalCallingPartyNumber,ForwardCallIndicators forwardCallIndicators,BearerCapability bearerCapability, 
+            DigitsIsup additionalCallingPartyNumber,ForwardCallIndicatorsIsup forwardCallIndicators,BearerCapability bearerCapability, 
             EventTypeBCSM eventTypeBCSM,  RedirectingPartyIDIsup redirectingPartyID,RedirectionInformationIsup redirectionInformation,
             LegIDs legIDs,RouteOrigin routeOrigin,boolean testIndication,CUGCallIndicator cugCallIndicator,
             CUGInterLockCode cugInterLockCode,GenericDigitsSet genericDigitsSet,GenericNumbersSet genericNumberSet,
-            CauseIsup cause,HandOverInfo handOverInfo,ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNS backwardGVNSIndicator) {
+            CauseIsup cause,HandOverInfo handOverInfo,ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNSIsup backwardGVNSIndicator) {
     	this(serviceKey, callingPartyNumber, calledPartyNumber, callingPartyNumber, null, callingPartysCategory, 
     			null, cgEncountered, ipsspCapabilities, null, locationNumber, null, originalCalledPartyID, null, null, 
     			extensions, triggerType, highLayerCompatibility, serviceInteractionIndicators, additionalCallingPartyNumber, 
@@ -256,7 +256,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             LocationNumberIsup locationNumber,MiscCallInfo miscCallInfo, OriginalCalledNumberIsup originalCalledPartyID, 
             ServiceProfileIdentifier serviceProfileIdentifier,TerminalType terminalType,CAPINAPExtensions extensions,
             TriggerType triggerType,HighLayerCompatibilityIsup highLayerCompatibility,ServiceInteractionIndicators serviceInteractionIndicators, 
-            DigitsIsup additionalCallingPartyNumber,ForwardCallIndicators forwardCallIndicators,BearerCapability bearerCapability, 
+            DigitsIsup additionalCallingPartyNumber,ForwardCallIndicatorsIsup forwardCallIndicators,BearerCapability bearerCapability, 
             EventTypeBCSM eventTypeBCSM, RedirectingPartyIDIsup redirectingPartyID,RedirectionInformationIsup redirectionInformation) {
         
     	this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
@@ -426,7 +426,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public ForwardCallIndicators getForwardCallIndicators() {
+    public ForwardCallIndicatorsIsup getForwardCallIndicators() {
     	return forwardCallIndicators;
     }
 
@@ -507,7 +507,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 	}
 
 	@Override
-    public BackwardGVNS getBackwardGVNSIndicator() {
+    public BackwardGVNSIsup getBackwardGVNSIndicator() {
 		return backwardGVNSIndicator;
 	}
 

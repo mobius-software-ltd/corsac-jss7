@@ -224,6 +224,11 @@ public abstract class TbcdStringImpl {
         }
     }
 
+    public String getData()
+    {
+    	return data;
+    }
+    
     @Override
     public String toString() {
         return _PrimitiveName + " [" + this.data + "]";

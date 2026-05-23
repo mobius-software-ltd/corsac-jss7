@@ -23,6 +23,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapabi
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardCallIndicatorsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
@@ -39,7 +40,6 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.G
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 
 /**
  *
@@ -125,7 +125,7 @@ public interface InitiateCallAttemptRequest extends CircuitSwitchedCallMessage {
     
     CUGInterLockCode getCUGInterLockCode();
     
-    ForwardCallIndicators getForwardCallIndicators();
+    ForwardCallIndicatorsIsup getForwardCallIndicators();
     
     GenericDigitsSet getGenericDigitsSet();
     

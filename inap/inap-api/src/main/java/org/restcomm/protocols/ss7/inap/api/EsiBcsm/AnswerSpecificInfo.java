@@ -20,7 +20,7 @@
 package org.restcomm.protocols.ss7.inap.api.EsiBcsm;
 
 import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardCallIndicatorsIsup;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNSIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardGVNSIsup;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -63,5 +63,5 @@ public interface AnswerSpecificInfo {
 
     BackwardCallIndicatorsIsup getBackwardCallIndicators();
 
-    BackwardGVNSIndicator getBackwardGVNSIndicator();
+    BackwardGVNSIsup getBackwardGVNSIndicator();
 }
