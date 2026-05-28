@@ -112,7 +112,6 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceProfileIdentifier;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.TriggerType;
-import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 
 import io.netty.buffer.ByteBuf;
 
