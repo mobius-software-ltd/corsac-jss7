@@ -62,7 +62,7 @@ public class AddressStringImpl implements AddressString  {
     protected String address;
 
     private boolean isExtension;
-    private Integer maxLength;
+    private final Integer maxLength;
     
     public AddressStringImpl() {
     	this.maxLength=19;
