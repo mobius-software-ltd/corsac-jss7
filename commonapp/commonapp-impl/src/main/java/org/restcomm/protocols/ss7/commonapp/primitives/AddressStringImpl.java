@@ -53,9 +53,9 @@ import io.netty.buffer.ByteBuf;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class AddressStringImpl implements AddressString  {
-	protected int NO_EXTENSION_MASK = 0x80;
-    protected int NATURE_OF_ADD_IND_MASK = 0x70;
-    protected int NUMBERING_PLAN_IND_MASK = 0x0F;
+	protected static final int NO_EXTENSION_MASK = 0x80;
+    protected static final int NATURE_OF_ADD_IND_MASK = 0x70;
+    protected static final int NUMBERING_PLAN_IND_MASK = 0x0F;
 
     protected AddressNature addressNature;
     protected NumberingPlanIndicator numberingPlan;
