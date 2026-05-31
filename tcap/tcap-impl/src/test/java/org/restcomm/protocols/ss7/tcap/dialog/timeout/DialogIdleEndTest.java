@@ -278,7 +278,7 @@ public class DialogIdleEndTest extends SccpHarness {
 
 		// 3. DialogTimeout (on server) - server timeout first (default)
 		server.awaitReceived(EventType.DialogTimeout);
-		TestEventUtils.assertPassed(SERVER_DIALOG_TIMEOUT- 200);
+		TestEventUtils.assertPassed(SERVER_DIALOG_TIMEOUT);
 
 		// 4. UAbort (from server)
 		UserInformation ui = serverProvider.getDialogPrimitiveFactory().createUserInformation();
