@@ -98,7 +98,7 @@ public class MAPUserAbortInfoTest {
     	parser.loadClass(MAPUserAbortInfoImpl.class);
     	
         MAPUserAbortInfoImpl mapUserAbortInfo = new MAPUserAbortInfoImpl();
-        MAPUserAbortChoiseImpl mapUserAbortChoice = new MAPUserAbortChoiseImpl();
+        MAPUserAbortChoiceImpl mapUserAbortChoice = new MAPUserAbortChoiceImpl();
         mapUserAbortChoice.setUserSpecificReason();
 
         mapUserAbortInfo.setUserAbortChoise(mapUserAbortChoice);
@@ -139,7 +139,7 @@ public class MAPUserAbortInfoTest {
     	
         MAPUserAbortInfoImpl mapUserAbortInfo = new MAPUserAbortInfoImpl();
 
-        MAPUserAbortChoiseImpl mapUserAbortChoice = new MAPUserAbortChoiseImpl();
+        MAPUserAbortChoiceImpl mapUserAbortChoice = new MAPUserAbortChoiceImpl();
         mapUserAbortChoice.setUserResourceLimitation();
 
         mapUserAbortInfo.setUserAbortChoise(mapUserAbortChoice);
@@ -181,7 +181,7 @@ public class MAPUserAbortInfoTest {
     	
         MAPUserAbortInfoImpl mapUserAbortInfo = new MAPUserAbortInfoImpl();
 
-        MAPUserAbortChoiseImpl mapUserAbortChoice = new MAPUserAbortChoiseImpl();
+        MAPUserAbortChoiceImpl mapUserAbortChoice = new MAPUserAbortChoiceImpl();
         mapUserAbortChoice.setResourceUnavailableReason(ResourceUnavailableReason.shortTermResourceLimitation);
 
         mapUserAbortInfo.setUserAbortChoise(mapUserAbortChoice);
@@ -228,7 +228,7 @@ public class MAPUserAbortInfoTest {
     	
         MAPUserAbortInfoImpl mapUserAbortInfo = new MAPUserAbortInfoImpl();
 
-        MAPUserAbortChoiseImpl mapUserAbortChoice = new MAPUserAbortChoiseImpl();
+        MAPUserAbortChoiceImpl mapUserAbortChoice = new MAPUserAbortChoiceImpl();
         mapUserAbortChoice.setProcedureCancellationReason(ProcedureCancellationReason.associatedProcedureFailure);
 
         mapUserAbortInfo.setUserAbortChoise(mapUserAbortChoice);
@@ -276,7 +276,7 @@ public class MAPUserAbortInfoTest {
     	
         MAPUserAbortInfoImpl mapUserAbortInfo = new MAPUserAbortInfoImpl();
 
-        MAPUserAbortChoiseImpl mapUserAbortChoice = new MAPUserAbortChoiseImpl();
+        MAPUserAbortChoiceImpl mapUserAbortChoice = new MAPUserAbortChoiceImpl();
         mapUserAbortChoice.setProcedureCancellationReason(ProcedureCancellationReason.callRelease);
 
         mapUserAbortInfo.setUserAbortChoise(mapUserAbortChoice);

@@ -241,7 +241,7 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.dialog.MAPUserAbortChoiseImpl;
+import org.restcomm.protocols.ss7.map.dialog.MAPUserAbortChoiceImpl;
 import org.restcomm.protocols.ss7.map.functional.listeners.Client;
 import org.restcomm.protocols.ss7.map.functional.listeners.Server;
 import org.restcomm.protocols.ss7.map.functional.listeners.events.EventType;
@@ -739,7 +739,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			MAPDialog mapDialog = (MAPDialog) event.getEvent();
 
 			mapDialog.setExtentionContainer(MAPExtensionContainerTest.GetTestExtensionContainer());
-			MAPUserAbortChoiseImpl choice = new MAPUserAbortChoiseImpl();
+			MAPUserAbortChoiceImpl choice = new MAPUserAbortChoiceImpl();
 			choice.setProcedureCancellationReason(ProcedureCancellationReason.handoverCancellation);
 
 			client.handleSent(EventType.DialogUserAbort, null);
@@ -2514,7 +2514,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			TestEvent<EventType> event = client.getNextEvent(EventType.DialogDelimiter);
 			MAPDialog mapDialog = (MAPDialog) event.getEvent();
 
-			MAPUserAbortChoiseImpl choice = new MAPUserAbortChoiseImpl();
+			MAPUserAbortChoiceImpl choice = new MAPUserAbortChoiceImpl();
 			choice.setProcedureCancellationReason(ProcedureCancellationReason.handoverCancellation);
 			client.handleSent(EventType.DialogUserAbort, null);
 			mapDialog.abort(choice, dummyCallback);

@@ -41,7 +41,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x04,constructed=true,lengthIndefinite=false)
-public class MAPUserAbortChoiseImpl implements MAPUserAbortChoice {
+public class MAPUserAbortChoiceImpl implements MAPUserAbortChoice {
 	private ASNProcedureCancellationReason procedureCancellationReason;
 	private ASNResourceUnavailableReason resourceUnavailableReason;
 	

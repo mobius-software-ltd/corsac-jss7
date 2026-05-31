@@ -44,7 +44,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x04,constructed=true,lengthIndefinite=false)
 public class MAPUserAbortInfoImpl implements MAPUserAbortChoice {
-	@ASNChoise(defaultImplementation = MAPUserAbortChoiseImpl.class)
+	@ASNChoise(defaultImplementation = MAPUserAbortChoiceImpl.class)
 	private MAPUserAbortChoice userAbortChoise;
 	
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
@@ -69,7 +69,7 @@ public class MAPUserAbortInfoImpl implements MAPUserAbortChoice {
 	@Override
 	public void setUserSpecificReason() {
 		if(this.userAbortChoise==null)
-			this.userAbortChoise = new MAPUserAbortChoiseImpl();
+			this.userAbortChoise = new MAPUserAbortChoiceImpl();
 		
 		this.userAbortChoise.setUserSpecificReason();
 	}
@@ -77,7 +77,7 @@ public class MAPUserAbortInfoImpl implements MAPUserAbortChoice {
 	@Override
 	public void setUserResourceLimitation() {
 		if(this.userAbortChoise==null)
-			this.userAbortChoise = new MAPUserAbortChoiseImpl();
+			this.userAbortChoise = new MAPUserAbortChoiceImpl();
 		
 		this.userAbortChoise.setUserResourceLimitation();
 	}
@@ -85,7 +85,7 @@ public class MAPUserAbortInfoImpl implements MAPUserAbortChoice {
 	@Override
 	public void setResourceUnavailableReason(ResourceUnavailableReason resUnaReas) {
 		if(this.userAbortChoise==null)
-			this.userAbortChoise = new MAPUserAbortChoiseImpl();
+			this.userAbortChoise = new MAPUserAbortChoiceImpl();
 		
 		this.userAbortChoise.setResourceUnavailableReason(resUnaReas);
 	}
@@ -93,7 +93,7 @@ public class MAPUserAbortInfoImpl implements MAPUserAbortChoice {
 	@Override
 	public void setProcedureCancellationReason(ProcedureCancellationReason procCanReasn) {
 		if(this.userAbortChoise==null)
-			this.userAbortChoise = new MAPUserAbortChoiseImpl();
+			this.userAbortChoise = new MAPUserAbortChoiceImpl();
 		
 		this.userAbortChoise.setProcedureCancellationReason(procCanReasn);
 	}
