@@ -122,7 +122,7 @@ public class MtpPrimitivesTest extends SccpHarness {
 
 		// super.data1.add(createPausePrimitive(getStack2PC()));
 		this.sentMessages.set(0);
-		this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC(), this.getTaskCallback(1));
+		this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC(), this.getCallback(1));
         this.sendSemaphore.acquire();
         
 		// now s1 thinks s2 is not available
@@ -147,7 +147,7 @@ public class MtpPrimitivesTest extends SccpHarness {
 
 		// now send msg from s1
 		super.sentMessages.set(0);
-		u1.send(super.getTaskCallback(1));
+		u1.send(super.getCallback(1));
         super.sendSemaphore.acquire();
 
 		assertTrue(stack.getManagementProxy().getMtp3Messages().size() == 0);
@@ -157,7 +157,7 @@ public class MtpPrimitivesTest extends SccpHarness {
 		// noooow lets inject mtp3_resume and retry
 		// super.data1.add(createResumePrimitive(getStack2PC()));
 		this.sentMessages.set(0);
-		this.mtp3UserPart1.sendResumeMessageToLocalUser(getStack2PC(), this.getTaskCallback(1));
+		this.mtp3UserPart1.sendResumeMessageToLocalUser(getStack2PC(), this.getCallback(1));
         this.sendSemaphore.acquire();
         
         stack = (SccpStackImplProxy) sccpStack1;
@@ -173,7 +173,7 @@ public class MtpPrimitivesTest extends SccpHarness {
 		assertEquals(rmtpResume, emtpResume);
 
 		super.sentMessages.set(0);
-		u1.send(super.getTaskCallback(1));
+		u1.send(super.getCallback(1));
         super.sendSemaphore.acquire();
         
         Thread.sleep(PROCESSING_TIMEOUT);
@@ -242,7 +242,7 @@ public class MtpPrimitivesTest extends SccpHarness {
 		// super.data1.add(createStatusPrimitive(getStack2PC(),Mtp3StatusType.RemoteUserUnavailable,Mtp3CongestionType.NULL,Mtp3UnavailabiltyCauseType.CAUSE_UNEQUIPED));
 		this.sentMessages.set(0);
 		this.mtp3UserPart1.sendStatusMessageToLocalUser(getStack2PC(),
-				Mtp3StatusCause.UserPartUnavailability_UnequippedRemoteUser, 0, 0, this.getTaskCallback(1));
+				Mtp3StatusCause.UserPartUnavailability_UnequippedRemoteUser, 0, 0, this.getCallback(1));
         this.sendSemaphore.acquire();
         
 		// now s1 thinks s2 is not available
@@ -269,7 +269,7 @@ public class MtpPrimitivesTest extends SccpHarness {
 
 		// now send msg from s1
 		super.sentMessages.set(0);
-		u1.send(super.getTaskCallback(1));
+		u1.send(super.getCallback(1));
         this.sendSemaphore.acquire();
 
 		assertTrue(stack.getManagementProxy().getMtp3Messages().size() == 0);
@@ -293,7 +293,7 @@ public class MtpPrimitivesTest extends SccpHarness {
 		}
 		
 		this.sentMessages.set(0);
-		this.mtp3UserPart1.sendStatusMessageToLocalUser(getStack2PC(), cs, 0, 0, this.getTaskCallback(1));
+		this.mtp3UserPart1.sendStatusMessageToLocalUser(getStack2PC(), cs, 0, 0, this.getCallback(1));
         this.sendSemaphore.acquire();
         
 		Thread.sleep(15000); // 15000
@@ -330,7 +330,7 @@ public class MtpPrimitivesTest extends SccpHarness {
 		assertEquals(rmsg2_sst, emsg2_sst);
 
 		super.sentMessages.set(0);
-		u1.send(super.getTaskCallback(1));
+		u1.send(super.getCallback(1));
         this.sendSemaphore.acquire();
         
         Thread.sleep(PROCESSING_TIMEOUT);

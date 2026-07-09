@@ -108,7 +108,7 @@ public class ClientTest implements TCListener {
 	}
 
 	@Override
-	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
+	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass, String aspName) {
 	}
 
 	@Override

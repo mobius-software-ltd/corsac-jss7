@@ -45,7 +45,8 @@ public class ReturnImpl implements Return {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getInvokeId()
      */
-    public Integer getInvokeId() {
+    @Override
+	public Integer getInvokeId() {
     	if(this.invokeId==null)
     		return null;
     	
@@ -57,7 +58,8 @@ public class ReturnImpl implements Return {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getOperationCode()
      */
-    public OperationCode getOperationCode() {
+    @Override
+	public OperationCode getOperationCode() {
     	if(inner==null)
     		return null;
     	
@@ -69,7 +71,8 @@ public class ReturnImpl implements Return {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getParameteR()
      */
-    public Object getParameter() {
+    @Override
+	public Object getParameter() {
     	if(inner==null)
     		return null;
     	
@@ -81,10 +84,10 @@ public class ReturnImpl implements Return {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setInvokeId(java.lang .Integer)
      */
-    public void setInvokeId(Integer i) {
-        if ((i == null) || (i < -128 || i > 127)) {
-            throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
-        }
+    @Override
+	public void setInvokeId(Integer i) {
+        if ((i == null) || (i < -128 || i > 127))
+			throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         this.invokeId = new ASNInteger(i,"InvokeID",-128,127,false);
     }
 
@@ -93,7 +96,8 @@ public class ReturnImpl implements Return {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(Long)
      */
-    public void setOperationCode(Integer i) {
+    @Override
+	public void setOperationCode(Integer i) {
     	if(inner==null)
     		inner=new ReturnResultInnerImpl();
     	
@@ -105,7 +109,8 @@ public class ReturnImpl implements Return {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(Long)
      */
-    public void setOperationCode(List<Long> i) {
+    @Override
+	public void setOperationCode(List<Long> i) {
     	if(inner==null)
     		inner=new ReturnResultInnerImpl();
     	
@@ -117,7 +122,8 @@ public class ReturnImpl implements Return {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setParameter(org.restcomm .protocols.ss7.tcap.asn.comp.Parameter)
      */
-    public void setParameter(Object p) {
+    @Override
+	public void setParameter(Object p) {
     	if(inner==null)
     		inner=new ReturnResultInnerImpl();
     	

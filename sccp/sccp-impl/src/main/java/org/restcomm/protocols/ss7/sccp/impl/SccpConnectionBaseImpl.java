@@ -64,6 +64,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 
@@ -148,7 +149,7 @@ public abstract class SccpConnectionBaseImpl {
 		rlc.setSourceLocalReferenceNumber(localReference);
 		rlc.setDestinationLocalReferenceNumber(remoteReference);
 		rlc.setOutgoingDpc(remoteDpc);
-		sendMessage(rlc, dummyCallback);
+		sendMessage(rlc, MessageCallback.EMPTY);
 	}
 
 	protected void confirmReset() throws Exception {
@@ -157,12 +158,12 @@ public abstract class SccpConnectionBaseImpl {
 		SccpConnRscMessageImpl rsc = new SccpConnRscMessageImpl(sls, localSsn);
 		rsc.setDestinationLocalReferenceNumber(remoteReference);
 		rsc.setSourceLocalReferenceNumber(localReference);
-		sendMessage(rsc, dummyCallback);
+		sendMessage(rsc, MessageCallback.EMPTY);
 
 		setState(SccpConnectionState.ESTABLISHED);
 	}
 
-	public void sendErr(ErrorCause cause, TaskCallback<Exception> callback) throws Exception {
+	public void sendErr(ErrorCause cause, MessageCallback<Exception> callback) throws Exception {
 		SccpConnErrMessageImpl err = new SccpConnErrMessageImpl(sls, localSsn);
 		err.setDestinationLocalReferenceNumber(remoteReference);
 		err.setSourceLocalReferenceNumber(localReference);
@@ -171,7 +172,7 @@ public abstract class SccpConnectionBaseImpl {
 		sendMessage(err, callback);
 	}
 
-	public void sendMessage(SccpConnMessage message, TaskCallback<Exception> callback) {
+	public void sendMessage(SccpConnMessage message, MessageCallback<Exception> callback) {
 		if (message instanceof SccpConnSegmentableMessageImpl)
 			prepareMessageForSending((SccpConnSegmentableMessageImpl) message);
 		if (logger.isDebugEnabled())
@@ -224,7 +225,7 @@ public abstract class SccpConnectionBaseImpl {
 		}
 	}
 
-	public void establish(SccpConnCrMessage message, TaskCallback<Exception> callback) {
+	public void establish(SccpConnCrMessage message, MessageCallback<Exception> callback) {
 		this.checkLocalListener(callback);
 		
 		try {
@@ -253,7 +254,7 @@ public abstract class SccpConnectionBaseImpl {
 		}
 	}
 
-	public void reset(ResetCause reason, TaskCallback<Exception> callback) throws Exception {
+	public void reset(ResetCause reason, MessageCallback<Exception> callback) throws Exception {
 		if (reason.getValue().isError())
 			logger.warn(String.format("Resetting connection to DPC=%d, SSN=%d, DLR=%s due to %s", getRemoteDpc(),
 					getRemoteSsn(), getRemoteReference(), reason));
@@ -268,11 +269,11 @@ public abstract class SccpConnectionBaseImpl {
 		sendMessage(rsr, callback);
 	}
 
-	public void resetSection(ResetCause reason, TaskCallback<Exception> callback) throws Exception {
+	public void resetSection(ResetCause reason, MessageCallback<Exception> callback) throws Exception {
 		reset(reason, callback);
 	}
 
-	public void disconnect(ReleaseCause reason, ByteBuf data, TaskCallback<Exception> callback) {
+	public void disconnect(ReleaseCause reason, ByteBuf data, MessageCallback<Exception> callback) {
 		if (reason.getValue().isError())
 			logger.warn(String.format("Disconnecting connection to DPC=%d, SSN=%d, DLR=%s due to %s", getRemoteDpc(),
 					getRemoteSsn(), getRemoteReference(), reason));
@@ -295,7 +296,7 @@ public abstract class SccpConnectionBaseImpl {
 		}
 	}
 
-	public void refuse(RefusalCause reason, ByteBuf data, TaskCallback<Exception> callback) throws Exception {
+	public void refuse(RefusalCause reason, ByteBuf data, MessageCallback<Exception> callback) throws Exception {
 		if (logger.isDebugEnabled())
 			logger.debug(String.format("Refusing connection from DPC=%d, SSN=%d, DLR=%s due to %s", getRemoteDpc(),
 					getRemoteSsn(), getRemoteReference(), reason));
@@ -308,7 +309,8 @@ public abstract class SccpConnectionBaseImpl {
 		stack.removeConnection(getLocalReference());
 	}
 
-	public void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data, TaskCallback<Exception> callback) throws Exception {
+	public void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data, MessageCallback<Exception> callback)
+			throws Exception {
 		if (logger.isDebugEnabled())
 			logger.debug(String.format("Confirming connection from DPC=%d, SSN=%d, DLR=%s", getRemoteDpc(),
 					getRemoteSsn(), getRemoteReference()));

@@ -43,6 +43,7 @@ public class InvokeWrapper {
 
 	// local to stack
 	private InvokeClass invokeClass = InvokeClass.Class1;
+	private String aspName;
 
 	public InvokeWrapper(OperationCode operationCode, Dialog dialog, int invokeId, TCAPProvider provider,
 			InvokeClass invokeClass) {
@@ -72,7 +73,7 @@ public class InvokeWrapper {
 			setState(OperationState.Idle);
 			// TC-L-CANCEL
 			if (dialog != null)
-				dialog.operationTimedOut(invokeClass, invokeId);
+				dialog.operationTimedOut(invokeClass, invokeId, aspName);
 		}
 	}
 
@@ -169,6 +170,14 @@ public class InvokeWrapper {
 	 */
 	public int getInvokeId() {
 		return invokeId;
+	}
+
+	public String getAspName() {
+		return aspName;
+	}
+
+	public void setAspName(String aspName) {
+		this.aspName = aspName;
 	}
 
 	public boolean isErrorReported() {

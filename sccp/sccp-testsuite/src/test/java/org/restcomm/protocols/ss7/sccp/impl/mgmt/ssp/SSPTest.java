@@ -41,7 +41,7 @@ import org.restcomm.protocols.ss7.sccp.impl.mgmt.SccpMgmtMessage;
 import org.restcomm.protocols.ss7.sccp.impl.mgmt.SccpMgmtMessageType;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 /**
  * Test condition when SSN is not available in one stack aka prohibited
@@ -113,7 +113,7 @@ public class SSPTest extends SccpHarness {
 
 		super.sentMessages.set(0);
 
-		TaskCallback<Exception> callback = super.getTaskCallback(2);
+		MessageCallback<Exception> callback = super.getCallback(2);
 		u1.send(callback);
 		u2.send(callback);
 
@@ -198,7 +198,7 @@ public class SSPTest extends SccpHarness {
 		// try to send;
 
 		super.sentMessages.set(0);
-		u1.send(super.getTaskCallback(1));
+		u1.send(super.getCallback(1));
 		super.sendSemaphore.acquire();
 
 		Thread.sleep(PROCESSING_TIMEOUT);
@@ -234,7 +234,7 @@ public class SSPTest extends SccpHarness {
 		// message.
 
 		super.sentMessages.set(0);
-		TaskCallback<Exception> callback = super.getTaskCallback(2);
+		MessageCallback<Exception> callback = super.getCallback(2);
 		u1.send(callback);
 		u2.send(callback);
 		super.sendSemaphore.acquire();
@@ -274,7 +274,7 @@ public class SSPTest extends SccpHarness {
 		// super.data1.add(createPausePrimitive(getStack2PC()));
 
 		this.sentMessages.set(0);
-		this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC(), super.getTaskCallback(1));
+		this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC(), super.getCallback(1));
 		this.sendSemaphore.acquire();
 
 		// register;
@@ -375,7 +375,7 @@ public class SSPTest extends SccpHarness {
 
 		RemoteSubSystemImpl rss = (RemoteSubSystemImpl) sccpStack1.getSccpResource().getRemoteSsn(1);
 		super.sentMessages.set(0);
-		u1.send(super.getTaskCallback(1));
+		u1.send(super.getCallback(1));
 		super.sendSemaphore.acquire();
 
 		Thread.sleep(PROCESSING_TIMEOUT);
@@ -383,7 +383,7 @@ public class SSPTest extends SccpHarness {
 		assertEquals(((SccpStackImplProxy) sccpStack1).getManagementProxy().getMgmtMessages().size(), 1);
 		rss.setRemoteSsnProhibited(false);
 		super.sentMessages.set(0);
-		u1.send(super.getTaskCallback(1));
+		u1.send(super.getCallback(1));
 		super.sendSemaphore.acquire();
 		// we do not send SSP during a second after sending
 		assertEquals(((SccpStackImplProxy) sccpStack1).getManagementProxy().getMgmtMessages().size(), 1);
@@ -391,7 +391,7 @@ public class SSPTest extends SccpHarness {
 		Thread.sleep(2000);
 		rss.setRemoteSsnProhibited(false);
 		super.sentMessages.set(0);
-		u1.send(super.getTaskCallback(1));
+		u1.send(super.getCallback(1));
 		super.sendSemaphore.acquire();
 
 		Thread.sleep(PROCESSING_TIMEOUT);
@@ -445,7 +445,7 @@ public class SSPTest extends SccpHarness {
 
 		// Pause Stack2PC
 		this.sentMessages.set(0);
-		this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC(), this.getTaskCallback(1));
+		this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC(), this.getCallback(1));
 		this.sendSemaphore.acquire();
 
 		Thread.sleep(PROCESSING_TIMEOUT);
@@ -459,7 +459,7 @@ public class SSPTest extends SccpHarness {
 
 		// Resume Stack2PC
 		this.sentMessages.set(0);
-		this.mtp3UserPart1.sendResumeMessageToLocalUser(getStack2PC(), this.getTaskCallback(1));
+		this.mtp3UserPart1.sendResumeMessageToLocalUser(getStack2PC(), this.getCallback(1));
 		this.sendSemaphore.acquire();
 
 		Thread.sleep(PROCESSING_TIMEOUT);

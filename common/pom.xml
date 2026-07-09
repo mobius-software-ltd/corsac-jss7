@@ -14,6 +14,13 @@
 	<name>Corsac jSS7 :: Commons :: ${project.artifactId}</name>
 
 	<dependencies>
+				<!-- timers -->
+				<dependency>
+					<groupId>com.mobius-software</groupId>
+					<artifactId>mobius-timers</artifactId>
+					<version>${timers.version}</version>
+				</dependency>
+	
 				<dependency>
 					<groupId>org.apache.logging.log4j</groupId>
 					<artifactId>log4j-core</artifactId>

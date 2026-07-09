@@ -42,6 +42,7 @@ public class Mtp3TransferPrimitive {
 	protected final ByteBuf data;
 	private Integer readerIndex;
 	private Integer readableBytes;
+	private String aspID;
 
 	private final RoutingLabelFormat pointCodeFormat;
 
@@ -195,6 +196,14 @@ public class Mtp3TransferPrimitive {
 		}
 
 		return out;
+	}
+
+	public String getAspID() {
+		return aspID;
+	}
+
+	public void setAspID(String aspID) {
+		this.aspID = aspID;
 	}
 
 	@Override

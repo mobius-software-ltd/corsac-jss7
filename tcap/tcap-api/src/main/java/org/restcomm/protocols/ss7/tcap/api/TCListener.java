@@ -102,7 +102,7 @@ public interface TCListener {
      * @param dialog
      * @param invokeId
      */
-    void onInvokeTimeout(Dialog dialog,int invokeId, InvokeClass invokeClass);
+	void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass, String aspName);
 
     /**
      * Called once dialog times out. Once this method is called, dialog cant be used anymore.

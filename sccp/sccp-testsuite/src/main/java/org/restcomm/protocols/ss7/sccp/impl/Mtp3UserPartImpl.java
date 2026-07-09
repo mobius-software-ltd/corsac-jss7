@@ -37,6 +37,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 
@@ -73,10 +74,11 @@ public class Mtp3UserPartImpl extends Mtp3UserPartBaseImpl {
 	}
 
 	@Override
-	public void sendMessage(Mtp3TransferPrimitive msg, TaskCallback<Exception> callback) {
+	public void sendMessage(Mtp3TransferPrimitive msg, MessageCallback<Exception> callback) {
 		// we need to work with copy otherwise the buffer would be released
 		Mtp3TransferPrimitive copy = new Mtp3TransferPrimitive(msg.getSi(), msg.getNi(), msg.getMp(), msg.getOpc(),
 				msg.getDpc(), msg.getSls(), msg.getData().copy(), msg.getPointCodeFormat());
+		
 		if (!this.otherParts.isEmpty()) {			
 			if (otherParts.size() == 1)
 				this.otherParts.iterator().next().sendTransferMessageToLocalUser(copy, copy.getSls(), callback);

@@ -11,6 +11,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 
@@ -85,7 +86,7 @@ public interface SccpConnection {
      * @param message
      * @return
      */
-    void establish(SccpConnCrMessage message, TaskCallback<Exception> callback) throws IOException;
+	void establish(SccpConnCrMessage message, MessageCallback<Exception> callback) throws IOException;
 
     /**
      * Reset connection
@@ -93,7 +94,7 @@ public interface SccpConnection {
      * @param reason
      * @return
      */
-    void reset(ResetCause reason, TaskCallback<Exception> callback) throws Exception;
+	void reset(ResetCause reason, MessageCallback<Exception> callback) throws Exception;
 
     /**
      * Refuse to accept new connection
@@ -102,7 +103,7 @@ public interface SccpConnection {
      * @param data This parameter is optional
      * @return
      */
-    void refuse(RefusalCause reason, ByteBuf data, TaskCallback<Exception> callback) throws Exception;
+	void refuse(RefusalCause reason, ByteBuf data, MessageCallback<Exception> callback) throws Exception;
 
     /**
      * Disconnect established connection
@@ -111,7 +112,7 @@ public interface SccpConnection {
      * @param data This parameter is optional
      * @return
      */
-    void disconnect(ReleaseCause reason, ByteBuf data, TaskCallback<Exception> callback) throws Exception;
+	void disconnect(ReleaseCause reason, ByteBuf data, MessageCallback<Exception> callback) throws Exception;
 
     /**
      * Accept new connection
@@ -120,7 +121,8 @@ public interface SccpConnection {
      * @param credit This parameter is optional
      * @return
      */
-    void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data, TaskCallback<Exception> callback) throws Exception;
+	void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data, MessageCallback<Exception> callback)
+			throws Exception;
 
     /**
      * Accept new connection

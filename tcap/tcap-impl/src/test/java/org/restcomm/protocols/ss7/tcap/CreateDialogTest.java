@@ -44,8 +44,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.wrappers.TCAPStackImplWrapper;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 /**
  *
@@ -128,7 +128,7 @@ public class CreateDialogTest {
 		}
 
 		@Override
-		public void send(SccpDataMessage msg, TaskCallback<Exception> callback) {
+		public void send(SccpDataMessage msg, MessageCallback<Exception> callback) {
 			// we check here that no messages go from TCAP previewMode
 			fail("No message must go from TCAP previewMode");
 		}
@@ -157,7 +157,7 @@ public class CreateDialogTest {
 		}
 
 		@Override
-		public void send(SccpNoticeMessage message, TaskCallback<Exception> callback) {
+		public void send(SccpNoticeMessage message, MessageCallback<Exception> callback) {
 			callback.onSuccess();
 		}
 

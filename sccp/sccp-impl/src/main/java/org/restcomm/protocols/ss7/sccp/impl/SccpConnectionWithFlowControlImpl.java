@@ -46,7 +46,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 /**
@@ -69,20 +69,21 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
     }
 
     @Override
-	public void establish(SccpConnCrMessage message, TaskCallback<Exception> callback) {
+	public void establish(SccpConnCrMessage message, MessageCallback<Exception> callback) {
         this.flow = newSccpFlowControl(message.getCredit());
-        super.establish(message, callback);
+		super.establish(message, MessageCallback.EMPTY);
     }
 
     @Override
-	public void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data, TaskCallback<Exception> callback) throws Exception {
+	public void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data, MessageCallback<Exception> callback)
+			throws Exception {
         if (getState() != CR_RECEIVED) {
             logger.error(String.format("Trying to confirm connection in non-compatible state %s", getState()));
             throw new IllegalStateException(String.format("Trying to confirm connection in non-compatible state %s", getState()));
         }
         this.flow = newSccpFlowControl(credit);
 
-        super.confirm(respondingAddress, credit, data, callback);
+		super.confirm(respondingAddress, credit, data, MessageCallback.EMPTY);
     }
 
     protected SccpFlowControl newSccpFlowControl(Credit credit) {
@@ -182,7 +183,7 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
         flow.setReceiveCredit(credit.getValue());
         flow.initializeMessageNumbering(msg);
 
-        sendMessage(msg, dummyCallback);
+		sendMessage(msg, MessageCallback.EMPTY);
     }
 
     private void handleAkMessage(SccpConnAkMessageImpl msg) throws Exception {
@@ -198,8 +199,8 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
     }
 
     @Override
-	public void reset(ResetCause reason, TaskCallback<Exception> callback) throws Exception {
-        super.reset(reason, callback);
+	public void reset(ResetCause reason, MessageCallback<Exception> callback) throws Exception {
+		super.reset(reason, MessageCallback.EMPTY);
         flow.reinitialize();
     }
 

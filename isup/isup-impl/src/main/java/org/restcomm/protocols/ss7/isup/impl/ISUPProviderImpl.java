@@ -47,7 +47,7 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFacto
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 /**
  * @author baranowb
@@ -246,7 +246,7 @@ public class ISUPProviderImpl implements ISUPProvider {
 		return c;
 	}
 
-	void send(ISUPMessage message, Mtp3TransferPrimitive encoded, TaskCallback<Exception> callback) {
+	void send(ISUPMessage message, Mtp3TransferPrimitive encoded, MessageCallback<Exception> callback) {
 		this.stack.send(message, encoded, callback);
 	}
 

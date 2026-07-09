@@ -96,7 +96,8 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getInvokeId()
      */
-    public Integer getInvokeId() {
+    @Override
+	public Integer getInvokeId() {
     	if(this.invokeId==null)
     		return null;
     	
@@ -108,7 +109,8 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getLinkedId()
      */
-    public Integer getLinkedId() {
+    @Override
+	public Integer getLinkedId() {
     	if(this.linkedId==null)
     		return null;
     	
@@ -120,7 +122,8 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getLinkedOperationCode()
      */
-    public OperationCode getLinkedOperationCode() {
+    @Override
+	public OperationCode getLinkedOperationCode() {
         return linkedOperationCode;
     }
 
@@ -129,7 +132,8 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getOperationCode()
      */
-    public OperationCode getOperationCode() {
+    @Override
+	public OperationCode getOperationCode() {
     	return operationCode;
     }
 
@@ -138,7 +142,8 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getParameteR()
      */
-    public Object getParameter() {
+    @Override
+	public Object getParameter() {
     	if(this.parameter==null)
     		return null;
     	
@@ -150,10 +155,10 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setInvokeId(java.lang .Integer)
      */
-    public void setInvokeId(Integer i) {
-        if ((i == null) || (i < -128 || i > 127)) {
-            throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
-        }
+    @Override
+	public void setInvokeId(Integer i) {
+        if ((i == null) || (i < -128 || i > 127))
+			throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         this.invokeId = new ASNInteger(i,"InvokeID",-128,127,false);        
     }
 
@@ -162,10 +167,10 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setLinkedId(java.lang .Integer)
      */
-    public void setLinkedId(Integer i) {
-        if ((i == null) || (i < -128 || i > 127)) {
-            throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
-        }
+    @Override
+	public void setLinkedId(Integer i) {
+        if ((i == null) || (i < -128 || i > 127))
+			throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         this.linkedId = new ASNInteger(i,"InvokeID",-128,127,false);
     }
 
@@ -178,7 +183,8 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(Long)
      */
-    public void setOperationCode(Integer i) {    
+    @Override
+	public void setOperationCode(Integer i) {    
     	if(i==null)
     		this.operationCode=null;
     	else {
@@ -192,7 +198,8 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(List<Long>)
      */
-    public void setOperationCode(List<Long> i) {
+    @Override
+	public void setOperationCode(List<Long> i) {
     	if(i==null)
     		this.operationCode=null;
     	else {
@@ -206,7 +213,8 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setParameter(org.restcomm .protocols.ss7.tcap.asn.comp.Parameter)
      */
-    public void setParameter(Object p) {
+    @Override
+	public void setParameter(Object p) {
     	this.parameter=new ASNInvokeParameterImpl(p);    	
     }
 
@@ -215,11 +223,11 @@ public class InvokeImpl implements Invoke {
         return ComponentType.Invoke;
     }
 
-    @Override
+	@Override
     public String toString() {
     	Object oc=null;
-    	if(this.operationCode!=null) {
-    		switch(this.operationCode.getOperationType()) {
+    	if(this.operationCode!=null)
+			switch(this.operationCode.getOperationType()) {
 				case Global:
 					oc=this.operationCode.getGlobalOperationCode();
 					break;
@@ -229,7 +237,6 @@ public class InvokeImpl implements Invoke {
 				default:
 					break;
     		}
-    	}
     	
     	Long invokeIdValue=null;
     	if(this.invokeId!=null)

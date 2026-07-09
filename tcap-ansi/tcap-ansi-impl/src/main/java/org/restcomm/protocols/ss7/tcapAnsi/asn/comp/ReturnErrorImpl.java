@@ -60,7 +60,8 @@ public class ReturnErrorImpl implements ReturnError {
     	return null;
     }
     
-    public Object getParameter() {
+    @Override
+	public Object getParameter() {
         if(this.setParameter!=null)
         	return this.setParameter.getValue();
         else if(this.seqParameter!=null)
@@ -69,17 +70,20 @@ public class ReturnErrorImpl implements ReturnError {
         return null;
     }
 
-    public void setSetParameter(Object p) {
+    @Override
+	public void setSetParameter(Object p) {
     	this.setParameter = new ASNReturnErrorSetParameterImpl(p);
         this.seqParameter=null;        
     }
 
-    public void setSeqParameter(Object p) {
+    @Override
+	public void setSeqParameter(Object p) {
     	this.seqParameter = new ASNReturnErrorParameterImpl(p);
         this.setParameter=null;        
     }
 
-    public Long getCorrelationId() {
+    @Override
+	public Long getCorrelationId() {
         Byte value=correlationId.getFirstValue();
         if(value==null)
         	return null;
@@ -87,21 +91,23 @@ public class ReturnErrorImpl implements ReturnError {
         return value.longValue();
     }
 
-    public void setCorrelationId(Long i) {
-        if ((i == null) || (i < -128 || i > 127)) {
-            throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
-        }
+    @Override
+	public void setCorrelationId(Long i) {
+        if ((i == null) || (i < -128 || i > 127))
+			throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         this.correlationId.setFirstValue(i.byteValue());
     }
 
-    public ErrorCode getErrorCode() {
+    @Override
+	public ErrorCode getErrorCode() {
     	return errorCode;    	
     }
 
-    public void setErrorCode(ErrorCode i) {
-    	if(i!=null) {
+    @Override
+	public void setErrorCode(ErrorCode i) {
+    	if(i!=null)
 			if(i instanceof ErrorCodeImpl)
-				errorCode=(ErrorCodeImpl)i;
+				errorCode=i;
 			else if(i.getErrorType()==ErrorCodeType.National) {
 				errorCode = new ErrorCodeImpl();
 				errorCode.setNationalErrorCode(i.getNationalErrorCode());
@@ -110,14 +116,15 @@ public class ReturnErrorImpl implements ReturnError {
 				errorCode = new ErrorCodeImpl();
 				errorCode.setPrivateErrorCode(i.getPrivateErrorCode());
 			}
-		}
     }
 
-    public ComponentType getType() {
+    @Override
+	public ComponentType getType() {
         return ComponentType.ReturnError;
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ReturnError[");
         if (this.getCorrelationId() != null) {
