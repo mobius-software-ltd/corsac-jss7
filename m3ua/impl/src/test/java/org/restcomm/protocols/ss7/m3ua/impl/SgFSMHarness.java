@@ -11,8 +11,8 @@ import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
 import org.restcomm.protocols.ss7.m3ua.impl.message.MessageFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 public class SgFSMHarness {
 	protected static final Logger logger = LogManager.getLogger(SgFSMHarness.class);
@@ -41,10 +41,10 @@ public class SgFSMHarness {
 		return AsState.getState(fsm.getState().getName());
 	}
 	
-	public TaskCallback<Exception> getSendMessageCallback(int messages) {
-		return new TaskCallback<Exception>() {
+	public MessageCallback<Exception> getSendMessageCallback(int messages) {
+		return new MessageCallback<Exception>() {
 			@Override
-			public void onSuccess() {				
+			public void onSuccess(String aspName) {
 				SgFSMHarness.this.sentMessages.incrementAndGet();
 				if (SgFSMHarness.this.sentMessages.get() == messages)
 					SgFSMHarness.this.sendSemaphore.release();

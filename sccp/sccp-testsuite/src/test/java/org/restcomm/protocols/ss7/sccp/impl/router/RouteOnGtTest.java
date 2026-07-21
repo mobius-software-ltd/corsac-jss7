@@ -129,7 +129,7 @@ public class RouteOnGtTest extends SccpHarness {
                 true, null, null);
         
         super.sentMessages.set(0);
-        sccpProvider1.send(message, super.getTaskCallback(1));
+        sccpProvider1.send(message, super.getCallback(1));
         super.sendSemaphore.acquire();
         assertEquals(u1.getMessages().size(), 1);
         assertEquals(u2.getMessages().size(), 0);
@@ -153,7 +153,7 @@ public class RouteOnGtTest extends SccpHarness {
 
         Mtp3UserPartImpl mup = (Mtp3UserPartImpl) sccpStack1.getMtp3UserPart(1);
         super.sentMessages.set(0);
-        mup.sendTransferMessageToLocalUser(getStack2PC(), getStack1PC(), getDataUdt1(), super.getTaskCallback(1));
+        mup.sendTransferMessageToLocalUser(getStack2PC(), getStack1PC(), getDataUdt1(), super.getCallback(1));
         super.sendSemaphore.acquire();
 
         assertEquals(u1.getMessages().size(), 0);

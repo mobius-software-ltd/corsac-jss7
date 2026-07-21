@@ -98,7 +98,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.DialogPrimitiveFacto
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.DraftParsedMessageImpl;
 
 import com.mobius.software.common.dal.timers.RunnableTask;
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.Timer;
 import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeHandler;
@@ -106,6 +105,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -148,16 +148,6 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
 	private ASNParser messageParser = new ASNParser(TCUnknownMessageImpl.class, true, false);
 	protected boolean affinityEnabled = false;
-
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-		}
-	};
 
 	protected TCAPProviderImpl(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn, WorkerPool workerPool) {
 		super();
@@ -399,7 +389,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
 	public void send(DialogImpl dialog, ByteBuf data, boolean returnMessageOnError, SccpAddress destinationAddress,
 			SccpAddress originatingAddress, int seqControl, int networkId, int localSsn,
-			TaskCallback<Exception> callback) {
+			MessageCallback<Exception> callback) {
 		SccpDataMessage msg = messageFactory.createDataMessageClass1(destinationAddress, originatingAddress, data,
 				seqControl, localSsn, returnMessageOnError, null, null);
 		msg.setNetworkId(networkId);
@@ -593,7 +583,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	}
 
 	protected void sendProviderAbort(PAbortCause pAbortCause, ByteBuf remoteTransactionId, SccpAddress remoteAddress,
-			SccpAddress localAddress, int seqControl, int networkId, TaskCallback<Exception> callback) {
+			SccpAddress localAddress, int seqControl, int networkId, MessageCallback<Exception> callback) {
 		TCAbortMessage msg = TcapFactory.createTCAbortMessage();
 		msg.setDestinationTransactionId(remoteTransactionId);
 		msg.setPAbortCause(pAbortCause);
@@ -612,7 +602,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
 	protected void sendRejectAsProviderAbort(PAbortCause pAbortCause, ByteBuf remoteTransactionId,
 			SccpAddress remoteAddress, SccpAddress localAddress, int seqControl, int networkId,
-			TaskCallback<Exception> callback) {
+			MessageCallback<Exception> callback) {
 		RejectProblem rp = RejectProblem.getFromPAbortCause(pAbortCause);
 		if (rp == null)
 			rp = RejectProblem.transactionBadlyStructuredTransPortion;
@@ -715,7 +705,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 			} catch (ASNException ex) {
 				logger.error("ParseException when parsing TCMessage: " + ex.toString(), ex);
 				this.sendProviderAbort(PAbortCause.UnrecognizedPackageType, null, remoteAddress, localAddress,
-						message.getSls(), message.getNetworkId(), dummyCallback);
+						message.getSls(), message.getNetworkId(), MessageCallback.EMPTY);
 				return;
 			} finally {
 				data.release();
@@ -738,12 +728,12 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 					if (!realMessage.isTransactionExists()) {
 						this.sendRejectAsProviderAbort(PAbortCause.IncorrectTransactionPortion,
 								realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,
-								message.getSls(), message.getNetworkId(), dummyCallback);
+								message.getSls(), message.getNetworkId(), MessageCallback.EMPTY);
 						return;
 					} else if (!realMessage.validateTransaction()) {
 						this.sendRejectAsProviderAbort(PAbortCause.BadlyStructuredTransactionPortion,
 								realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,
-								message.getSls(), message.getNetworkId(), dummyCallback);
+								message.getSls(), message.getNetworkId(), MessageCallback.EMPTY);
 						return;
 					}
 
@@ -757,11 +747,11 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 							if (tcm.getDialogPortion() != null)
 								this.sendProviderAbort(PAbortCause.UnassignedRespondingTransactionID,
 										tcm.getOriginatingTransactionId(), remoteAddress, localAddress,
-										message.getSls(), message.getNetworkId(), dummyCallback);
+										message.getSls(), message.getNetworkId(), MessageCallback.EMPTY);
 							else
 								this.sendRejectAsProviderAbort(PAbortCause.UnassignedRespondingTransactionID,
 										tcm.getOriginatingTransactionId(), remoteAddress, localAddress,
-										message.getSls(), message.getNetworkId(), dummyCallback);
+										message.getSls(), message.getNetworkId(), MessageCallback.EMPTY);
 						} else
 							this.storeProcessTask(di, tcm, localAddress, remoteAddress);
 					} else if (realMessage instanceof TCQueryMessage) {
@@ -775,11 +765,11 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 							if (tcb.getDialogPortion() != null)
 								this.sendProviderAbort(PAbortCause.ResourceUnavailable,
 										tcb.getOriginatingTransactionId(), remoteAddress, localAddress,
-										message.getSls(), message.getNetworkId(), dummyCallback);
+										message.getSls(), message.getNetworkId(), MessageCallback.EMPTY);
 							else
 								this.sendRejectAsProviderAbort(PAbortCause.ResourceUnavailable,
 										tcb.getOriginatingTransactionId(), remoteAddress, localAddress,
-										message.getSls(), message.getNetworkId(), dummyCallback);
+										message.getSls(), message.getNetworkId(), MessageCallback.EMPTY);
 							logger.error("Can not add a new dialog when receiving TCBeginMessage: " + e.getMessage(),
 									e);
 							return;
@@ -842,20 +832,20 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 							&& (realMessage instanceof TCConversationMessage || realMessage instanceof TCQueryMessage))
 						this.sendProviderAbort(PAbortCause.BadlyStructuredDialoguePortion,
 								realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,
-								message.getSls(), message.getNetworkId(), dummyCallback);
+								message.getSls(), message.getNetworkId(), MessageCallback.EMPTY);
 					else
 						this.sendRejectAsProviderAbort(PAbortCause.UnrecognizedDialoguePortionID,
 								realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,
-								message.getSls(), message.getNetworkId(), dummyCallback);
+								message.getSls(), message.getNetworkId(), MessageCallback.EMPTY);
 				} else if (realMessage.isDialogPortionExists()
 						&& (realMessage instanceof TCConversationMessage || realMessage instanceof TCQueryMessage))
 					this.sendProviderAbort(PAbortCause.UnrecognizedDialoguePortionID,
 							realMessage.getOriginatingTransactionId(), remoteAddress, localAddress, message.getSls(),
-							message.getNetworkId(), dummyCallback);
+							message.getNetworkId(), MessageCallback.EMPTY);
 				else
 					this.sendRejectAsProviderAbort(PAbortCause.UnrecognizedDialoguePortionID,
 							realMessage.getOriginatingTransactionId(), remoteAddress, localAddress, message.getSls(),
-							message.getNetworkId(), dummyCallback);
+							message.getNetworkId(), MessageCallback.EMPTY);
 			} else
 				unrecognizedPackageType(message, null, localAddress, remoteAddress, message.getNetworkId());
 		} catch (Exception e) {
@@ -868,7 +858,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 			SccpAddress remoteAddress, int networkId) throws ParseException {
 		logger.error(String.format("Rx unidentified.SccpMessage=%s", message));
 		this.sendProviderAbort(PAbortCause.UnrecognizedPackageType, transactionID, remoteAddress, localAddress,
-				message.getSls(), networkId, dummyCallback);
+				message.getSls(), networkId, MessageCallback.EMPTY);
 	}
 
 	@Override

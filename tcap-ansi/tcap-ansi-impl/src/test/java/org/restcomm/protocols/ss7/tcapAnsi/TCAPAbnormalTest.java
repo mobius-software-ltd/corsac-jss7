@@ -52,6 +52,8 @@ import org.restcomm.protocols.ss7.tcapAnsi.listeners.Client;
 import org.restcomm.protocols.ss7.tcapAnsi.listeners.Server;
 import org.restcomm.protocols.ss7.tcapAnsi.listeners.events.EventType;
 
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
+
 import io.netty.buffer.Unpooled;
 
 /**
@@ -169,7 +171,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 				Unpooled.wrappedBuffer(getMessageBadSyntax()), 0, 0, false, null, null);
 
 		client.startClientDialog();
-		sccpProvider1.send(message, dummyCallback);
+		sccpProvider1.send(message, MessageCallback.EMPTY);
 
 		// 2. TC-ABORT + PAbortCauseType.BadlyStructuredDialoguePortion
 		client.awaitReceived(EventType.PAbort);
@@ -234,7 +236,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 		SccpDataMessage message = messageFactory1.createDataMessageClass1(peer2Address, peer1Address,
 				Unpooled.wrappedBuffer(getMessageBadSyntax2()), 0, 0, false, null, null);
 
-		sccpProvider1.send(message, dummyCallback);
+		sccpProvider1.send(message, MessageCallback.EMPTY);
 		server.sendEnd(false);
 
 		server.awaitSent(EventType.End);
@@ -307,7 +309,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 		SccpDataMessage message = messageFactory2.createDataMessageClass1(peer1Address, peer2Address,
 				Unpooled.wrappedBuffer(getMessageBadTag()), 0, 0, false, null, null);
 
-		sccpProvider2.send(message, dummyCallback);
+		sccpProvider2.send(message, MessageCallback.EMPTY);
 		TestEventUtils.updateStamp();
 
 		client.awaitReceived(EventType.DialogTimeout);

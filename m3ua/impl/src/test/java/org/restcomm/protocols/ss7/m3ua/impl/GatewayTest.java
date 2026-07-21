@@ -50,8 +50,8 @@ import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 import com.sun.nio.sctp.SctpChannel;
 
@@ -252,9 +252,9 @@ public class GatewayTest {
 					Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
 
 			Semaphore sendSemaphore = new Semaphore(0);
-			m3uaMgmt.sendMessage(mtp3TransferPrimitive, new TaskCallback<Exception>() {
+			m3uaMgmt.sendMessage(mtp3TransferPrimitive, new MessageCallback<Exception>() {
 				@Override
-				public void onSuccess() {
+				public void onSuccess(String aspName) {
 					sendSemaphore.release();
 				}
 
@@ -333,9 +333,9 @@ public class GatewayTest {
 					Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
 
 			Semaphore sendSemaphore = new Semaphore(0);
-			m3uaMgmt.sendMessage(mtp3TransferPrimitive, new TaskCallback<Exception>() {
+			m3uaMgmt.sendMessage(mtp3TransferPrimitive, new MessageCallback<Exception>() {
 				@Override
-				public void onSuccess() {
+				public void onSuccess(String aspName) {
 					sendSemaphore.release();
 				}
 

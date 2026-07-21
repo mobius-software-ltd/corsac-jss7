@@ -368,5 +368,5 @@ public interface Dialog extends Serializable {
 
     public void operationEnded(int invokeId);
 
-    public void operationTimedOut(InvokeClass invokeClass, int invokeId);    
+	public void operationTimedOut(InvokeClass invokeClass, int invokeId, String aspName);
 }

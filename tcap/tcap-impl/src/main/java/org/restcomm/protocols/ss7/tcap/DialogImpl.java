@@ -21,6 +21,7 @@ package org.restcomm.protocols.ss7.tcap;
 
 import java.io.Externalizable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -89,12 +90,14 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCEndMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
 import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DialogPrimitiveFactoryImpl;
 
 import com.mobius.software.common.dal.timers.RunnableTimer;
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
+import com.mobius.software.telco.protocols.ss7.common.MessageCallback;
 
 import io.netty.buffer.ByteBuf;
 
@@ -170,16 +173,6 @@ public class DialogImpl implements Dialog {
 	private Boolean doNotSendProtocolVersion = null;
 
 	protected boolean isSwapTcapIdBytes;
-
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-		}
-	};
 
 	public static int getIndexFromInvokeId(Integer l) {
 		int tmp = l.intValue();
@@ -459,6 +452,30 @@ public class DialogImpl implements Dialog {
 			this.incomingInvokeList.remove(invokeId);
 	}
 
+	private List<InvokeWrapper> getInvokesForMessage(TCUnifiedMessage message) {
+		List<BaseComponent> components = null;
+		if (message instanceof TCBeginMessage)
+			components = ((TCBeginMessage) message).getComponents();
+		else if (message instanceof TCContinueMessage)
+			components = ((TCContinueMessage) message).getComponents();
+		else if (message instanceof TCEndMessage)
+			components = ((TCEndMessage) message).getComponents();
+
+		List<InvokeWrapper> wrappers = new ArrayList<>();
+		if (components != null)
+			for (BaseComponent component : components) {
+				if (component.getInvokeId() == null)
+					continue;
+
+				int invokeIndex = DialogImpl.getIndexFromInvokeId(component.getInvokeId());
+				InvokeWrapper wrapper = sentOperations.get(invokeIndex);
+				if (wrapper != null)
+					wrappers.add(wrapper);
+			}
+
+		return wrappers;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -516,11 +533,13 @@ public class DialogImpl implements Dialog {
 		}
 
 		this.scheduledComponentList.clear();
-
+		List<InvokeWrapper> wrappers = getInvokesForMessage(tcbm);
+		
 		this.setState(TRPseudoState.InitialSent);
 		getProvider().getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.networkId);
 		getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-				this.seqControl, this.networkId, this.localSsn, this.remotePc, callback);
+				this.seqControl, this.networkId, this.localSsn, this.remotePc,
+				getMessageCallback(callback, wrappers));
 	}
 
 	/*
@@ -592,16 +611,19 @@ public class DialogImpl implements Dialog {
 			this.scheduledComponentList.clear();
 
 			getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-					this.seqControl, this.networkId, this.localSsn, this.remotePc, new TaskCallback<Exception>() {
-						@Override
-						public void onSuccess() {
-							callback.onSuccess();
-						}
-
+					this.seqControl, this.networkId, this.localSsn, this.remotePc, new MessageCallback<Exception>() {
 						@Override
 						public void onError(Exception exception) {
 							DialogImpl.this.state.set(oldState);
 							callback.onError(exception);
+						}
+
+						@Override
+						public void onSuccess(String aspName) {
+							for (InvokeWrapper wrapper : getInvokesForMessage(tcbm))
+								wrapper.setAspName(aspName);
+
+							callback.onSuccess();
 						}
 					});
 		} else if (state.get() == TRPseudoState.Active) {
@@ -633,10 +655,12 @@ public class DialogImpl implements Dialog {
 			}
 
 			this.scheduledComponentList.clear();
+			List<InvokeWrapper> wrappers = getInvokesForMessage(tcbm);
 
 			getProvider().getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.networkId);
 			getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-					this.seqControl, this.networkId, this.localSsn, this.remotePc, callback);
+					this.seqControl, this.networkId, this.localSsn, this.remotePc,
+					getMessageCallback(callback, wrappers));
 		} else
 			callback.onError(new TCAPSendException("Wrong state: " + this.state.get()));
 	}
@@ -751,10 +775,12 @@ public class DialogImpl implements Dialog {
 		}
 
 		this.scheduledComponentList.clear();
+		List<InvokeWrapper> wrappers = getInvokesForMessage(tcbm);
 
 		getProvider().getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.networkId);
 		getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-				this.seqControl, this.networkId, this.localSsn, this.remotePc, callback);
+				this.seqControl, this.networkId, this.localSsn, this.remotePc,
+				getMessageCallback(callback, wrappers));
 		release();
 	}
 
@@ -807,7 +833,8 @@ public class DialogImpl implements Dialog {
 
 		getProvider().getStack().newMessageSent(msg.getName(), buffer.readableBytes(), this.networkId);
 		getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-				this.seqControl, this.networkId, this.localSsn, this.remotePc, callback);
+				this.seqControl, this.networkId, this.localSsn, this.remotePc,
+				getMessageCallback(callback, Arrays.asList()));
 		release();
 	}
 
@@ -901,7 +928,8 @@ public class DialogImpl implements Dialog {
 					getProvider().getStack().newAbortSent("User", this.networkId);
 
 				getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-						this.seqControl, this.networkId, this.localSsn, this.remotePc, callback);
+						this.seqControl, this.networkId, this.localSsn, this.remotePc,
+						getMessageCallback(callback, null));
 			} catch (ASNException | ParseException e) {
 				callback.onError(new TCAPSendException("Failed to send TC-U-Abort message: " + e.getMessage(), e));
 				return;
@@ -1374,7 +1402,8 @@ public class DialogImpl implements Dialog {
 		}
 	}
 
-	protected void processBegin(TCBeginMessage msg, SccpAddress localAddress, SccpAddress remoteAddress, ByteBuf data) {
+	protected void processBegin(TCBeginMessage msg, SccpAddress localAddress, SccpAddress remoteAddress, String aspName,
+			ByteBuf data) {
 
 		TCBeginIndication tcBeginIndication = null;
 		// this is invoked ONLY for server.
@@ -1397,6 +1426,7 @@ public class DialogImpl implements Dialog {
 
 		tcBeginIndication.setDestinationAddress(localAddress);
 		tcBeginIndication.setOriginatingAddress(remoteAddress);
+		tcBeginIndication.setAspName(aspName);
 
 		// if APDU and context data present, lets store it
 		DialogPortion dialogPortion = msg.getDialogPortion();
@@ -1426,7 +1456,7 @@ public class DialogImpl implements Dialog {
 	}
 
 	protected void processContinue(TCContinueMessage msg, SccpAddress localAddress, SccpAddress remoteAddress,
-			ByteBuf data) {
+			String aspName, ByteBuf data) {
 		TCContinueIndication tcContinueIndication = null;
 		if (state.get() == TRPseudoState.InitialSent) {
 			restartIdleTimer();
@@ -1439,6 +1469,7 @@ public class DialogImpl implements Dialog {
 			this.setRemoteTransactionId(
 					Utils.decodeTransactionId(msg.getOriginatingTransactionId(), isSwapTcapIdBytes));
 			tcContinueIndication.setOriginatingAddress(remoteAddress);
+			tcContinueIndication.setAspName(aspName);
 
 			// here we will receive DialogResponse APDU - if request was
 			// present!
@@ -1512,6 +1543,7 @@ public class DialogImpl implements Dialog {
 			tcContinueIndication = ((DialogPrimitiveFactoryImpl) getProvider().getDialogPrimitiveFactory())
 					.createContinueIndication(this, data);
 
+			tcContinueIndication.setAspName(aspName);
 			tcContinueIndication.setOriginatingAddress(remoteAddress);
 
 			// now comps
@@ -1529,13 +1561,15 @@ public class DialogImpl implements Dialog {
 		}
 	}
 
-	protected void processEnd(TCEndMessage msg, SccpAddress localAddress, SccpAddress remoteAddress, ByteBuf data) {
+	protected void processEnd(TCEndMessage msg, SccpAddress localAddress, SccpAddress remoteAddress, String aspName,
+			ByteBuf data) {
 		TCEndIndication tcEndIndication = null;
 		try {
 			restartIdleTimer();
 			tcEndIndication = ((DialogPrimitiveFactoryImpl) getProvider().getDialogPrimitiveFactory())
 					.createEndIndication(this, data);
 
+			tcEndIndication.setAspName(aspName);
 			if (state.get() == TRPseudoState.InitialSent) {
 				// in end remote address MAY change be changed, so lets
 				// update!
@@ -1573,7 +1607,7 @@ public class DialogImpl implements Dialog {
 	}
 
 	protected void processAbort(TCAbortMessage msg, SccpAddress localAddress2, SccpAddress remoteAddress2,
-			ByteBuf data) {
+			String aspName, ByteBuf data) {
 		try {
 			Boolean IsAareApdu = false;
 			Boolean IsAbrtApdu = false;
@@ -1652,6 +1686,7 @@ public class DialogImpl implements Dialog {
 				tcUAbortIndication.setAbortSource(abrtSrc);
 				tcUAbortIndication.setApplicationContextName(acn);
 				tcUAbortIndication.setResultSourceDiagnostic(resultSourceDiagnostic);
+				tcUAbortIndication.setAspName(aspName);
 
 				if (state.get() == TRPseudoState.InitialSent) {
 					// in userAbort remote address MAY change be changed, so lets
@@ -1693,7 +1728,7 @@ public class DialogImpl implements Dialog {
 				getProvider().getStack().newMessageSent(msg.getName(), buffer.readableBytes(), this.networkId);
 				getProvider().getStack().newAbortSent(PAbortCauseType.AbnormalDialogue.name(), this.networkId);
 				getProvider().send(this, buffer, false, this.remoteAddress, this.localAddress, this.seqControl,
-						this.networkId, this.localSsn, this.remotePc, dummyCallback);
+						this.networkId, this.localSsn, this.remotePc, MessageCallback.EMPTY);
 			} catch (Exception e) {
 				if (logger.isErrorEnabled())
 					logger.error("Failed to send message: ", e);
@@ -2040,14 +2075,14 @@ public class DialogImpl implements Dialog {
 	 * org.restcomm.protocols.ss7.tcap.tc.component.TCInvokeRequestImpl)
 	 */
 	@Override
-	public void operationTimedOut(InvokeClass invokeClass, int invokeId) {
+	public void operationTimedOut(InvokeClass invokeClass, int invokeId, String aspName) {
 		// this op died cause of timeout, TC-L-CANCEL!
 		int index = getIndexFromInvokeId(invokeId);
 
 		freeInvokeId(invokeId);
 		setInvokeByIndex(index, null);
 		// lets call listener
-		getProvider().operationTimedOut(this, invokeId, invokeClass, this.networkId);
+		getProvider().operationTimedOut(this, invokeId, invokeClass, aspName, this.networkId);
 	}
 
 	// TC-TIMER-RESET
@@ -2115,6 +2150,25 @@ public class DialogImpl implements Dialog {
 	@Override
 	public long getStartTimeDialog() {
 		return this.startDialogTime;
+	}
+
+	private MessageCallback<Exception> getMessageCallback(TaskCallback<Exception> callback,
+			List<InvokeWrapper> wrappers) {
+		return new MessageCallback<Exception>() {
+			@Override
+			public void onSuccess(String aspName) {
+				if (wrappers != null)
+					for (InvokeWrapper wrapper : wrappers)
+						wrapper.setAspName(aspName);
+
+				callback.onSuccess();
+			}
+
+			@Override
+			public void onError(Exception ex) {
+				callback.onError(ex);
+			}
+		};
 	}
 
 	/*
