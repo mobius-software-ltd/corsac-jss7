@@ -76,10 +76,14 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = UtranPositioningDataInfoImpl.class)
     private UtranPositioningDataInfo utranPositioningData;
 
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
+    //in all other messages it is constructed but it appears that some vendors do handle them as constructed=false, adding capability  to accept both
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
     private CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl cellGlobalIdOrServiceAreaIdOrLAIWrapped;
 
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
+    private CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl cellGlobalIdOrServiceAreaIdOrLAIWrappedSimple;
+
+     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
     private ASNNull saiPresent;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
@@ -241,6 +245,9 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
     	if(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped!=null)
     		return this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI();
     	
+    	if(this.cellGlobalIdOrServiceAreaIdOrLAIWrappedSimple!=null)
+    		return this.cellGlobalIdOrServiceAreaIdOrLAIWrappedSimple.getCellGlobalIdOrServiceAreaIdOrLAI();
+    	
     	return null;
     }
 
@@ -325,6 +332,11 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
             sb.append(", cellGlobalIdOrServiceAreaIdOrLAI=");
             sb.append(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI());
         }
+        else if (this.cellGlobalIdOrServiceAreaIdOrLAIWrappedSimple != null && this.cellGlobalIdOrServiceAreaIdOrLAIWrappedSimple.getCellGlobalIdOrServiceAreaIdOrLAI()!=null) {
+            sb.append(", cellGlobalIdOrServiceAreaIdOrLAI=");
+            sb.append(this.cellGlobalIdOrServiceAreaIdOrLAIWrappedSimple.getCellGlobalIdOrServiceAreaIdOrLAI());
+        }
+        
         if (this.saiPresent!=null) {
             sb.append(", saiPresent");
         }
