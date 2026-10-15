@@ -217,12 +217,18 @@ public class RouterImpl implements Router {
 	@Override
 	public Rule findRule(SccpAddress calledParty, SccpAddress callingParty, boolean isMtpOriginated, int msgNetworkId) {
 		Iterator<Rule> iterator = this.rulesMap.values().iterator();
+		Rule selectedRule = null;
 		while (iterator.hasNext()) {
 			Rule rule = iterator.next();
-			if (rule.matches(calledParty, callingParty, isMtpOriginated, msgNetworkId))
-				return rule;
+			if (rule.matches(calledParty, callingParty, isMtpOriginated, msgNetworkId)) {
+				if(selectedRule == null)
+					selectedRule = rule;
+				else if(selectedRule.getRuleId()>rule.getRuleId())
+					selectedRule = rule;
+			}
 		}
-		return null;
+		
+		return selectedRule;
 	}
 
 	@Override
